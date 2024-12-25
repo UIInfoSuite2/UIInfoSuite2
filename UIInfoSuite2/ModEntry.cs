@@ -27,6 +27,8 @@ internal class ModEntry : Mod
 
   public static ModEntry Instance { get; private set; } = null!;
 
+  public static ModConfig Config => GetSingleton<ConfigManager>().Config;
+
   public static T GetSingleton<T>() where T : class
   {
     return Instance._container.GetInstance<T>();
