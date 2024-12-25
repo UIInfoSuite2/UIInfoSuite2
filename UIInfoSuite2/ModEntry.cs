@@ -19,6 +19,7 @@ using UIInfoSuite2.Infrastructure.Interfaces;
 using UIInfoSuite2.Infrastructure.Models;
 using UIInfoSuite2.Infrastructure.Modules.Base;
 using UIInfoSuite2.Infrastructure.Modules.Hud;
+using UIInfoSuite2.Infrastructure.Patches;
 using UIInfoSuite2.UIElements.MenuShortcuts.MenuShortcutDisplay;
 
 namespace UIInfoSuite2;
@@ -80,6 +81,7 @@ internal class ModEntry : Mod
 
     // Register Modules
     RegisterConfigurable<ConfigurableHudIconPositioning>();
+    RegisterPatchable<PatchRenderingMenuContentStep>();
     RegisterBaseModuleSingleton<MenuShortcutDisplay>();
     RegisterHudModuleSingleton<DailyLuckModule>();
     RegisterHudModuleSingleton<BirthdayReminderModule>();
@@ -96,6 +98,12 @@ internal class ModEntry : Mod
     _container.GetInstance<MenuShortcutDisplay>().Register(helper);
 
     IconHandler.Handler.IsQuestLogPermanent = helper.ModRegistry.IsLoaded(ModCompat.DeluxeJournal);
+
+    var harmony = _container.GetInstance<Harmony>();
+    foreach (IPatchable patchable in GetContainerCollection<IPatchable>())
+    {
+      patchable.Patch(harmony);
+    }
   }
 #endregion
 
@@ -183,7 +191,7 @@ internal class ModEntry : Mod
     _container.Collection.Append<IConfigurable, T>();
   }
 
-  private void RegisterBaseModuleSingleton<T>(bool registerConfigurable = false, bool registerPatchable = false)
+  private void RegisterBaseModuleSingleton<T>(bool registerConfigurable = true, bool registerPatchable = true)
     where T : BaseModule
   {
     _container.RegisterSingleton<T>();
@@ -204,7 +212,7 @@ internal class ModEntry : Mod
 
   private void RegisterHudModuleSingleton<T>() where T : HudIconModule
   {
-    RegisterBaseModuleSingleton<T>(true, true);
+    RegisterBaseModuleSingleton<T>();
     _container.Collection.Append<HudIconModule, T>();
   }
 #endregion
