@@ -82,6 +82,7 @@ internal class ModEntry : Mod
     RegisterConfigurable<ConfigurableHudIconPositioning>();
     RegisterBaseModuleSingleton<MenuShortcutDisplay>();
     RegisterHudModuleSingleton<DailyLuckModule>();
+    RegisterHudModuleSingleton<BirthdayReminderModule>();
 
     _container.Verify();
 
