@@ -90,6 +90,7 @@ internal class ModEntry : Mod
     RegisterHudModuleSingleton<WeeklyRecipeModule>();
     RegisterHudModuleSingleton<ToolUpgradeReminderModule>();
     RegisterBaseModuleSingleton<ShopHarvestPriceModule>();
+    RegisterBaseModuleSingleton<PartialHeartFillModule>();
 
     _container.Verify();
 
