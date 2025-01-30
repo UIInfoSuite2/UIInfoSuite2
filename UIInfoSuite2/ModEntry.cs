@@ -41,6 +41,16 @@ internal class ModEntry : Mod
     return Instance._container.GetInstance<T>();
   }
 
+  public static IEnumerable<BaseModule> GetAllModules()
+  {
+    return GetContainerCollection<BaseModule>();
+  }
+
+  public static IEnumerable<T> GetContainerCollection<T>() where T : class
+  {
+    return Instance._container.GetAllInstances<T>();
+  }
+
 #region Entry
   public override void Entry(IModHelper helper)
   {
@@ -113,15 +123,6 @@ internal class ModEntry : Mod
   }
 #endregion
 
-  public IEnumerable<BaseModule> GetAllModules()
-  {
-    return GetContainerCollection<BaseModule>();
-  }
-
-  public IEnumerable<T> GetContainerCollection<T>() where T : class
-  {
-    return _container.GetAllInstances<T>();
-  }
 
   private void ReloadModules()
   {
