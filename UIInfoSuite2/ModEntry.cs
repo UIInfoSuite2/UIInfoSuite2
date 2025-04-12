@@ -97,6 +97,7 @@ internal class ModEntry : Mod
     RegisterPatchable<PatchRenderingMenuContentStep>();
     RegisterBaseModuleSingleton<MenuShortcutDisplay>();
     RegisterHudModuleSingleton<BirthdayReminderModule>();
+    RegisterHudModuleSingleton<ConstructionTrackerModule>();
     RegisterHudModuleSingleton<DailyLuckModule>();
     RegisterHudModuleSingleton<DailyWeatherModule>();
     RegisterHudModuleSingleton<SeasonalBerryDisplayModule>();
