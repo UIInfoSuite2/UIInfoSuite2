@@ -95,6 +95,7 @@ internal class ModEntry : Mod
     RegisterConfigurable<ConfigurableHudIconPositioning>();
     RegisterPatchable<PatchRenderingMenuContentStep>();
     RegisterBaseModuleSingleton<MenuShortcutDisplay>();
+    RegisterHudModuleSingleton<BirthdayReminderModule>();
     RegisterHudModuleSingleton<DailyLuckModule>();
     RegisterHudModuleSingleton<DailyWeatherModule>();
     RegisterHudModuleSingleton<SeasonalBerryDisplayModule>();
