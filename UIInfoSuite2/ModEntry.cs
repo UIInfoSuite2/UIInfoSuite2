@@ -103,8 +103,9 @@ internal class ModEntry : Mod
     RegisterHudModuleSingleton<WeeklyRecipeModule>();
     RegisterHudModuleSingleton<ToolUpgradeReminderModule>();
     RegisterHudModuleSingleton<TravelingMerchantReminderModule>();
-    RegisterBaseModuleSingleton<ShopHarvestPriceModule>();
+    RegisterBaseModuleSingleton<GiftLockModule>();
     RegisterBaseModuleSingleton<PartialHeartFillModule>();
+    RegisterBaseModuleSingleton<ShopHarvestPriceModule>();
     RegisterBaseModuleSingleton<AnimalInteractModule>();
 
     _container.Verify();
