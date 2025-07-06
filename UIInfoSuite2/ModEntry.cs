@@ -104,6 +104,7 @@ internal class ModEntry : Mod
     RegisterPatchable<PatchBushShakeItemEvent>();
     RegisterPatchable<PatchRenderingMenuContentStep>();
     RegisterBaseModuleSingleton<MenuShortcutModule>();
+    RegisterHudModuleSingleton<ArtifactTrackerModule>();
     RegisterHudModuleSingleton<BirthdayReminderModule>();
     RegisterHudModuleSingleton<ConstructionTrackerModule>();
     RegisterHudModuleSingleton<DailyLuckModule>();
