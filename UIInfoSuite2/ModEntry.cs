@@ -63,6 +63,9 @@ internal class ModEntry : Mod
   {
     Instance = this;
     I18n.Init(helper.Translation);
+#if DEBUG
+    Harmony.DEBUG = true;
+#endif
 
     // Add Mod singletons to container
     _container.RegisterInstance(Helper);
@@ -203,7 +206,7 @@ internal class ModEntry : Mod
   private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
   {
     _container.GetInstance<ApiManager>().TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.5.0", true);
-    _container.GetInstance<ApiManager>().TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "0.1.0");
+    _container.GetInstance<ApiManager>().TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "1.0.1");
     _container.GetInstance<ApiManager>().TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
   }
 
