@@ -36,6 +36,11 @@ namespace UIInfoSuite2;
 
 internal class ModEntry : Mod
 {
+  private static readonly Type[] BucketTypes =
+  [
+    typeof(BaseModule), typeof(HudIconModule), typeof(IPatchable), typeof(IConfigurable)
+  ];
+
   private static SkipIntro _skipIntro; // Needed so GC won't throw away object with subscriptions
 
   private readonly Container _container = new();
@@ -103,35 +108,35 @@ internal class ModEntry : Mod
     _container.RegisterSingleton<FloatingTextManager>();
 
     // Set up empty registry sets
-    _container.Collection.Register<BaseModule>(Enumerable.Empty<Type>(), Lifestyle.Singleton);
-    _container.Collection.Register<HudIconModule>(Enumerable.Empty<Type>(), Lifestyle.Singleton);
-    _container.Collection.Register<IPatchable>(Enumerable.Empty<Type>(), Lifestyle.Singleton);
-    _container.Collection.Register<IConfigurable>(Enumerable.Empty<Type>(), Lifestyle.Singleton);
+    foreach (Type bucketType in BucketTypes)
+    {
+      _container.Collection.Register(bucketType, Enumerable.Empty<Type>(), Lifestyle.Singleton);
+    }
 
     // Register Modules
-    RegisterConfigurable<ConfigurableHudIconPositioning>();
-    RegisterConfigurable<ConfigurableDebugOptions>();
-    RegisterPatchable<PatchBushShakeItemEvent>();
-    RegisterPatchable<PatchRenderingMenuContentStep>();
-    RegisterPatchable<PatchMasteryXpGainEvent>();
-    RegisterBaseModuleSingleton<MenuShortcutModule>();
-    RegisterHudModuleSingleton<ArtifactTrackerModule>();
-    RegisterHudModuleSingleton<BirthdayReminderModule>();
-    RegisterHudModuleSingleton<ConstructionTrackerModule>();
-    RegisterHudModuleSingleton<DailyLuckModule>();
-    RegisterHudModuleSingleton<DailyWeatherModule>();
-    RegisterHudModuleSingleton<SeasonalForageDisplayModule>();
-    RegisterHudModuleSingleton<WeeklyRecipeModule>();
-    RegisterHudModuleSingleton<ToolUpgradeReminderModule>();
-    RegisterHudModuleSingleton<MerchantReminderModule>();
-    RegisterBaseModuleSingleton<GiftLockModule>();
-    RegisterBaseModuleSingleton<PartialHeartFillModule>();
-    RegisterBaseModuleSingleton<ShopHarvestPriceModule>();
-    RegisterBaseModuleSingleton<SocialPageFilterModule>();
-    RegisterBaseModuleSingleton<AnimalInteractModule>();
-    RegisterBaseModuleSingleton<ObjectEffectRangeModule>();
-    RegisterBaseModuleSingleton<ObjectInfoModule>();
-    RegisterBaseModuleSingleton<ExperienceModule>();
+    Register<ConfigurableHudIconPositioning>();
+    Register<ConfigurableDebugOptions>();
+    Register<PatchBushShakeItemEvent>();
+    Register<PatchRenderingMenuContentStep>();
+    Register<PatchMasteryXpGainEvent>();
+    Register<MenuShortcutModule>();
+    Register<ArtifactTrackerModule>();
+    Register<BirthdayReminderModule>();
+    Register<ConstructionTrackerModule>();
+    Register<DailyLuckModule>();
+    Register<DailyWeatherModule>();
+    Register<SeasonalForageDisplayModule>();
+    Register<WeeklyRecipeModule>();
+    Register<ToolUpgradeReminderModule>();
+    Register<MerchantReminderModule>();
+    Register<GiftLockModule>();
+    Register<PartialHeartFillModule>();
+    Register<ShopHarvestPriceModule>();
+    Register<SocialPageFilterModule>();
+    Register<AnimalInteractModule>();
+    Register<ObjectEffectRangeModule>();
+    Register<ObjectInfoModule>();
+    Register<ExperienceModule>();
 
     _container.Verify();
 
@@ -160,7 +165,7 @@ internal class ModEntry : Mod
     }
 
     // Recalculate the icon rows if necessary
-    GetSingleton<HudIconStorage>().MarkRowsDirty();
+    _container.GetInstance<HudIconStorage>().MarkRowsDirty();
 
     foreach (BaseModule module in GetAllModules())
     {
@@ -221,6 +226,21 @@ internal class ModEntry : Mod
     _container.GetInstance<ApiManager>().TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
   }
 
+#region Module Setup
+  private void Register<T>() where T : class
+  {
+    _container.RegisterSingleton<T>();
+
+    foreach (Type bucketType in BucketTypes)
+    {
+      if (bucketType.IsAssignableFrom(typeof(T)))
+      {
+        _container.Collection.Append(bucketType, typeof(T));
+      }
+    }
+  }
+#endregion
+
 #region Debug
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void DebugLog(string message, LogLevel level = LogLevel.Trace)
@@ -236,43 +256,6 @@ internal class ModEntry : Mod
 #if LAYOUT_DEBUG
     Instance.Monitor.Log(message, level);
 #endif
-  }
-#endregion
-
-#region Module Setup
-  private void RegisterPatchable<T>() where T : class, IPatchable
-  {
-    _container.Collection.Append<IPatchable, T>();
-  }
-
-  private void RegisterConfigurable<T>() where T : class, IConfigurable
-  {
-    _container.Collection.Append<IConfigurable, T>();
-  }
-
-  private void RegisterBaseModuleSingleton<T>(bool registerConfigurable = true, bool registerPatchable = true)
-    where T : BaseModule
-  {
-    _container.RegisterSingleton<T>();
-    _container.Collection.Append<BaseModule, T>();
-
-    // Check if T implements IPatchable using interface check
-    if (registerPatchable && typeof(IPatchable).IsAssignableFrom(typeof(T)))
-    {
-      _container.Collection.Append(typeof(IPatchable), typeof(T));
-    }
-
-    // Check if T implements IConfigurable using interface check
-    if (registerConfigurable && typeof(IConfigurable).IsAssignableFrom(typeof(T)))
-    {
-      _container.Collection.Append(typeof(IConfigurable), typeof(T));
-    }
-  }
-
-  private void RegisterHudModuleSingleton<T>() where T : HudIconModule
-  {
-    RegisterBaseModuleSingleton<T>();
-    _container.Collection.Append<HudIconModule, T>();
   }
 #endregion
 }
