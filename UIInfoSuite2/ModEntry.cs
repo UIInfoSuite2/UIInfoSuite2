@@ -28,6 +28,7 @@ using UIInfoSuite2.Infrastructure.Modules.MenuAdditions;
 using UIInfoSuite2.Infrastructure.Modules.MenuAdditions.MenuShortcuts;
 using UIInfoSuite2.Infrastructure.Modules.Overlay;
 using UIInfoSuite2.Infrastructure.Patches;
+using UIInfoSuite2.Infrastructure.Patches.ExtensibleItemTooltips;
 
 #if DEBUG
 [assembly: MetadataUpdateHandler(typeof(HotReloadService))]
@@ -117,6 +118,7 @@ internal class ModEntry : Mod
     // Register Modules
     Register<ConfigurableHudIconPositioning>();
     Register<ConfigurableDebugOptions>();
+    Register<ExtensibleItemTooltips>();
     Register<PatchBushShakeItemEvent>();
     Register<PatchRenderingMenuContentStep>();
     Register<PatchMasteryXpGainEvent>();
