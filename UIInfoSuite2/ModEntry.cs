@@ -26,6 +26,7 @@ using UIInfoSuite2.Infrastructure.Modules.Base;
 using UIInfoSuite2.Infrastructure.Modules.Hud;
 using UIInfoSuite2.Infrastructure.Modules.MenuAdditions;
 using UIInfoSuite2.Infrastructure.Modules.MenuAdditions.MenuShortcuts;
+using UIInfoSuite2.Infrastructure.Modules.MenuAdditions.ExtendedItemInfo;
 using UIInfoSuite2.Infrastructure.Modules.Overlay;
 using UIInfoSuite2.Infrastructure.Patches;
 using UIInfoSuite2.Infrastructure.Patches.ExtensibleItemTooltips;
@@ -132,6 +133,7 @@ internal class ModEntry : Mod
     Register<WeeklyRecipeModule>();
     Register<ToolUpgradeReminderModule>();
     Register<MerchantReminderModule>();
+    Register<ExtendedItemInfoModule>();
     Register<GiftLockModule>();
     Register<PartialHeartFillModule>();
     Register<ShopHarvestPriceModule>();

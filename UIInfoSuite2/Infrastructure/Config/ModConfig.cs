@@ -75,6 +75,9 @@ public sealed class ModConfig
   // Harvest price display for seeds
   public bool ShowHarvestPricesInShop { get; set; } = true;
 
+  // Extended Item information
+  public bool ShowExtendedItemInfo { get; set; } = true;
+
   // Bundle required items on mouse over
   public bool ShowItemsRequiredForBundles { get; set; } = true;
 

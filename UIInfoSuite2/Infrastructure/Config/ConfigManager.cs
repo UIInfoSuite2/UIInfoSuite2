@@ -252,20 +252,6 @@ public class ConfigManager : IDisposable
 
     // Objects
     AddGroupHeader(modConfigMenuApi, I18n.Gmcm_Group_ObjectTooltips); // "Object Tooltips"
-    modConfigMenuApi.AddBoolOption(
-      _manifest,
-      name: I18n.Gmcm_Modules_Tooltips_Crops_Enable,
-      tooltip: I18n.Gmcm_Modules_Tooltips_Crops_Enable_Tooltip,
-      getValue: () => Config.ShowCropTooltip,
-      setValue: value => Config.ShowCropTooltip = value
-    );
-    modConfigMenuApi.AddBoolOption(
-      _manifest,
-      name: I18n.Gmcm_Modules_Tooltips_Machines_Enable,
-      tooltip: I18n.Gmcm_Modules_Tooltips_Machines_Enable_Tooltip,
-      getValue: () => Config.ShowMachineTooltip,
-      setValue: value => Config.ShowMachineTooltip = value
-    );
 
     // Range Indicators
     AddGroupHeader(modConfigMenuApi, I18n.Gmcm_Group_RangeTooltips); // "Range Indicators"
@@ -293,16 +279,6 @@ public class ConfigManager : IDisposable
 
     // Menu Features Page
     modConfigMenuApi.AddPage(_manifest, "menu-features", I18n.Gmcm_Page_MenuFeatures_Title);
-
-    // Bundle Features
-    AddGroupHeader(modConfigMenuApi, I18n.Gmcm_Group_BundleFeatures); // "Bundle Features"
-    modConfigMenuApi.AddBoolOption(
-      _manifest,
-      name: I18n.Gmcm_Modules_Menus_Bundles_Enable,
-      tooltip: I18n.Gmcm_Modules_Menus_Bundles_Enable_Tooltip,
-      getValue: () => Config.ShowItemsRequiredForBundles,
-      setValue: value => Config.ShowItemsRequiredForBundles = value
-    );
 
     // Menu Shortcuts
     AddGroupHeader(modConfigMenuApi, I18n.Gmcm_Group_MenuShortcuts); // "Menu Shortcuts"

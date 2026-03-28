@@ -135,7 +135,7 @@
   "gmcm.group.rangeTooltips": "Range Indicators",
   "gmcm.group.socialFeatures": "Social Menu Features",
   "gmcm.group.shopFeatures": "Shop Features",
-  "gmcm.group.bundleFeatures": "Bundle Features",
+  "gmcm.group.extendedItemInfo": "Extended Item Information",
   "gmcm.group.menuShortcuts": "Menu Shortcuts",
   "gmcm.group.menuKeybinds": "Menu Shortcuts",
   "gmcm.group.rangeKeybinds": "Range Display Shortcuts",
@@ -245,9 +245,13 @@
   // Harvest Prices
   "gmcm.modules.menus.harvest-prices.enable": "Show harvest price in shop",
   "gmcm.modules.menus.harvest-prices.enable.tooltip": "Toggle an additional panel that shows crop harvest prices in shops",
-  // Bundle Info
-  "gmcm.modules.menus.bundles.enable": "Show bundle information",
-  "gmcm.modules.menus.bundles.enable.tooltip": "Show the name of a bundle when hovering over an item that can be donated",
+  // Extended Item Info
+  "gmcm.modules.menus.extended-item-info.enable": "Show Extended Item Info",
+  "gmcm.modules.menus.extended-item-info.enable.tooltip": "Enable / Disable all additions to an item's display menu",
+  "gmcm.modules.menus.extended-item-info.bundles.enable": "Show bundle information",
+  "gmcm.modules.menus.extended-item-info.bundles.enable.tooltip": "Show the name of a bundle when hovering over an item that can be donated",
+  //  "gmcm.modules.menus.extended-item-info.enable": "Show bundle information",
+  //  "gmcm.modules.menus.extended-item-info.enable.tooltip": "Show the name of a bundle when hovering over an item that can be donated",
   // Menu shortcuts
   "gmcm.modules.menus.shortcuts.enable": "Show menu shortcuts",
   "gmcm.modules.menus.shortcuts.enable.tooltip": "Show a panel of available menus for quick access",
