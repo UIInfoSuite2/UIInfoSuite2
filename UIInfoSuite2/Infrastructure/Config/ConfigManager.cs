@@ -84,6 +84,7 @@ public class ConfigManager : IDisposable
     List<IConfigurable> topLevelConfigs = [];
     Dictionary<string, List<IConfigurable>> configurations = new();
     var currentSection = "";
+    var currentSubHeader = "";
 
     foreach (IConfigurable configurable in ModEntry.GetContainerCollection<IConfigurable>())
     {
@@ -105,9 +106,10 @@ public class ConfigManager : IDisposable
     {
       currentSection = UpdateSection(currentSection, element);
       string? subHeader = element.GetSubHeader();
-      if (subHeader != null)
+      if (subHeader != null && subHeader != currentSubHeader)
       {
         modConfigMenuApi.AddSubHeader(_manifest, () => subHeader);
+        currentSubHeader = subHeader;
       }
 
       element.AddConfigOptions(modConfigMenuApi, _manifest);
@@ -116,6 +118,7 @@ public class ConfigManager : IDisposable
 
     // Reset section tracker
     currentSection = "";
+    currentSubHeader = "";
     // Add all sub-page links
     foreach (string pageKey in ConfigPageNames.Items)
     {
@@ -137,9 +140,10 @@ public class ConfigManager : IDisposable
         // Add elements
         currentSection = UpdateSection(currentSection, element);
         string? subHeader = element.GetSubHeader();
-        if (subHeader != null)
+        if (subHeader != null && subHeader != currentSubHeader)
         {
           modConfigMenuApi.AddSubHeader(_manifest, () => subHeader);
+          currentSubHeader = subHeader;
         }
 
         element.AddConfigOptions(modConfigMenuApi, _manifest);
