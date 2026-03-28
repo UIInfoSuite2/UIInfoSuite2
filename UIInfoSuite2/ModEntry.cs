@@ -102,6 +102,7 @@ internal class ModEntry : Mod
     // Register Modules
     RegisterConfigurable<ConfigurableHudIconPositioning>();
     RegisterConfigurable<ConfigurableDebugOptions>();
+    RegisterPatchable<PatchBushShakeItemEvent>();
     RegisterPatchable<PatchRenderingMenuContentStep>();
     RegisterBaseModuleSingleton<MenuShortcutModule>();
     RegisterHudModuleSingleton<BirthdayReminderModule>();
@@ -116,6 +117,7 @@ internal class ModEntry : Mod
     RegisterBaseModuleSingleton<PartialHeartFillModule>();
     RegisterBaseModuleSingleton<ShopHarvestPriceModule>();
     RegisterBaseModuleSingleton<AnimalInteractModule>();
+    RegisterBaseModuleSingleton<ObjectInfoModule>();
 
     _container.Verify();
 
@@ -201,8 +203,7 @@ internal class ModEntry : Mod
 
   private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
   {
-    _container.GetInstance<SoundHelper>().Initialize(Helper);
-    _container.GetInstance<ApiManager>().TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.2.1", true);
+    _container.GetInstance<ApiManager>().TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.5.0", true);
     _container.GetInstance<ApiManager>().TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "0.1.0");
   }
 

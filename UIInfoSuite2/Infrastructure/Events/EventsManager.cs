@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Menus;
+using StardewValley.TerrainFeatures;
 using UIInfoSuite2.Infrastructure.Events.Args;
 
 namespace UIInfoSuite2.Infrastructure.Events;
@@ -9,6 +10,7 @@ public class EventsManager
 {
   public event EventHandler<EventArgs>? OnConfigChange;
   public event EventHandler<RenderingMenuContentStepArgs>? OnRenderingMenuContentStep;
+  public event EventHandler<BushShakeItemArgs>? OnBushShakeItem;
 
   public void TriggerOnConfigChange()
   {
@@ -18,6 +20,11 @@ public class EventsManager
   public void TriggerOnRenderingMenuContentStep(IClickableMenu menu, SpriteBatch spriteBatch)
   {
     OnRenderingMenuContentStep?.Invoke(this, new RenderingMenuContentStepArgs(menu, spriteBatch));
+  }
+
+  public void TriggerBushShakeItem(Bush bush)
+  {
+    OnBushShakeItem?.Invoke(this, new BushShakeItemArgs(bush));
   }
 }
 

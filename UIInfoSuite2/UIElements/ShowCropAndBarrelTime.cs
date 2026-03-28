@@ -222,8 +222,7 @@ internal class ShowCropAndBarrelTime : IDisposable
 
     IEnumerable<string> formattedNames = fertilizerNames.OrderBy(kv => kv.Value)
       .ThenBy(kv => kv.Key)
-      .Select(
-        kv =>
+      .Select(kv =>
         {
           string quantityStr = kv.Value == 1 ? "" : $" x{kv.Value}";
           return $"{kv.Key}{quantityStr}";
@@ -547,7 +546,7 @@ internal class ShowCropAndBarrelTime : IDisposable
 
       if (ModEntry.GetSingleton<ApiManager>().GetApi(ModCompat.CustomBush, out ICustomBushApi? customBushApi))
       {
-        if (customBushApi.TryGetCustomBush(bush, out ICustomBush? customBushData, out string? id))
+        if (customBushApi.TryGetBush(bush, out ICustomBushData? customBushData, out string? id))
         {
           droppedItems.Clear();
           willProduceThisSeason = customBushData.Seasons.Contains(Game1.season);
@@ -562,9 +561,16 @@ internal class ShowCropAndBarrelTime : IDisposable
           inProductionPeriod = Game1.dayOfMonth >= customBushData.DayToBeginProducing;
           daysUntilProductionPeriod = inProductionPeriod ? 0 : 22 - Game1.dayOfMonth;
 
-          if (customBushData.GetShakeOffItemIfReady(bush, out ParsedItemData? shakeOffItemData))
+          if (customBushData.GetShakeOffItemIfReady(bush, out Item? shakeOffItem))
           {
-            droppedItems.Add(new PossibleDroppedItem(ConditionFutureResult.Today(), shakeOffItemData, 1.0f, id));
+            droppedItems.Add(
+              new PossibleDroppedItem(
+                ConditionFutureResult.Today(),
+                ItemRegistry.GetDataOrErrorItem(shakeOffItem.QualifiedItemId),
+                1.0f,
+                id
+              )
+            );
             isReadyToday = true;
           }
           else
