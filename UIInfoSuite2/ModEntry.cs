@@ -111,6 +111,7 @@ internal class ModEntry : Mod
     RegisterConfigurable<ConfigurableDebugOptions>();
     RegisterPatchable<PatchBushShakeItemEvent>();
     RegisterPatchable<PatchRenderingMenuContentStep>();
+    RegisterPatchable<PatchMasteryXpGainEvent>();
     RegisterBaseModuleSingleton<MenuShortcutModule>();
     RegisterHudModuleSingleton<ArtifactTrackerModule>();
     RegisterHudModuleSingleton<BirthdayReminderModule>();

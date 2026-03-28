@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
+using StardewValley;
 using StardewValley.Menus;
 using StardewValley.TerrainFeatures;
 using UIInfoSuite2.Infrastructure.Events.Args;
@@ -11,6 +12,7 @@ public class EventsManager
   public event EventHandler<EventArgs>? OnConfigChange;
   public event EventHandler<RenderingMenuContentStepArgs>? OnRenderingMenuContentStep;
   public event EventHandler<BushShakeItemArgs>? OnBushShakeItem;
+  public event EventHandler<MasteryXpGainArgs>? OnMasteryXpGain;
 
   public void TriggerOnConfigChange()
   {
@@ -25,6 +27,11 @@ public class EventsManager
   public void TriggerBushShakeItem(Bush bush)
   {
     OnBushShakeItem?.Invoke(this, new BushShakeItemArgs(bush));
+  }
+
+  public void TriggerOnMasteryXpGain(Farmer player, int skillType, int oldXp, int newXp)
+  {
+    OnMasteryXpGain?.Invoke(this, new MasteryXpGainArgs(player, skillType, oldXp, newXp));
   }
 }
 
