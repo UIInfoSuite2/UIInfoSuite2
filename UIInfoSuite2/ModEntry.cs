@@ -117,6 +117,7 @@ internal class ModEntry : Mod
     RegisterBaseModuleSingleton<PartialHeartFillModule>();
     RegisterBaseModuleSingleton<ShopHarvestPriceModule>();
     RegisterBaseModuleSingleton<AnimalInteractModule>();
+    RegisterBaseModuleSingleton<ObjectEffectRangeModule>();
     RegisterBaseModuleSingleton<ObjectInfoModule>();
 
     _container.Verify();

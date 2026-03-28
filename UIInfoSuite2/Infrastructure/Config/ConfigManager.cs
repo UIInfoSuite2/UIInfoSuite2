@@ -392,15 +392,15 @@ public class ConfigManager : IDisposable
     );
     modConfigMenuApi.AddKeybindList(
       _manifest,
-      name: I18n.Gmcm_Section_Keybindsd_ItemRange_ShowHover,
-      tooltip: I18n.Gmcm_Section_Keybindsd_ItemRange_ShowHover_Tooltip,
+      name: I18n.Gmcm_Section_Keybinds_ItemRange_ShowHover,
+      tooltip: I18n.Gmcm_Section_Keybinds_ItemRange_ShowHover_Tooltip,
       getValue: () => Config.ShowItemRangeHoverKeybind,
       setValue: value => Config.ShowItemRangeHoverKeybind = value
     );
     modConfigMenuApi.AddKeybindList(
       _manifest,
-      name: I18n.Gmcm_Section_Keybindsd_ItemRange_ShowAll,
-      tooltip: I18n.Gmcm_Section_Keybindsd_ItemRange_ShowAll_Tooltip,
+      name: I18n.Gmcm_Section_Keybinds_ItemRange_ShowAll,
+      tooltip: I18n.Gmcm_Section_Keybinds_ItemRange_ShowAll_Tooltip,
       getValue: () => Config.ShowAllItemRangesHoverKeybind,
       setValue: value => Config.ShowAllItemRangesHoverKeybind = value
     );
