@@ -48,6 +48,11 @@ internal class ModEntry : Mod
     return Instance._container.GetInstance<T>();
   }
 
+  public static Lazy<T> LazyGetSingleton<T>() where T : class
+  {
+    return new Lazy<T>(() => Instance._container.GetInstance<T>());
+  }
+
   public static IEnumerable<BaseModule> GetAllModules()
   {
     return GetContainerCollection<BaseModule>();
