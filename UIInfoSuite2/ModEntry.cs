@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
 using SimpleInjector;
@@ -23,7 +24,10 @@ using UIInfoSuite2.Infrastructure.Modules.Hud;
 using UIInfoSuite2.Infrastructure.Modules.MenuAdditions;
 using UIInfoSuite2.Infrastructure.Modules.Overlay;
 using UIInfoSuite2.Infrastructure.Patches;
-using UIInfoSuite2.UIElements.MenuShortcuts.MenuShortcutDisplay;
+
+#if DEBUG
+[assembly: MetadataUpdateHandler(typeof(HotReloadService))]
+#endif
 
 namespace UIInfoSuite2;
 
