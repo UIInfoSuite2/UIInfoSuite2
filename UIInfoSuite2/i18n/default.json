@@ -110,6 +110,8 @@
   "gmcm.page.menuFeatures.tooltip": "Configure additional menu features",
   "gmcm.page.keybinds.title": "Keybinds",
   "gmcm.page.keybinds.tooltip": "Configure keyboard shortcuts",
+  "gmcm.page.advanced.title": "Advanced Configuration",
+  "gmcm.page.advanced.tooltip": "Debugging tools mostly",
   // Sections
   "gmcm.section.hudGlobal.title": "Global HUD Settings",
   "gmcm.section.hudGlobal.tooltip": "Settings that affect all HUD icons",
@@ -252,4 +254,7 @@
   "gmcm.section.keybindsd.item-range.show-hover.tooltip": "Hold down this button to show the range of the machine/scarecrow your mouse is on",
   "gmcm.section.keybindsd.item-range.show-all": "Show all nearby item ranges",
   "gmcm.section.keybindsd.item-range.show-all.tooltip": "Hold this to show all nearby machine/scarecrow ranges"
+  // Advanced
+  "gmcm.section.advanced.draw-debug-bounds.enable": "Draw Debug Bounds",
+  "gmcm.section.advanced.draw-debug-bounds.enable.tooltip": "Draw debug bounds around containers showing padding & content"
 }

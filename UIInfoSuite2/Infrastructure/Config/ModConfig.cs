@@ -5,6 +5,10 @@ namespace UIInfoSuite2.Infrastructure.Config;
 
 public sealed class ModConfig
 {
+#region Advanced Config
+  public bool DrawDebugBounds { get; set; } = false;
+#endregion
+
 #region HUD Items Config
   // Icons
   public int HudIconsPerRow { get; set; } = 5;

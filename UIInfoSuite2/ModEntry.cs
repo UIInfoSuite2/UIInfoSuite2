@@ -1,4 +1,6 @@
-﻿using System;
+﻿// #define LAYOUT_DEBUG
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -98,6 +100,7 @@ internal class ModEntry : Mod
 
     // Register Modules
     RegisterConfigurable<ConfigurableHudIconPositioning>();
+    RegisterConfigurable<ConfigurableDebugOptions>();
     RegisterPatchable<PatchRenderingMenuContentStep>();
     RegisterBaseModuleSingleton<MenuShortcutDisplay>();
     RegisterHudModuleSingleton<BirthdayReminderModule>();
@@ -207,6 +210,14 @@ internal class ModEntry : Mod
   public static void DebugLog(string message, LogLevel level = LogLevel.Trace)
   {
 #if DEBUG
+    Instance.Monitor.Log(message, level);
+#endif
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void LayoutDebug(string message, LogLevel level = LogLevel.Trace)
+  {
+#if LAYOUT_DEBUG
     Instance.Monitor.Log(message, level);
 #endif
   }

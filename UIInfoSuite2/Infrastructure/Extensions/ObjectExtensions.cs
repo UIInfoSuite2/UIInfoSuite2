@@ -7,6 +7,33 @@ namespace UIInfoSuite2.Infrastructure.Extensions;
 
 public static class ObjectExtensions
 {
+  public static Rectangle GetHeadShot(this NPC npc)
+  {
+    int size;
+    if (!NpcHeadShotSize.TryGetValue(npc.Name, out size))
+    {
+      size = 4;
+    }
+
+    Rectangle mugShotSourceRect = npc.getMugShotSourceRect();
+    mugShotSourceRect.Height -= size / 2;
+    mugShotSourceRect.Y -= size / 2;
+    return mugShotSourceRect;
+  }
+  public static int OrZero(this int? nullable)
+  {
+    return nullable ?? 0;
+  }
+
+  public static float OrZero(this float? nullable)
+  {
+    return nullable ?? 0.0f;
+  }
+
+  public static double OrZero(this double? nullable)
+  {
+    return nullable ?? 0.0;
+  }
 #region Properties
   private static readonly Dictionary<string, int> NpcHeadShotSize = new()
   {
@@ -46,45 +73,4 @@ public static class ObjectExtensions
     { "Willy", 10 }
   };
 #endregion
-
-  public static Rectangle GetHeadShot(this NPC npc)
-  {
-    int size;
-    if (!NpcHeadShotSize.TryGetValue(npc.Name, out size))
-    {
-      size = 4;
-    }
-
-    Rectangle mugShotSourceRect = npc.getMugShotSourceRect();
-    mugShotSourceRect.Height -= size / 2;
-    mugShotSourceRect.Y -= size / 2;
-    return mugShotSourceRect;
-  }
-
-  public static string SafeGetString(this IModHelper helper, string key)
-  {
-    var result = string.Empty;
-
-    if (!string.IsNullOrEmpty(key) && helper != null)
-    {
-      result = helper.Translation.Get(key);
-    }
-
-    return result;
-  }
-
-  public static int OrZero(this int? nullable)
-  {
-    return nullable ?? 0;
-  }
-
-  public static float OrZero(this float? nullable)
-  {
-    return nullable ?? 0.0f;
-  }
-
-  public static double OrZero(this double? nullable)
-  {
-    return nullable ?? 0.0;
-  }
 }
