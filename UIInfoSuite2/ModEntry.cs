@@ -20,6 +20,7 @@ using UIInfoSuite2.Infrastructure.Helpers;
 using UIInfoSuite2.Infrastructure.Helpers.GameStateHelpers;
 using UIInfoSuite2.Infrastructure.Interfaces;
 using UIInfoSuite2.Infrastructure.Models;
+using UIInfoSuite2.Infrastructure.Models.Managers;
 using UIInfoSuite2.Infrastructure.Modules.Base;
 using UIInfoSuite2.Infrastructure.Modules.Hud;
 using UIInfoSuite2.Infrastructure.Modules.MenuAdditions;
@@ -99,6 +100,7 @@ internal class ModEntry : Mod
     _container.RegisterSingleton<EventsManager>();
     _container.RegisterSingleton<ConfigManager>();
     _container.RegisterSingleton<HudIconStorage>();
+    _container.RegisterSingleton<FloatingTextManager>();
 
     // Set up empty registry sets
     _container.Collection.Register<BaseModule>(Enumerable.Empty<Type>(), Lifestyle.Singleton);
@@ -188,6 +190,7 @@ internal class ModEntry : Mod
 
     _container.GetInstance<GameStateResolverCaches>().Clear();
     _container.GetInstance<HudIconStorage>().UnregisterEvents();
+    _container.GetInstance<FloatingTextManager>().UnregisterEvents();
   }
 
   private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)
@@ -199,6 +202,7 @@ internal class ModEntry : Mod
     }
 
     _container.GetInstance<HudIconStorage>().RegisterEvents();
+    _container.GetInstance<FloatingTextManager>().RegisterEvents();
 
     foreach (BaseModule module in GetAllModules())
     {
