@@ -24,6 +24,7 @@ using UIInfoSuite2.Infrastructure.Models;
 using UIInfoSuite2.Infrastructure.Modules.Base;
 using UIInfoSuite2.Infrastructure.Modules.Hud;
 using UIInfoSuite2.Infrastructure.Modules.MenuAdditions;
+using UIInfoSuite2.Infrastructure.Modules.MenuAdditions.MenuShortcuts;
 using UIInfoSuite2.Infrastructure.Modules.Overlay;
 using UIInfoSuite2.Infrastructure.Patches;
 
@@ -102,7 +103,7 @@ internal class ModEntry : Mod
     RegisterConfigurable<ConfigurableHudIconPositioning>();
     RegisterConfigurable<ConfigurableDebugOptions>();
     RegisterPatchable<PatchRenderingMenuContentStep>();
-    RegisterBaseModuleSingleton<MenuShortcutDisplay>();
+    RegisterBaseModuleSingleton<MenuShortcutModule>();
     RegisterHudModuleSingleton<BirthdayReminderModule>();
     RegisterHudModuleSingleton<ConstructionTrackerModule>();
     RegisterHudModuleSingleton<DailyLuckModule>();
@@ -125,7 +126,7 @@ internal class ModEntry : Mod
     helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
     helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
     _container.GetInstance<EventsManager>().OnConfigChange += (_, _) => ReloadModules();
-    _container.GetInstance<MenuShortcutDisplay>().Register(helper);
+    _container.GetInstance<MenuShortcutModule>().Register(helper);
 
     IconHandler.Handler.IsQuestLogPermanent = helper.ModRegistry.IsLoaded(ModCompat.DeluxeJournal);
 

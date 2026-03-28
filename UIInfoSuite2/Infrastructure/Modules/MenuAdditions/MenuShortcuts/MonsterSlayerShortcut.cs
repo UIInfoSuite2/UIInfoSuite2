@@ -5,11 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
-using UIInfoSuite2.Infrastructure;
 
-namespace UIInfoSuite2.UIElements.MenuShortcuts;
+namespace UIInfoSuite2.Infrastructure.Modules.MenuAdditions.MenuShortcuts;
 
-public class MonsterSlayerShortcut : BaseMenuShortcut
+internal class MonsterSlayerShortcut : MenuShortcutElement
 {
   private const float InitialHeight = 32;
   private const float InitialWidth = 38;
@@ -32,8 +31,6 @@ public class MonsterSlayerShortcut : BaseMenuShortcut
   );
 
   public MonsterSlayerShortcut(int finalHeight) : base(finalHeight) { }
-
-  public override int RenderedWidth => (int)(InitialWidth * ScaleFactor);
 
   protected override float ScaleFactor => RenderedHeight / InitialHeight;
 
