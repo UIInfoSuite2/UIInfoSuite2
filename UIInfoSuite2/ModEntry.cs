@@ -131,6 +131,7 @@ internal class ModEntry : Mod
     RegisterBaseModuleSingleton<AnimalInteractModule>();
     RegisterBaseModuleSingleton<ObjectEffectRangeModule>();
     RegisterBaseModuleSingleton<ObjectInfoModule>();
+    RegisterBaseModuleSingleton<ExperienceModule>();
 
     _container.Verify();
 
