@@ -144,6 +144,11 @@
   "gmcm.group.menuShortcuts": "Menu Shortcuts",
   "gmcm.group.menuKeybinds": "Menu Shortcuts",
   "gmcm.group.rangeKeybinds": "Range Display Shortcuts",
+  // Enums
+  "gmcm.enum.visibility-mode.always": "Always Shown",
+  "gmcm.enum.visibility-mode.key-toggle": "Toggle with Key",
+  "gmcm.enum.visibility-mode.key-hold": "Hold Key",
+  "gmcm.enum.visibility-mode.off": "Never",
   // HUD Overlays
   "gmcm.section.overlays.title": "HUD Overlays",
   "gmcm.section.overlays.title.tooltip": "Control HUD Overlays and icons displayed on your screen.",
