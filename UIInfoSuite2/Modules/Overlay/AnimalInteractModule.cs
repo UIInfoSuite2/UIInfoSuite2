@@ -11,7 +11,6 @@ using StardewValley;
 using StardewValley.Characters;
 using StardewValley.GameData.FarmAnimals;
 using StardewValley.ItemTypeDefinitions;
-using StardewValley.Locations;
 using StardewValley.Network;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
@@ -25,9 +24,11 @@ namespace UIInfoSuite2.Modules.Overlay;
 internal class AnimalInteractModule(
   IModEvents modEvents,
   IMonitor logger,
-  ConfigManager configManager
+  ConfigManager configManager,
+  IModRegistry modRegistry
 ) : BaseModule(modEvents, logger, configManager), IConfigurable
 {
+  private readonly bool _betterRanchingInstalled = modRegistry.IsLoaded(ModCompat.BetterRanching);
   private readonly PerScreen<float> _alpha = new();
   private readonly PerScreen<float> _yMovementPerDraw = new();
 
@@ -38,7 +39,11 @@ internal class AnimalInteractModule(
 
   public override void OnEnable()
   {
-    ModEvents.Display.RenderingHud += OnRenderingHud_DrawAnimalHasProduct;
+    if (!_betterRanchingInstalled)
+    {
+      ModEvents.Display.RenderingHud += OnRenderingHud_DrawAnimalHasProduct;
+    }
+
     ModEvents.Display.RenderingHud += OnRenderingHud_DrawNeedsPetTooltip;
     ModEvents.GameLoop.UpdateTicked += UpdateTicked;
   }
@@ -50,25 +55,15 @@ internal class AnimalInteractModule(
     ModEvents.GameLoop.UpdateTicked -= UpdateTicked;
   }
 
-  private static bool CanRenderAnimalOverlay(bool allowFarmhouse = false)
+  // No location type restriction - supports modded locations with animals (e.g. Grampleton Fields)
+  private static bool CanRenderAnimalOverlay()
   {
-    if (!UIElementUtils.IsRenderingNormally() || Game1.activeClickableMenu != null)
-    {
-      return false;
-    }
-
-    GameLocation? currentLoc = Game1.currentLocation;
-    if (currentLoc is FarmHouse && !allowFarmhouse)
-    {
-      return false;
-    }
-
-    return currentLoc is AnimalHouse or Farm;
+    return UIElementUtils.IsRenderingNormally() && Game1.activeClickableMenu == null;
   }
 
   private void OnRenderingHud_DrawNeedsPetTooltip(object? sender, RenderingHudEventArgs e)
   {
-    if (!CanRenderAnimalOverlay(true))
+    if (!CanRenderAnimalOverlay())
     {
       return;
     }
@@ -89,7 +84,7 @@ internal class AnimalInteractModule(
 
   private void UpdateTicked(object? sender, UpdateTickedEventArgs e)
   {
-    if (!CanRenderAnimalOverlay(true))
+    if (!CanRenderAnimalOverlay())
     {
       return;
     }
@@ -101,27 +96,26 @@ internal class AnimalInteractModule(
 
   private void DrawAnimalHasProduct()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation =
+    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> animalsInCurrentLocation =
       GetAnimalsInCurrentLocation();
-    if (animalsInCurrentLocation == null)
-    {
-      return;
-    }
 
     foreach ((_, FarmAnimal animal) in animalsInCurrentLocation.Pairs)
     {
       FarmAnimalHarvestType? harvestType = animal.GetHarvestType();
-      // Check to make sure the animal is grown, they have produce, and the produce is something that can be harvested
-      // directly from them.
+      FarmAnimalData? animalData = animal.GetAnimalData();
       string? currentProduce = animal.currentProduce.Value;
-      bool hasAllowedProduce = currentProduce != null && currentProduce != "430"; // Truffle
-      bool isGrown = animal.age.Value >= animal.GetAnimalData().DaysToMature;
       if (
-        harvestType == FarmAnimalHarvestType.DropOvernight
+        harvestType is FarmAnimalHarvestType.DropOvernight or FarmAnimalHarvestType.DigUp
         || animal.IsEmoting
-        || !hasAllowedProduce
-        || !isGrown
+        || currentProduce == null
+        || (animalData != null && animal.age.Value < animalData.DaysToMature)
       )
+      {
+        continue;
+      }
+
+      ParsedItemData? produceData = ItemRegistry.GetData(currentProduce);
+      if (produceData == null)
       {
         continue;
       }
@@ -152,7 +146,6 @@ internal class AnimalInteractModule(
         1f
       );
 
-      ParsedItemData? produceData = ItemRegistry.GetData(currentProduce);
       Rectangle sourceRectangle = produceData.GetSourceRect();
       Game1.spriteBatch.Draw(
         produceData.GetTexture(),
@@ -186,13 +179,8 @@ internal class AnimalInteractModule(
 
   private void DrawIconForFarmAnimals()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation =
+    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> animalsInCurrentLocation =
       GetAnimalsInCurrentLocation();
-
-    if (animalsInCurrentLocation == null)
-    {
-      return;
-    }
 
     foreach ((_, FarmAnimal animal) in animalsInCurrentLocation.Pairs)
     {
@@ -262,16 +250,10 @@ internal class AnimalInteractModule(
     return animalPosition;
   }
 
-  private static NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? GetAnimalsInCurrentLocation()
+  // Use location.animals directly to support modded non-farm locations (e.g. Grampleton Fields)
+  private static NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> GetAnimalsInCurrentLocation()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animals = Game1.currentLocation switch
-    {
-      AnimalHouse animalHouse => animalHouse.Animals,
-      Farm farm => farm.Animals,
-      _ => null,
-    };
-
-    return animals;
+    return Game1.currentLocation.animals;
   }
 
   private static IEnumerable<Pet> GetPetsInCurrentLocation()
