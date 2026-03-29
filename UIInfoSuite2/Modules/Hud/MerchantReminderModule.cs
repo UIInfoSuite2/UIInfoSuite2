@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Extensions;
+using StardewValley.Internal;
 using StardewValley.Menus;
 using StardewValley.Objects;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
+using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Managers;
 using UIInfoSuite2.Models.Icons;
 using UIInfoSuite2.Modules.Base;
@@ -18,7 +22,8 @@ internal class MerchantReminderModule(
   IModEvents modEvents,
   IMonitor logger,
   ConfigManager configManager,
-  HudIconManager iconManager
+  HudIconManager iconManager,
+  BundleHelper bundleHelper
 ) : HudIconModule(modEvents, logger, configManager, iconManager)
 {
   protected const string IconPrefix = "MerchantIcon";
@@ -52,8 +57,7 @@ internal class MerchantReminderModule(
     base.OnEnable();
     ModEvents.GameLoop.DayStarted += OnDayStarted;
     ModEvents.Display.MenuChanged += OnMenuChanged;
-    _travelerIcon.Value.UpdateMerchantIcon();
-    _booksellerIcon.Value.UpdateMerchantIcon();
+    UpdateIcons();
   }
 
   public override void OnDisable()
@@ -63,10 +67,14 @@ internal class MerchantReminderModule(
     base.OnDisable();
   }
 
+  public override void OnConfigChange()
+  {
+    UpdateIcons();
+  }
+
   private void OnDayStarted(object? sender, EventArgs e)
   {
-    _travelerIcon.Value.UpdateMerchantIcon();
-    _booksellerIcon.Value.UpdateMerchantIcon();
+    UpdateIcons();
   }
 
   private void OnMenuChanged(object? sender, MenuChangedEventArgs e)
@@ -84,7 +92,51 @@ internal class MerchantReminderModule(
 
     if (menu.ShopId == "Bookseller")
     {
-      _travelerIcon.Value.VisitedMerchant = true;
+      _booksellerIcon.Value.VisitedMerchant = true;
+    }
+  }
+
+  private void UpdateIcons()
+  {
+    _travelerIcon.Value.UpdateMerchantIcon();
+    _booksellerIcon.Value.UpdateMerchantIcon();
+    CheckForBundleItems();
+  }
+
+  private void CheckForBundleItems()
+  {
+    try
+    {
+      Dictionary<ISalable, ItemStockInformation> stock = ShopBuilder.GetShopStock("Traveler");
+      HashSet<string> bundles = [];
+      foreach (ISalable salable in stock.Keys)
+      {
+        if (salable is not Item item)
+        {
+          continue;
+        }
+
+        bundles.AddRange(
+          bundleHelper
+            .BundlesRequiringItem(item)
+            .Select(data => $"{item.DisplayName} ({data.Bundle.DisplayName})")
+        );
+      }
+
+      List<string> bundleList = bundles.ToList();
+      if (Config.MerchantAlwaysHasBundleItem)
+      {
+        bundleList.Add("Debug Leek (Spring Foraging)");
+      }
+      bundleList.Sort();
+      _travelerIcon.Value.SetBundleItems(bundleList);
+    }
+    catch (Exception e)
+    {
+      Logger.Log(
+        $"MerchantReminderModule: merchant stock check failed, {e.Message}",
+        LogLevel.Warn
+      );
     }
   }
 
@@ -136,6 +188,20 @@ internal class MerchantReminderModule(
       tooltip: I18n.Gmcm_Modules_Icons_Merchant_HideOnVisit_Tooltip,
       getValue: () => Config.HideMerchantIconWhenVisited,
       setValue: value => Config.HideMerchantIconWhenVisited = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleIcon,
+      tooltip: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleIcon_Tooltip,
+      getValue: () => Config.ShowMerchantBundleIcon,
+      setValue: value => Config.ShowMerchantBundleIcon = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleItems,
+      tooltip: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleItems_Tooltip,
+      getValue: () => Config.ShowMerchantBundleItems,
+      setValue: value => Config.ShowMerchantBundleItems = value
     );
   }
   #endregion

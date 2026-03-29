@@ -7,6 +7,7 @@ public sealed class ModConfig
 {
   #region Advanced Config
   public bool DrawDebugBounds { get; set; } = false;
+  public bool MerchantAlwaysHasBundleItem { get; set; } = false;
   #endregion
 
   #region HUD Items Config
@@ -37,6 +38,8 @@ public sealed class ModConfig
   public bool ShowTravelingMerchantIcon { get; set; } = true;
   public bool ShowBooksellerIcon { get; set; } = true;
   public bool HideMerchantIconWhenVisited { get; set; }
+  public bool ShowMerchantBundleIcon { get; set; } = true;
+  public bool ShowMerchantBundleItems { get; set; } = true;
 
   // Birthdays
   public bool ShowBirthdayIcon { get; set; } = true;

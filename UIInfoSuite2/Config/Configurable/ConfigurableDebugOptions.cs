@@ -27,5 +27,12 @@ public class ConfigurableDebugOptions(ConfigManager configManager) : BaseConfigu
       getValue: () => Config.DrawDebugBounds,
       setValue: value => Config.DrawDebugBounds = value
     );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Section_Advanced_MerchantAlwaysHasBundleItem_Enable,
+      tooltip: I18n.Gmcm_Section_Advanced_MerchantAlwaysHasBundleItem_Enable_Tooltip,
+      getValue: () => Config.MerchantAlwaysHasBundleItem,
+      setValue: value => Config.MerchantAlwaysHasBundleItem = value
+    );
   }
 }

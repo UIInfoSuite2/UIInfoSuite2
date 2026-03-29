@@ -60,6 +60,7 @@
   "TodaysRecipe": "Today's Recipe: ",
   "TravelingMerchantIsInTown": "Traveling merchant is in town!",
   "BooksellerIsInTown": "Bookseller is in town!",
+  "BundlesInStock": "Bundle items in stock!",
   "RainNextDay": "There will be rain tomorrow",
   "ThunderstormNextDay": "There will be a thunderstorm tomorrow",
   "SnowNextDay": "There will be snow tomorrow",
@@ -180,6 +181,10 @@
   "gmcm.modules.icons.merchant.bookseller.enable.tooltip": "Show when the bookseller is in town",
   "gmcm.modules.icons.merchant.hide-on-visit": "Hide merchant icon when visited",
   "gmcm.modules.icons.merchant.hide-on-visit.tooltip": "If the merchant icon should be hidden after visiting",
+  "gmcm.modules.icons.merchant.show-bundle-icon": "Show Bundle Notification",
+  "gmcm.modules.icons.merchant.show-bundle-icon.tooltip": "Display an additional icon if the merchant has an item that can be donated to a bundle",
+  "gmcm.modules.icons.merchant.show-bundle-items": "Show Bundle Items",
+  "gmcm.modules.icons.merchant.show-bundle-items.tooltip": "Show a list of items the merchant has available under the merchant icon",
   // Birthday Icons
   "gmcm.modules.icons.birthday.enable": "Show Townsfolk Birthday icons",
   "gmcm.modules.icons.birthday.enable.tooltip": "Toggle whether an NPC's icon is shown on their birthday",
@@ -276,5 +281,7 @@
   "gmcm.section.keybinds.item-range.show-all.tooltip": "Hold this to show all nearby machine/scarecrow ranges",
   // Advanced
   "gmcm.section.advanced.draw-debug-bounds.enable": "Draw Debug Bounds",
-  "gmcm.section.advanced.draw-debug-bounds.enable.tooltip": "Draw debug bounds around containers showing padding & content"
+  "gmcm.section.advanced.draw-debug-bounds.enable.tooltip": "Draw debug bounds around containers showing padding & content",
+  "gmcm.section.advanced.merchant-always-has-bundle-item.enable": "Merchant always has bundle item",
+  "gmcm.section.advanced.merchant-always-has-bundle-item.enable.tooltip": "The exclamation mark next to the merchant icon will always show"
 }
