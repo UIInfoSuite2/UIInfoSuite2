@@ -111,17 +111,20 @@ internal class AnimalInteractModule(
     foreach ((_, FarmAnimal animal) in animalsInCurrentLocation.Pairs)
     {
       FarmAnimalHarvestType? harvestType = animal.GetHarvestType();
-      // Check to make sure the animal is grown, they have produce, and the produce is something that can be harvested
-      // directly from them.
+      FarmAnimalData? animalData = animal.GetAnimalData();
       string? currentProduce = animal.currentProduce.Value;
-      bool hasAllowedProduce = currentProduce != null && currentProduce != "430"; // Truffle
-      bool isGrown = animal.age.Value >= animal.GetAnimalData().DaysToMature;
       if (
-        harvestType == FarmAnimalHarvestType.DropOvernight
+        harvestType is FarmAnimalHarvestType.DropOvernight or FarmAnimalHarvestType.DigUp
         || animal.IsEmoting
-        || !hasAllowedProduce
-        || !isGrown
+        || currentProduce == null
+        || (animalData != null && animal.age.Value < animalData.DaysToMature)
       )
+      {
+        continue;
+      }
+
+      ParsedItemData? produceData = ItemRegistry.GetData(currentProduce);
+      if (produceData == null)
       {
         continue;
       }
@@ -152,7 +155,6 @@ internal class AnimalInteractModule(
         1f
       );
 
-      ParsedItemData? produceData = ItemRegistry.GetData(currentProduce);
       Rectangle sourceRectangle = produceData.GetSourceRect();
       Game1.spriteBatch.Draw(
         produceData.GetTexture(),
