@@ -36,6 +36,7 @@ public sealed class ModConfig
   // Merchant
   public bool ShowMerchantIcons { get; set; } = true;
   public bool ShowTravelingMerchantIcon { get; set; } = true;
+  public bool ShowRsvTravelingMerchantIcon { get; set; } = true;
   public bool ShowBooksellerIcon { get; set; } = true;
   public bool HideMerchantIconWhenVisited { get; set; }
   public bool ShowMerchantBundleIcon { get; set; } = true;

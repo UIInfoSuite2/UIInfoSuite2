@@ -7,12 +7,13 @@ namespace UIInfoSuite2.Compatibility;
 
 public static class ModCompat
 {
-  public const string CustomBush = "furyx639.CustomBush";
-  public const string Gmcm = "spacechase0.GenericModConfigMenu";
-  public const string DeluxeJournal = "MolsonCAD.DeluxeJournal";
   public const string BetterGameMenu = "leclair.bettergamemenu";
-  public const string CloudySkies = "leclair.cloudyskies";
   public const string BetterRanching = "BetterRanching";
+  public const string CloudySkies = "leclair.cloudyskies";
+  public const string CustomBush = "furyx639.CustomBush";
+  public const string DeluxeJournal = "MolsonCAD.DeluxeJournal";
+  public const string Gmcm = "spacechase0.GenericModConfigMenu";
+  public const string RidgesideVillage = "Rafseazz.RidgesideVillage";
 }
 
 public class ApiManager(IMonitor logger)

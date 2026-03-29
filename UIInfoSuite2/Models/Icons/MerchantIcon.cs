@@ -4,7 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Locations;
+using UIInfoSuite2.Compatibility;
+using UIInfoSuite2.Extensions;
 using UIInfoSuite2.Layout.Measurement;
 using UIInfoSuite2.Models.Sprite;
 
@@ -12,22 +13,44 @@ namespace UIInfoSuite2.Models.Icons;
 
 internal class MerchantIcon : ClickableIcon
 {
-  private static readonly Vector2 _bundleNotifyIconOffset = new(27, 11);
-
-  // Keep the merchant icon texture alive for the entirety of the game so we don't have to worry about disposing
-  private static readonly Lazy<Texture2D> _merchantIconTexture = new(() =>
-    ModEntry.GetSingleton<IModHelper>().ModContent.Load<Texture2D>("assets/merchant.png")
-  );
-
   public enum Type
   {
     Traveler,
+    RsvTraveler,
     Bookseller,
   }
 
+  private const float _rsvHueShift = -60f;
+  private static readonly Vector2 _bundleNotifyIconOffset = new(27, 11);
+
+  // Keep the merchant icon texture alive for the entirety of the game so we don't have to worry about disposing
+  private static readonly Lazy<VariantTexture2D<Type>> _merchantIconTexture = new(() =>
+  {
+    var tex = ModEntry.GetSingleton<IModHelper>().ModContent.Load<Texture2D>("assets/merchant.png");
+    VariantTexture2D<Type> variantTexture = new(tex);
+    variantTexture.AddVariant(
+      Type.RsvTraveler,
+      t =>
+      {
+        var pixels = new Color[t.Width * t.Height];
+        t.GetData(pixels);
+
+        for (var i = 0; i < pixels.Length; i++)
+        {
+          if (pixels[i].A > 0)
+          {
+            pixels[i] = pixels[i].ShiftHue(_rsvHueShift);
+          }
+        }
+        t.SetData(pixels);
+      }
+    );
+    return variantTexture;
+  });
+
+  private bool _rsvLoaded;
   private readonly Type _merchantType;
 
-  private bool _merchantInTown;
   private readonly ShakingSprite _bundleIcon;
   private string _hoverText;
   private string _hoverTextWithBundleInfo = "";
@@ -48,36 +71,26 @@ internal class MerchantIcon : ClickableIcon
     switch (_merchantType)
     {
       case Type.Traveler:
-        _hoverText = I18n.TravelingMerchantIsInTown();
-        BaseTexture.Value = _merchantIconTexture.Value;
+        BaseTexture.Value = _merchantIconTexture.Value.BaseTexture;
+        SetSourceBounds(new Rectangle(0, 0, 20, 20));
+        break;
+      case Type.RsvTraveler:
+        BaseTexture.Value = _merchantIconTexture.Value.GetTexture(Type.RsvTraveler);
         SetSourceBounds(new Rectangle(0, 0, 20, 20));
         break;
       case Type.Bookseller:
-        _hoverText = I18n.BooksellerIsInTown();
         BaseTexture.Value = Game1.mouseCursors_1_6;
         SetSourceBounds(new Rectangle(5, 471, 23, 22));
         break;
       default:
         throw new ArgumentOutOfRangeException(nameof(merchantType));
     }
-
-    UpdateMerchantIcon();
+    _hoverText = DefaultHoverText();
   }
 
   public override string HoverText
   {
-    get
-    {
-      if (
-        _merchantType != Type.Traveler
-        || !Config.ShowMerchantBundleItems
-        || string.IsNullOrWhiteSpace(_bundleText)
-      )
-      {
-        return _hoverText;
-      }
-      return _hoverTextWithBundleInfo;
-    }
+    get => !ShouldShowBundleIcon() ? _hoverText : _hoverTextWithBundleInfo;
     set => _hoverText = FormatHoverText(value);
   }
 
@@ -86,12 +99,33 @@ internal class MerchantIcon : ClickableIcon
     return _merchantType switch
     {
       Type.Traveler => I18n.TravelingMerchantIsInTown(),
+      Type.RsvTraveler => I18n.RsvTravelingMerchantIsAtHike(),
       Type.Bookseller => I18n.BooksellerIsInTown(),
       _ => _hoverText,
     };
   }
 
+  public bool IsTraveler => _merchantType is Type.Traveler or Type.RsvTraveler;
+
+  public bool ConfigShowIcon()
+  {
+    return _merchantType switch
+    {
+      Type.Traveler => Config.ShowTravelingMerchantIcon,
+      Type.RsvTraveler => _rsvLoaded && Config.ShowRsvTravelingMerchantIcon,
+      Type.Bookseller => Config.ShowBooksellerIcon,
+      _ => true,
+    };
+  }
+
+  private bool ShouldShowBundleIcon()
+  {
+    return IsTraveler && Config.ShowMerchantBundleIcon && !string.IsNullOrWhiteSpace(_bundleText);
+  }
+
   public bool VisitedMerchant { get; set; }
+
+  public bool MerchantInTown { get; set; }
 
   public void SetBundleItems(List<string> bundleItems)
   {
@@ -106,31 +140,18 @@ internal class MerchantIcon : ClickableIcon
     );
   }
 
-  public void UpdateMerchantIcon()
+  public void ResetMerchantAvailability(bool isInTown)
   {
-    switch (_merchantType)
-    {
-      case Type.Traveler:
-        _merchantInTown = (
-          (Forest)Game1.getLocationFromName(nameof(Forest))
-        ).ShouldTravelingMerchantVisitToday();
-        break;
-      case Type.Bookseller:
-        // Town location has the bookseller bool private, so we'll just do it like they do it.
-        // No need to reflect if we don't have to.
-        _merchantInTown = Utility.getDaysOfBooksellerThisSeason().Contains(Game1.dayOfMonth);
-        break;
-    }
-
+    _rsvLoaded = ModEntry
+      .GetSingleton<IModHelper>()
+      .ModRegistry.IsLoaded(ModCompat.RidgesideVillage);
     VisitedMerchant = false;
+    MerchantInTown = isInTown;
   }
 
   protected override bool _ShouldDraw()
   {
-    if (
-      (_merchantType == Type.Bookseller && !Config.ShowBooksellerIcon)
-      || (_merchantType == Type.Traveler && !Config.ShowTravelingMerchantIcon)
-    )
+    if (!ConfigShowIcon())
     {
       return false;
     }
@@ -140,18 +161,14 @@ internal class MerchantIcon : ClickableIcon
       return false;
     }
 
-    return _merchantInTown && base._ShouldDraw();
+    return MerchantInTown && base._ShouldDraw();
   }
 
   public override void Draw(SpriteBatch batch)
   {
     base.Draw(batch);
 
-    if (
-      _merchantType != Type.Traveler
-      || !Config.ShowMerchantBundleIcon
-      || string.IsNullOrWhiteSpace(_bundleText)
-    )
+    if (!ShouldShowBundleIcon())
     {
       return;
     }
