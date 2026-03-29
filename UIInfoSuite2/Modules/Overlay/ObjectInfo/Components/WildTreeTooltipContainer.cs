@@ -23,6 +23,8 @@ internal class WildTreeTooltipContainer : LayoutContainer
     "UIIS2::UnknownTree",
     identifier: "TreeName"
   );
+
+  private bool _isUnknown = false;
   private Tree? _tree;
 
   public WildTreeTooltipContainer(Tree? tree = null)
@@ -87,6 +89,13 @@ internal class WildTreeTooltipContainer : LayoutContainer
     string stumpText = isStump ? $" ({I18n.Stump()})" : "";
     _treeNameElement.Text = $"{treeTypeName}{I18n.Tree()}{stumpText}";
 
+    if (_isUnknown)
+    {
+      _treeDetailsElement.IsHidden = false;
+      _treeDetailsElement.Text = I18n.Debug_NeedsTreeField();
+      return;
+    }
+
     if (Tree.growthStage.Value >= MaxTreeGrowthStage)
     {
       _treeDetailsElement.IsHidden = true;
@@ -98,8 +107,9 @@ internal class WildTreeTooltipContainer : LayoutContainer
   }
 
   // See: https://stardewvalleywiki.com/Trees
-  private static string GetTreeTypeName(Tree tree)
+  private string GetTreeTypeName(Tree tree)
   {
+    _isUnknown = false;
     switch (tree.treeType.Value)
     {
       case "1":
@@ -128,15 +138,16 @@ internal class WildTreeTooltipContainer : LayoutContainer
 
     // Try to get the tree from the wild tree data
     WildTreeData? data = tree.GetData();
-    if (data.CustomFields.TryGetValue(WildTreeNameField, out string? value))
+    if (data?.CustomFields?.TryGetValue(WildTreeNameField, out string? value) ?? false)
     {
       return TokenParser.ParseText(value);
     }
 
+    _isUnknown = true;
     ModEntry.Instance.Monitor.LogOnce(
       $"Unknown Tree \"{tree.treeType.Value}\"! If this is a modded tree, you should let the author know to implement the {WildTreeNameField} custom field for proper DisplayName support.",
       LogLevel.Alert
     );
-    return $"Unknown (#{tree.treeType.Value})";
+    return tree.treeType.Value;
   }
 }

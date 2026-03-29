@@ -100,6 +100,8 @@
   "GSQ.Requirements.Season": "Requires season to be {0}",
   "GSQ.Requirements.YearRange": "Requires Year {0} - {1}",
   "GSQ.Requirements.YearMinimum": "Requires Year {0}+",
+  // Debug
+  "Debug.NeedsTreeField": "Please have the mod author add a Wild Tree DisplayName",
   // Config Menu Options
   // Titles
   // Main Menu
