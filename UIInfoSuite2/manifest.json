@@ -5,7 +5,7 @@
   "Description": "Adds a useful information to the user interface. Based on Cdaragorn's excellent UI Info Suite.",
   "UniqueID": "UIInfoSuite.UIInfoSuite2",
   "EntryDll": "UIInfoSuite2.dll",
-  "MinimumApiVersion": "4.0.5",
+  "MinimumApiVersion": "4.1.0",
   "UpdateKeys": [
     "GitHub:Annosz/UIInfoSuite2",
     "Nexus:7098"
