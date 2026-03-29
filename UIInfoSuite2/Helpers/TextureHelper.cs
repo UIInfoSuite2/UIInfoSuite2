@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 
 namespace UIInfoSuite2.Helpers;
@@ -29,4 +30,49 @@ internal static class TextureHelper
   };
 
   public static readonly Rectangle OutlinedTextureBox = new(0, 256, 60, 60);
+
+  public static void DrawOutlinedSprite(
+    SpriteBatch spriteBatch,
+    Texture2D texture,
+    Vector2 position,
+    Rectangle sourceRectangle,
+    Color? color = null,
+    float rotation = 0f,
+    Vector2? origin = null,
+    float scale = 1.0f,
+    SpriteEffects effects = SpriteEffects.None,
+    float layerDepth = 1.0f,
+    float outlineSize = 2f,
+    Color? outlineColor = null
+  )
+  {
+    Vector2 resolvedOrigin = origin ?? Vector2.Zero;
+    Color resolvedColor = color ?? Color.White * 0.9f;
+    Color resolvedOutlineColor = outlineColor ?? (Color.Black * 0.5f);
+
+    float outlineScale = scale + outlineSize / sourceRectangle.Width;
+    var outlineOffset = new Vector2(outlineSize / 2f, outlineSize / 2f);
+    spriteBatch.Draw(
+      texture,
+      position - outlineOffset,
+      sourceRectangle,
+      resolvedOutlineColor,
+      rotation,
+      resolvedOrigin,
+      outlineScale,
+      effects,
+      1f
+    );
+    spriteBatch.Draw(
+      texture,
+      position,
+      sourceRectangle,
+      resolvedColor,
+      rotation,
+      resolvedOrigin,
+      scale,
+      effects,
+      layerDepth
+    );
+  }
 }

@@ -7,6 +7,7 @@ using StardewValley;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Objects;
 using UIInfoSuite2.Extensions;
+using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Layout;
 using UIInfoSuite2.Layout.Measurement;
 using UIInfoSuite2.Models.Tooltip.Base;
@@ -48,18 +49,6 @@ internal class MachineTooltipContainer : LayoutContainer
     set => SetMachine(value);
   }
 
-  private static bool IsTrackableMachine(SObject? machine)
-  {
-    if (machine == null)
-    {
-      return false;
-    }
-
-    bool isValidMachineType = machine.Name != "Heater";
-
-    return machine.IsWorking() && isValidMachineType;
-  }
-
   [SuppressMessage("SMAPI.CommonErrors", "AvoidNetField:Avoid Netcode types when possible")]
   private void SetMachine(SObject? newMachine)
   {
@@ -68,7 +57,7 @@ internal class MachineTooltipContainer : LayoutContainer
       return;
     }
 
-    if (!IsTrackableMachine(newMachine))
+    if (!MachineHelper.IsTrackableMachine(newMachine))
     {
       newMachine = null;
     }
@@ -98,7 +87,7 @@ internal class MachineTooltipContainer : LayoutContainer
       return;
     }
 
-    if (_machine != null && !IsTrackableMachine(_machine))
+    if (_machine != null && !MachineHelper.IsTrackableMachine(_machine))
     {
       SetMachine(null);
       return;

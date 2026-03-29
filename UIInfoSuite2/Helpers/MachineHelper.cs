@@ -4,12 +4,44 @@ using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Extensions;
 using StardewValley.GameData.Buildings;
+using StardewValley.ItemTypeDefinitions;
 using StardewValley.Objects;
+using UIInfoSuite2.Extensions;
 
 namespace UIInfoSuite2.Helpers;
 
+using SObject = Object;
+
 public static class MachineHelper
 {
+  public static bool IsTrackableMachine(SObject? machine)
+  {
+    if (machine == null)
+    {
+      return false;
+    }
+
+    bool isValidMachineType = machine.Name != "Heater";
+
+    return machine.IsWorking() && isValidMachineType;
+  }
+
+  public static ParsedItemData? GetItemBeingProcessed(SObject machine)
+  {
+    // Prefer the input item (preservedParentSheetIndex) over the output (heldObject).
+    // For Wine/Juice/Jelly/Pickles, this shows the original fruit/vegetable instead of the output.
+    // For machines without a preserved parent (Furnace, etc.), fall back to the output item.
+    SObject heldObject = machine.heldObject.Value;
+    string? preservedId = heldObject.preservedParentSheetIndex.Value;
+
+    if (string.IsNullOrEmpty(preservedId))
+    {
+      return ItemRegistry.GetData(heldObject.QualifiedItemId);
+    }
+
+    return ItemRegistry.GetData("(O)" + preservedId) ?? ItemRegistry.GetData(preservedId);
+  }
+
   // Welcome to the fun section: Stuff I stole from Pathoschild
   // https://github.com/Pathoschild/StardewMods
 

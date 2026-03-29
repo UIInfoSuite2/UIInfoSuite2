@@ -136,6 +136,7 @@
   "gmcm.group.seasonalForage": "Seasonal Forage",
   "gmcm.group.otherIcons": "Other Icons",
   "gmcm.group.animalTooltips": "Animal Tooltips",
+  "gmcm.group.object-contents-icons": "Object Contents Icons",
   "gmcm.group.objectTooltips": "Object Tooltips",
   "gmcm.group.rangeTooltips": "Range Indicators",
   "gmcm.group.socialFeatures": "Social Menu Features",
@@ -144,6 +145,11 @@
   "gmcm.group.menuShortcuts": "Menu Shortcuts",
   "gmcm.group.menuKeybinds": "Menu Shortcuts",
   "gmcm.group.rangeKeybinds": "Range Display Shortcuts",
+  // Enums
+  "gmcm.enum.visibility-mode.always": "Always Shown",
+  "gmcm.enum.visibility-mode.key-toggle": "Toggle with Key",
+  "gmcm.enum.visibility-mode.key-hold": "Hold Key",
+  "gmcm.enum.visibility-mode.off": "Never",
   // HUD Overlays
   "gmcm.section.overlays.title": "HUD Overlays",
   "gmcm.section.overlays.title.tooltip": "Control HUD Overlays and icons displayed on your screen.",
@@ -240,6 +246,12 @@
   // Machines
   "gmcm.modules.tooltips.machines.enable": "Show tooltip for machines",
   "gmcm.modules.tooltips.machines.enable.tooltip": "Toggle whether a tooltip is shown when hovering over machines",
+  "gmcm.modules.tooltips.machines.object-contents.mode": "Show Processing Icons",
+  "gmcm.modules.tooltips.machines.object-contents.mode.tooltip": "Show an icon indicating what the machine is currently processing",
+  "gmcm.modules.tooltips.machines.object-contents.keybind": "Processing Icons Keybind",
+  "gmcm.modules.tooltips.machines.object-contents.keybind.tooltip": "The keybind to toggle or show the processing icons",
+  "gmcm.modules.tooltips.machines.object-contents.fish-ponds": "Show Fish in Ponds",
+  "gmcm.modules.tooltips.machines.object-contents.fish-ponds.tooltip": "Show an icon for fish in ponds",
   // Ranges
   "gmcm.modules.tooltips.ranges.enable": "Show machine range",
   "gmcm.modules.tooltips.ranges.enable.tooltip": "Toggle if the range for scarecrows and sprinklers should be shown",
