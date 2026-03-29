@@ -10,7 +10,6 @@ using SimpleInjector;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
-using UIInfoSuite2.AdditionalFeatures;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Compatibility.CustomBush;
 using UIInfoSuite2.Infrastructure.Config;
@@ -44,7 +43,6 @@ internal class ModEntry : Mod
     typeof(BaseModule), typeof(HudIconModule), typeof(IPatchable), typeof(IConfigurable)
   ];
 
-  private static SkipIntro _skipIntro; // Needed so GC won't throw away object with subscriptions
 
   private readonly Container _container = new();
 
@@ -144,8 +142,6 @@ internal class ModEntry : Mod
     Register<ExperienceModule>();
 
     _container.Verify();
-
-    _skipIntro = new SkipIntro(helper.Events);
 
     helper.Events.GameLoop.GameLaunched += OnGameLaunched;
     helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
