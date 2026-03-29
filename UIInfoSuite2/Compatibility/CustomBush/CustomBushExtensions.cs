@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using StardewValley;
 using StardewValley.TerrainFeatures;
-using UIInfoSuite2.Infrastructure.Extensions;
-using UIInfoSuite2.Infrastructure.Helpers;
+using UIInfoSuite2.Extensions;
+using UIInfoSuite2.Helpers;
 
 namespace UIInfoSuite2.Compatibility.CustomBush;
 

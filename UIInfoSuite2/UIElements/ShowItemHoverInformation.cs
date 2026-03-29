@@ -10,9 +10,9 @@ using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Tools;
-using UIInfoSuite2.Infrastructure;
-using UIInfoSuite2.Infrastructure.Extensions;
-using UIInfoSuite2.Infrastructure.Helpers;
+using UIInfoSuite2.Extensions;
+using UIInfoSuite2.Helpers;
+using UIInfoSuite2.Utilities;
 using Object = StardewValley.Object;
 
 namespace UIInfoSuite2.UIElements;

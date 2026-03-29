@@ -12,23 +12,22 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Compatibility.CustomBush;
-using UIInfoSuite2.Infrastructure.Config;
-using UIInfoSuite2.Infrastructure.Config.Configurable;
-using UIInfoSuite2.Infrastructure.DebugMenu;
-using UIInfoSuite2.Infrastructure.Events;
-using UIInfoSuite2.Infrastructure.Helpers;
-using UIInfoSuite2.Infrastructure.Helpers.GameStateHelpers;
-using UIInfoSuite2.Infrastructure.Interfaces;
-using UIInfoSuite2.Infrastructure.Models;
-using UIInfoSuite2.Infrastructure.Models.Managers;
-using UIInfoSuite2.Infrastructure.Modules.Base;
-using UIInfoSuite2.Infrastructure.Modules.Hud;
-using UIInfoSuite2.Infrastructure.Modules.MenuAdditions;
-using UIInfoSuite2.Infrastructure.Modules.MenuAdditions.MenuShortcuts;
-using UIInfoSuite2.Infrastructure.Modules.MenuAdditions.ExtendedItemInfo;
-using UIInfoSuite2.Infrastructure.Modules.Overlay;
-using UIInfoSuite2.Infrastructure.Patches;
-using UIInfoSuite2.Infrastructure.Patches.ExtensibleItemTooltips;
+using UIInfoSuite2.Config;
+using UIInfoSuite2.Config.Configurable;
+using UIInfoSuite2.Helpers;
+using UIInfoSuite2.Helpers.GameStateHelpers;
+using UIInfoSuite2.Interfaces;
+using UIInfoSuite2.Layout.DebugMenu;
+using UIInfoSuite2.Managers;
+using UIInfoSuite2.Modules.Base;
+using UIInfoSuite2.Modules.Hud;
+using UIInfoSuite2.Modules.MenuAdditions;
+using UIInfoSuite2.Modules.MenuAdditions.ExtendedItemInfo;
+using UIInfoSuite2.Modules.MenuAdditions.MenuShortcuts;
+using UIInfoSuite2.Modules.Overlay;
+using UIInfoSuite2.Modules.Overlay.ObjectInfo;
+using UIInfoSuite2.Patches;
+using UIInfoSuite2.Patches.ExtensibleItemTooltips;
 
 #if DEBUG
 [assembly: MetadataUpdateHandler(typeof(HotReloadService))]
@@ -105,7 +104,7 @@ internal class ModEntry : Mod
     _container.RegisterSingleton<ApiManager>();
     _container.RegisterSingleton<EventsManager>();
     _container.RegisterSingleton<ConfigManager>();
-    _container.RegisterSingleton<HudIconStorage>();
+    _container.RegisterSingleton<HudIconManager>();
     _container.RegisterSingleton<FloatingTextManager>();
 
     // Set up empty registry sets
@@ -181,7 +180,7 @@ internal class ModEntry : Mod
     }
 
     // Recalculate the icon rows if necessary
-    _container.GetInstance<HudIconStorage>().MarkRowsDirty();
+    _container.GetInstance<HudIconManager>().MarkRowsDirty();
 
     foreach (BaseModule module in GetAllModules())
     {
@@ -211,7 +210,7 @@ internal class ModEntry : Mod
     }
 
     _container.GetInstance<GameStateResolverCaches>().Clear();
-    _container.GetInstance<HudIconStorage>().UnregisterEvents();
+    _container.GetInstance<HudIconManager>().UnregisterEvents();
     _container.GetInstance<FloatingTextManager>().UnregisterEvents();
   }
 
@@ -223,7 +222,7 @@ internal class ModEntry : Mod
       return;
     }
 
-    _container.GetInstance<HudIconStorage>().RegisterEvents();
+    _container.GetInstance<HudIconManager>().RegisterEvents();
     _container.GetInstance<FloatingTextManager>().RegisterEvents();
 
     foreach (BaseModule module in GetAllModules())

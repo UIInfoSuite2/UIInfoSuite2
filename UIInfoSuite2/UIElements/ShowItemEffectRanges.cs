@@ -10,8 +10,8 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Network;
-using UIInfoSuite2.Infrastructure.Config;
-using UIInfoSuite2.Infrastructure.Modules.Base;
+using UIInfoSuite2.Config;
+using UIInfoSuite2.Modules.Base;
 using Object = StardewValley.Object;
 
 namespace UIInfoSuite2.UIElements;
