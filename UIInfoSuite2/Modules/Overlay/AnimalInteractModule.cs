@@ -11,7 +11,6 @@ using StardewValley;
 using StardewValley.Characters;
 using StardewValley.GameData.FarmAnimals;
 using StardewValley.ItemTypeDefinitions;
-using StardewValley.Locations;
 using StardewValley.Network;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
@@ -50,25 +49,15 @@ internal class AnimalInteractModule(
     ModEvents.GameLoop.UpdateTicked -= UpdateTicked;
   }
 
-  private static bool CanRenderAnimalOverlay(bool allowFarmhouse = false)
+  // No location type restriction - supports modded locations with animals (e.g. Grampleton Fields)
+  private static bool CanRenderAnimalOverlay()
   {
-    if (!UIElementUtils.IsRenderingNormally() || Game1.activeClickableMenu != null)
-    {
-      return false;
-    }
-
-    GameLocation? currentLoc = Game1.currentLocation;
-    if (currentLoc is FarmHouse && !allowFarmhouse)
-    {
-      return false;
-    }
-
-    return currentLoc is AnimalHouse or Farm;
+    return UIElementUtils.IsRenderingNormally() && Game1.activeClickableMenu == null;
   }
 
   private void OnRenderingHud_DrawNeedsPetTooltip(object? sender, RenderingHudEventArgs e)
   {
-    if (!CanRenderAnimalOverlay(true))
+    if (!CanRenderAnimalOverlay())
     {
       return;
     }
@@ -89,7 +78,7 @@ internal class AnimalInteractModule(
 
   private void UpdateTicked(object? sender, UpdateTickedEventArgs e)
   {
-    if (!CanRenderAnimalOverlay(true))
+    if (!CanRenderAnimalOverlay())
     {
       return;
     }
@@ -101,12 +90,8 @@ internal class AnimalInteractModule(
 
   private void DrawAnimalHasProduct()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation =
+    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> animalsInCurrentLocation =
       GetAnimalsInCurrentLocation();
-    if (animalsInCurrentLocation == null)
-    {
-      return;
-    }
 
     foreach ((_, FarmAnimal animal) in animalsInCurrentLocation.Pairs)
     {
@@ -188,13 +173,8 @@ internal class AnimalInteractModule(
 
   private void DrawIconForFarmAnimals()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation =
+    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> animalsInCurrentLocation =
       GetAnimalsInCurrentLocation();
-
-    if (animalsInCurrentLocation == null)
-    {
-      return;
-    }
 
     foreach ((_, FarmAnimal animal) in animalsInCurrentLocation.Pairs)
     {
@@ -264,16 +244,10 @@ internal class AnimalInteractModule(
     return animalPosition;
   }
 
-  private static NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? GetAnimalsInCurrentLocation()
+  // Use location.animals directly to support modded non-farm locations (e.g. Grampleton Fields)
+  private static NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>> GetAnimalsInCurrentLocation()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animals = Game1.currentLocation switch
-    {
-      AnimalHouse animalHouse => animalHouse.Animals,
-      Farm farm => farm.Animals,
-      _ => null,
-    };
-
-    return animals;
+    return Game1.currentLocation.animals;
   }
 
   private static IEnumerable<Pet> GetPetsInCurrentLocation()
