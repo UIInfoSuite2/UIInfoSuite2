@@ -1,0 +1,12 @@
+﻿<Solution>
+  <Folder Name="/root/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path=".gitattributes" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/root/.github/">
+    <File Path=".github/workflows/build.yml" />
+  </Folder>
+  <Project Path="UIInfoSuite2/UIInfoSuite2.csproj" />
+</Solution>

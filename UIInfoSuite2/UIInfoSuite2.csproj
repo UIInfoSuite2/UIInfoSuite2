@@ -1,34 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>2.3.7</Version>
+    <Version>3.0.0-alpha</Version>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ModZipPath>$(SolutionDir)/Releases</ModZipPath>
-    <BundleExtraAssemblies>ThirdParty</BundleExtraAssemblies>
-    <EnableHarmony>true</EnableHarmony>
     <LangVersion>preview</LangVersion>
-
-    <TranslationClassBuilder_AddGetByKey>true</TranslationClassBuilder_AddGetByKey>
-
-    <Configurations>Debug;Release</Configurations>
-
-    <Platforms>AnyCPU</Platforms>
+    <Nullable>enable</Nullable>
+    <EnableHarmony>true</EnableHarmony>
+    <BundleExtraAssemblies>ThirdParty</BundleExtraAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-
-    <ModZipPath>$(SolutionDir)/DebugBuilds</ModZipPath>
+  <PropertyGroup>
+    <TranslationClassBuilder_AddGetByKey>true</TranslationClassBuilder_AddGetByKey>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0"/>
-    <PackageReference Include="Pathoschild.Stardew.ModTranslationClassBuilder" Version="2.2.1"/>
-    <PackageReference Include="SimpleInjector" Version="5.5.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
+    <PackageReference Include="Pathoschild.Stardew.ModTranslationClassBuilder" Version="2.2.1" />
+    <PackageReference Include="SimpleInjector" Version="5.5.0" />
   </ItemGroup>
 
-  <Import Project="UIInfoSuite2.csproj.local" Condition="Exists('UIInfoSuite2.csproj.local')"/>
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
+
+  <Import Project="stardewvalley.targets" Condition="Exists('stardewvalley.targets')" />
+
+  <!-- Clean deployed assets before SMAPI deploy to prevent stale files from lingering -->
+  <Target
+    Name="CleanDeployedAssets"
+    BeforeTargets="AfterBuild"
+    Condition="'$(EnableModDeploy)' != 'false' AND Exists('$(GameModsPath)/$(ModFolderName)/assets')"
+  >
+    <ItemGroup>
+      <DeployedAssets Include="$(GameModsPath)/$(ModFolderName)/assets/**/*" />
+    </ItemGroup>
+    <Delete Files="@(DeployedAssets)" />
+  </Target>
 </Project>
