@@ -105,6 +105,7 @@ internal class ModEntry : Mod
     _container.RegisterSingleton<BundleHelper>();
     _container.RegisterSingleton<DropsHelper>();
     _container.RegisterSingleton<SoundHelper>();
+    _container.RegisterSingleton<WorldHelper>();
 
     // Set up Managers
     _container.RegisterSingleton<ApiManager>();
