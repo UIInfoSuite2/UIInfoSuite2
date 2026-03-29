@@ -24,9 +24,11 @@ namespace UIInfoSuite2.Modules.Overlay;
 internal class AnimalInteractModule(
   IModEvents modEvents,
   IMonitor logger,
-  ConfigManager configManager
+  ConfigManager configManager,
+  IModRegistry modRegistry
 ) : BaseModule(modEvents, logger, configManager), IConfigurable
 {
+  private readonly bool _betterRanchingInstalled = modRegistry.IsLoaded(ModCompat.BetterRanching);
   private readonly PerScreen<float> _alpha = new();
   private readonly PerScreen<float> _yMovementPerDraw = new();
 
@@ -37,7 +39,11 @@ internal class AnimalInteractModule(
 
   public override void OnEnable()
   {
-    ModEvents.Display.RenderingHud += OnRenderingHud_DrawAnimalHasProduct;
+    if (!_betterRanchingInstalled)
+    {
+      ModEvents.Display.RenderingHud += OnRenderingHud_DrawAnimalHasProduct;
+    }
+
     ModEvents.Display.RenderingHud += OnRenderingHud_DrawNeedsPetTooltip;
     ModEvents.GameLoop.UpdateTicked += UpdateTicked;
   }

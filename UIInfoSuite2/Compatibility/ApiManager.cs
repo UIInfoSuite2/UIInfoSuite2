@@ -12,6 +12,7 @@ public static class ModCompat
   public const string DeluxeJournal = "MolsonCAD.DeluxeJournal";
   public const string BetterGameMenu = "leclair.bettergamemenu";
   public const string CloudySkies = "leclair.cloudyskies";
+  public const string BetterRanching = "BetterRanching";
 }
 
 public class ApiManager(IMonitor logger)
