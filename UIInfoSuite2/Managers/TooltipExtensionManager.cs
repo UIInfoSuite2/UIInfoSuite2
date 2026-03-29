@@ -39,7 +39,7 @@ internal enum ContainerPatchPoint
   AfterDescription,
   AfterBuffs,
   BeforeFooter,
-  AfterFooter
+  AfterFooter,
 }
 
 internal class TooltipExtensionManager
@@ -49,12 +49,15 @@ internal class TooltipExtensionManager
   [
     ContainerPatchPoint.BeforeTitle,
     ContainerPatchPoint.AfterTitle,
-    ContainerPatchPoint.AfterCategory
+    ContainerPatchPoint.AfterCategory,
   ];
 
   public static readonly ContainerPatchPoint[] AllPoints = Enum.GetValues<ContainerPatchPoint>();
 
-  private static readonly Dictionary<ContainerPatchPoint, List<TooltipExtensionContainer>> Containers = new();
+  private static readonly Dictionary<
+    ContainerPatchPoint,
+    List<TooltipExtensionContainer>
+  > Containers = new();
 
   /// <summary>
   ///   Helper field for what item we're hovering over in our inventory while in a ShopMenu.
@@ -122,28 +125,31 @@ internal class TooltipExtensionManager
   private static int SumHeight(IEnumerable<ContainerPatchPoint> points)
   {
     return points.Sum(p =>
-      {
-        IEnumerable<TooltipExtensionContainer> containers = GetContainers(p);
-        return containers.Sum(c => c.Bounds.Height);
-      }
-    );
+    {
+      IEnumerable<TooltipExtensionContainer> containers = GetContainers(p);
+      return containers.Sum(c => c.Bounds.Height);
+    });
   }
 
   public static int MaxWidth(IEnumerable<ContainerPatchPoint> points)
   {
     return points.Max(p =>
-      {
-        IEnumerable<TooltipExtensionContainer> containers = GetContainers(p);
-        return containers.Select(c => c.Bounds.Width).DefaultIfEmpty(0).Max();
-      }
-    );
+    {
+      IEnumerable<TooltipExtensionContainer> containers = GetContainers(p);
+      return containers.Select(c => c.Bounds.Width).DefaultIfEmpty(0).Max();
+    });
   }
 
   // ── Transpiler-invoked ─────────────────────────────────────────────────────
 
   /// Called just before position calculation.
   /// Respects overrides: if a dimension is externally fixed we leave it alone.
-  public static void AdjustLayout(ref int startingHeight, ref int num1, int boxWidthOverride, int boxHeightOverride)
+  public static void AdjustLayout(
+    ref int startingHeight,
+    ref int num1,
+    int boxWidthOverride,
+    int boxHeightOverride
+  )
   {
     if (boxHeightOverride == -1)
     {

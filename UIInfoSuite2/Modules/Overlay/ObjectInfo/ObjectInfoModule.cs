@@ -26,7 +26,8 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
     IMonitor logger,
     ConfigManager configManager,
     EventsManager eventsManager
-  ) : base(modEvents, logger, configManager)
+  )
+    : base(modEvents, logger, configManager)
   {
     _eventsManager = eventsManager;
   }
@@ -65,12 +66,15 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
 
   private Vector2 GetCurrentTile()
   {
-    Vector2 gamepadTile = Game1.player.CurrentTool != null
-      ? Utility.snapToInt(Game1.player.GetToolLocation() / Game1.tileSize)
-      : Utility.snapToInt(Game1.player.GetGrabTile());
+    Vector2 gamepadTile =
+      Game1.player.CurrentTool != null
+        ? Utility.snapToInt(Game1.player.GetToolLocation() / Game1.tileSize)
+        : Utility.snapToInt(Game1.player.GetGrabTile());
     Vector2 mouseTile = Game1.currentCursorTile;
 
-    return Game1.options.gamepadControls && Game1.timerUntilMouseFade <= 0 ? gamepadTile : mouseTile;
+    return Game1.options.gamepadControls && Game1.timerUntilMouseFade <= 0
+      ? gamepadTile
+      : mouseTile;
   }
 
   [EventPriority(EventPriority.Low)]
@@ -130,13 +134,17 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
 
   private static Object? GetMachineAtTile(Vector2 tile)
   {
-    return Game1.currentLocation.Objects.TryGetValue(tile, out Object? currentObject) ? currentObject : null;
+    return Game1.currentLocation.Objects.TryGetValue(tile, out Object? currentObject)
+      ? currentObject
+      : null;
   }
 
   private static IndoorPot? GetPotAtTile(Vector2 tile)
   {
-    if (!Game1.currentLocation.Objects.TryGetValue(tile, out Object? currentObject) ||
-        currentObject is not IndoorPot indoorPot)
+    if (
+      !Game1.currentLocation.Objects.TryGetValue(tile, out Object? currentObject)
+      || currentObject is not IndoorPot indoorPot
+    )
     {
       return null;
     }
@@ -160,7 +168,8 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
     return GetPotAtTile(tile)?.hoeDirt.Value;
   }
 
-  private static T? GetTerrainObjectAtTile<T>(Vector2 tile) where T : TerrainFeature
+  private static T? GetTerrainObjectAtTile<T>(Vector2 tile)
+    where T : TerrainFeature
   {
     if (!Game1.currentLocation.terrainFeatures.TryGetValue(tile, out TerrainFeature? terrain))
     {
@@ -191,7 +200,7 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
     return bush ?? GetPotAtTile(tile)?.bush.Value;
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.Tooltips;
@@ -224,5 +233,5 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
       setValue: value => Config.ShowMachineTooltip = value
     );
   }
-#endregion
+  #endregion
 }

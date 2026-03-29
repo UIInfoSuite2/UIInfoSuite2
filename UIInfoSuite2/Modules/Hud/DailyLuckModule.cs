@@ -87,8 +87,14 @@ internal class DailyLuckModule(
 
   protected override ClickableIcon GenerateNewIcon()
   {
-    var luckIcon = new ClickableIcon(Game1.mouseCursors, new Rectangle(50, 428, 10, 10), 40) { RenderPriority = -1 };
-    luckIcon.AutoDrawDelegate = spriteBatch => { luckIcon.Draw(spriteBatch, _color.Value, 1f); };
+    var luckIcon = new ClickableIcon(Game1.mouseCursors, new Rectangle(50, 428, 10, 10), 40)
+    {
+      RenderPriority = -1,
+    };
+    luckIcon.AutoDrawDelegate = spriteBatch =>
+    {
+      luckIcon.Draw(spriteBatch, _color.Value, 1f);
+    };
 
     return luckIcon;
   }
@@ -110,7 +116,7 @@ internal class DailyLuckModule(
     base.OnDisable();
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -126,7 +132,10 @@ internal class DailyLuckModule(
     return I18n.Gmcm_Group_Luck();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -144,5 +153,5 @@ internal class DailyLuckModule(
       setValue: value => Config.ShowExactLuckValue = value
     );
   }
-#endregion
+  #endregion
 }

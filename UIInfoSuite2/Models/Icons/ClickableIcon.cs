@@ -35,14 +35,15 @@ internal class ClickableIcon
     PrimaryDimension primaryDimension = PrimaryDimension.Width,
     Action<object?, ButtonPressedEventArgs, Vector2>? clickHandlerAction = null,
     SpriteFont? hoverFont = null
-  ) : this(
-    itemData.GetTexture(),
-    itemData.GetSourceRect(),
-    finalSize,
-    primaryDimension,
-    clickHandlerAction,
-    hoverFont
-  ) { }
+  )
+    : this(
+      itemData.GetTexture(),
+      itemData.GetSourceRect(),
+      finalSize,
+      primaryDimension,
+      clickHandlerAction,
+      hoverFont
+    ) { }
 
   public ClickableIcon(
     Texture2D baseTexture,
@@ -54,9 +55,9 @@ internal class ClickableIcon
   )
   {
     BaseTexture = new PerScreen<Texture2D>(() => baseTexture);
-    ScalingDimensions =
-      new PerScreen<AspectLockedDimensions>(() => new AspectLockedDimensions(sourceBounds, finalSize, primaryDimension)
-      );
+    ScalingDimensions = new PerScreen<AspectLockedDimensions>(() =>
+      new AspectLockedDimensions(sourceBounds, finalSize, primaryDimension)
+    );
 
     _icon = new PerScreen<ClickableTextureComponent>(GenerateTextureComponent);
 
@@ -212,16 +213,20 @@ internal class ClickableIcon
 
   public virtual void OnClick(object? sender, ButtonPressedEventArgs args)
   {
-    if (ClickHandlerAction is null ||
-        args.Button != SButton.MouseLeft ||
-        Game1.player.CursorSlotItem is not null ||
-        Game1.activeClickableMenu is not GameMenu gameMenu ||
-        gameMenu.currentTab == GameMenu.mapTab)
+    if (
+      ClickHandlerAction is null
+      || args.Button != SButton.MouseLeft
+      || Game1.player.CursorSlotItem is not null
+      || Game1.activeClickableMenu is not GameMenu gameMenu
+      || gameMenu.currentTab == GameMenu.mapTab
+    )
     {
       return;
     }
 
-    Vector2 mouseCoords = Utility.ModifyCoordinatesForUIScale(new Vector2(Game1.getMouseX(), Game1.getMouseY()));
+    Vector2 mouseCoords = Utility.ModifyCoordinatesForUIScale(
+      new Vector2(Game1.getMouseX(), Game1.getMouseY())
+    );
     if (!Icon.containsPoint((int)mouseCoords.X, (int)mouseCoords.Y))
     {
       return;

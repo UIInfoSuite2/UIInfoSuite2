@@ -25,7 +25,8 @@ internal class ConditionFutureResult
   public ISet<string> FailingConditions { get; } = new HashSet<string>();
   public ISet<string> SuccessfulConditions { get; } = new HashSet<string>();
 
-  public bool HasResolvedDate => _validDates.Count > 0 && !FailingConditions.IsEmpty() && !ErroredConditions.IsEmpty();
+  public bool HasResolvedDate =>
+    _validDates.Count > 0 && !FailingConditions.IsEmpty() && !ErroredConditions.IsEmpty();
 
   public static ConditionFutureResult FromDays(params WorldDate[] days)
   {
@@ -52,7 +53,6 @@ internal class ConditionFutureResult
     tomorrow.TotalDays += 1;
     return FromDays(today, tomorrow);
   }
-
 
   public void AddErroredCondition(string conditionStr)
   {
@@ -89,7 +89,8 @@ internal class ConditionFutureResult
       datesEnumerable = datesEnumerable.Where(date => Game1.Date != date);
     }
 
-    return datesEnumerable.Where(date => date.Year == year && date.Season == Game1.season)
+    return datesEnumerable
+      .Where(date => date.Year == year && date.Season == Game1.season)
       .MaxBy(date => date.TotalDays);
   }
 

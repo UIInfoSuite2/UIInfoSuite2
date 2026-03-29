@@ -15,7 +15,12 @@ public class Profiler
   private long _entriesSinceLastLog;
   private long _totalElapsedTicks;
 
-  public Profiler(string profilerName, int rollingWindowSize, int logEvery, Action<string> loggerFunc)
+  public Profiler(
+    string profilerName,
+    int rollingWindowSize,
+    int logEvery,
+    Action<string> loggerFunc
+  )
   {
     if (rollingWindowSize <= 0)
     {

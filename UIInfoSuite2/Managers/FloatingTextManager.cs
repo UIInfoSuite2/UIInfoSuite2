@@ -87,7 +87,7 @@ internal class FloatingTextManager(
     _textCache.Value.Clear();
   }
 
-#region Events
+  #region Events
   public void RegisterEvents()
   {
     modEvents.Display.RenderingHud += TickAndRenderText;
@@ -119,5 +119,5 @@ internal class FloatingTextManager(
   {
     Clear();
   }
-#endregion
+  #endregion
 }

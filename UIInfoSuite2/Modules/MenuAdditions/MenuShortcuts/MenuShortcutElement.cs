@@ -19,7 +19,8 @@ internal abstract class MenuShortcutElement : LayoutElement
 {
   protected readonly PerScreen<ClickableTextureComponent?> PerScreenMenuButton = new(() => null);
 
-  protected MenuShortcutElement(int renderedHeight, string? identifier = null) : base(identifier)
+  protected MenuShortcutElement(int renderedHeight, string? identifier = null)
+    : base(identifier)
   {
     RenderedHeight = renderedHeight;
   }
@@ -110,15 +111,19 @@ internal abstract class MenuShortcutElement : LayoutElement
 
   public virtual void OnClick(object? sender, ButtonPressedEventArgs args)
   {
-    if (args.Button != SButton.MouseLeft ||
-        Game1.player.CursorSlotItem is not null ||
-        !Tools.IsGameMenuOpen() ||
-        Tools.GetCurrentMenuPage() is MapPage)
+    if (
+      args.Button != SButton.MouseLeft
+      || Game1.player.CursorSlotItem is not null
+      || !Tools.IsGameMenuOpen()
+      || Tools.GetCurrentMenuPage() is MapPage
+    )
     {
       return;
     }
 
-    Vector2 mouseCoords = Utility.ModifyCoordinatesForUIScale(new Vector2(Game1.getMouseX(), Game1.getMouseY()));
+    Vector2 mouseCoords = Utility.ModifyCoordinatesForUIScale(
+      new Vector2(Game1.getMouseX(), Game1.getMouseY())
+    );
     if (!MenuButton.containsPoint((int)mouseCoords.X, (int)mouseCoords.Y))
     {
       return;
@@ -127,5 +132,9 @@ internal abstract class MenuShortcutElement : LayoutElement
     HandleClickEvent(sender, args, mouseCoords);
   }
 
-  protected abstract void HandleClickEvent(object? sender, ButtonPressedEventArgs args, Vector2 mouseCoords);
+  protected abstract void HandleClickEvent(
+    object? sender,
+    ButtonPressedEventArgs args,
+    Vector2 mouseCoords
+  );
 }

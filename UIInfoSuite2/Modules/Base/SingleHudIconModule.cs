@@ -18,7 +18,8 @@ internal abstract class SingleHudIconModule<T>(
   IMonitor logger,
   ConfigManager configManager,
   HudIconManager iconManager
-) : HudIconModule(modEvents, logger, configManager, iconManager) where T : ClickableIcon
+) : HudIconModule(modEvents, logger, configManager, iconManager)
+  where T : ClickableIcon
 {
   private T? _icon;
 

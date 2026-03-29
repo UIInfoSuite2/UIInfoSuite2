@@ -5,13 +5,8 @@ using UIInfoSuite2.Managers;
 
 namespace UIInfoSuite2.Models.Experience;
 
-internal class LevelUpMessage(Rectangle skillRectangle) : FloatingText(
-  I18n.LevelUp(),
-  120,
-  new Vector2(0, 0),
-  id: "LevelUpMessage",
-  zIndex: 100
-)
+internal class LevelUpMessage(Rectangle skillRectangle)
+  : FloatingText(I18n.LevelUp(), 120, new Vector2(0, 0), id: "LevelUpMessage", zIndex: 100)
 {
   private static readonly Vector2 IconOffset = new(-74, -130);
 

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace UIInfoSuite2.Models;
 
-public class Counter<T> : IEnumerable<T> where T : notnull
+public class Counter<T> : IEnumerable<T>
+  where T : notnull
 {
   private readonly Dictionary<T, int> _counterMap = new();
 

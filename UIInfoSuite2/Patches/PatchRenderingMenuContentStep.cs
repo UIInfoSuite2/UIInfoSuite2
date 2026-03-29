@@ -13,7 +13,9 @@ namespace UIInfoSuite2.Patches;
 
 public class PatchRenderingMenuContentStep(IMonitor logger) : IPatchable
 {
-  private static readonly Lazy<EventsManager> EventsManager = new(ModEntry.GetSingleton<EventsManager>);
+  private static readonly Lazy<EventsManager> EventsManager = new(
+    ModEntry.GetSingleton<EventsManager>
+  );
 
   // Patcher
   public void Patch(Harmony harmony)
@@ -25,7 +27,10 @@ public class PatchRenderingMenuContentStep(IMonitor logger) : IPatchable
       [typeof(SpriteBatch)]
     );
     var gameMenuTranspiler = new HarmonyMethod(
-      AccessTools.DeclaredMethod(typeof(PatchRenderingMenuContentStep), nameof(TranspileGameMenuDraw))
+      AccessTools.DeclaredMethod(
+        typeof(PatchRenderingMenuContentStep),
+        nameof(TranspileGameMenuDraw)
+      )
     );
 
     // Patch ShopMenu
@@ -35,7 +40,10 @@ public class PatchRenderingMenuContentStep(IMonitor logger) : IPatchable
       [typeof(SpriteBatch)]
     );
     var shopMenuTranspiler = new HarmonyMethod(
-      AccessTools.DeclaredMethod(typeof(PatchRenderingMenuContentStep), nameof(TranspileShopMenuDraw))
+      AccessTools.DeclaredMethod(
+        typeof(PatchRenderingMenuContentStep),
+        nameof(TranspileShopMenuDraw)
+      )
     );
 
     logger.Log("Patching Game Menu Content Step");
@@ -52,7 +60,8 @@ public class PatchRenderingMenuContentStep(IMonitor logger) : IPatchable
   {
     CodeMatcher matcher = new(instructions, generator);
 
-    matcher.MatchStartForward(
+    matcher
+      .MatchStartForward(
         new CodeMatch(OpCodes.Ldarg_0),
         new CodeMatch(i => i.opcode == OpCodes.Ldfld),
         new CodeMatch(OpCodes.Ldarg_0),
@@ -71,9 +80,12 @@ public class PatchRenderingMenuContentStep(IMonitor logger) : IPatchable
   {
     CodeMatcher matcher = new(instructions, generator);
 
-    matcher.MatchStartForward(
+    matcher
+      .MatchStartForward(
         new CodeMatch(OpCodes.Ldarg_0),
-        new CodeMatch(i => i.LoadsField(AccessTools.Field(typeof(ShopMenu), nameof(ShopMenu.hoverText)))),
+        new CodeMatch(i =>
+          i.LoadsField(AccessTools.Field(typeof(ShopMenu), nameof(ShopMenu.hoverText)))
+        ),
         new CodeMatch(OpCodes.Ldstr),
         new CodeMatch(i => i.opcode == OpCodes.Call)
       )
@@ -94,13 +106,19 @@ public class PatchRenderingMenuContentStep(IMonitor logger) : IPatchable
       // Call Event
       new CodeInstruction(
         OpCodes.Call,
-        AccessTools.DeclaredMethod(typeof(PatchRenderingMenuContentStep), nameof(CallRenderingMenuContentStepEvent))
+        AccessTools.DeclaredMethod(
+          typeof(PatchRenderingMenuContentStep),
+          nameof(CallRenderingMenuContentStepEvent)
+        )
       )
     );
   }
 
   // Injected Method
-  private static void CallRenderingMenuContentStepEvent(IClickableMenu menu, SpriteBatch spriteBatch)
+  private static void CallRenderingMenuContentStepEvent(
+    IClickableMenu menu,
+    SpriteBatch spriteBatch
+  )
   {
     EventsManager.Value.TriggerOnRenderingMenuContentStep(menu, spriteBatch);
   }

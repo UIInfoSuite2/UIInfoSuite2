@@ -9,7 +9,8 @@ internal class ToolIcon : ClickableIcon
 {
   private readonly PerScreen<Tool?> _tool = new(() => null);
 
-  public ToolIcon() : base(Game1.mouseCursors, new Rectangle(322, 498, 12, 12), 40)
+  public ToolIcon()
+    : base(Game1.mouseCursors, new Rectangle(322, 498, 12, 12), 40)
   {
     UpdateTool();
   }

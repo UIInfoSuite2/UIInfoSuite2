@@ -22,7 +22,7 @@ internal enum LayoutDirtyFlags
   Constraints = 1 << 5,
   Direction = 1 << 6,
   Value = 1 << 7,
-  Visibility = 1 << 8
+  Visibility = 1 << 8,
 }
 
 internal static class LayoutDirtyFlagsExtensions
@@ -63,7 +63,8 @@ internal abstract class LayoutElement : ITrackable, IDisposable
     MarkLayoutDirty("Init");
   }
 
-  protected LayoutElement() : this(null) { }
+  protected LayoutElement()
+    : this(null) { }
 
   protected LayoutDirtyFlags DirtyFlags { get; set; } = LayoutDirtyFlags.Initial;
 
@@ -261,7 +262,6 @@ internal abstract class LayoutElement : ITrackable, IDisposable
 
   public virtual bool IsDirty => DirtyFlags != LayoutDirtyFlags.None;
 
-
   public virtual void ResetDirty()
   {
     DirtyFlags = LayoutDirtyFlags.None;
@@ -427,11 +427,18 @@ internal abstract class LayoutElement : ITrackable, IDisposable
     }
 
     // Draw full bounds
-    Tools.DrawBoxOutline(spriteBatch, positionX, positionY, Bounds.Width, Bounds.Height, Color.Red, 2);
+    Tools.DrawBoxOutline(
+      spriteBatch,
+      positionX,
+      positionY,
+      Bounds.Width,
+      Bounds.Height,
+      Color.Red,
+      2
+    );
 
     positionX += Margin.Left.OrZero();
     positionY += Margin.Top.OrZero();
-
 
     // Draw padded bounds
     Tools.DrawBoxOutline(
@@ -454,6 +461,14 @@ internal abstract class LayoutElement : ITrackable, IDisposable
     positionY += Padding.Top.OrZero();
 
     // Draw content bounds
-    Tools.DrawBoxOutline(spriteBatch, positionX, positionY, ContentSize.Width, ContentSize.Height, Color.Green, 2);
+    Tools.DrawBoxOutline(
+      spriteBatch,
+      positionX,
+      positionY,
+      ContentSize.Width,
+      ContentSize.Height,
+      Color.Green,
+      2
+    );
   }
 }

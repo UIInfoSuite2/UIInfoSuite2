@@ -93,7 +93,6 @@ internal class MouseTooltipDom : LayoutDom
     set => BushTooltipContainer.Bush = value;
   }
 
-
   protected override void DrawSelf(SpriteBatch spriteBatch, int positionX, int positionY)
   {
     DrawContainerBox(spriteBatch, positionX, positionY);

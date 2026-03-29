@@ -47,7 +47,6 @@ internal struct LayoutBounds()
 
   public override string ToString()
   {
-    return
-      $"{nameof(Offsets)}: {Offsets}, {nameof(Position)}: {Position}, {nameof(Size)}: {Size}, {nameof(IsAbsolute)}: {IsAbsolute}";
+    return $"{nameof(Offsets)}: {Offsets}, {nameof(Position)}: {Position}, {nameof(Size)}: {Size}, {nameof(IsAbsolute)}: {IsAbsolute}";
   }
 }

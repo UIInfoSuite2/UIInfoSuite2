@@ -10,14 +10,15 @@ internal class MerchantIcon : ClickableIcon
   public enum Type
   {
     Traveler,
-    Bookseller
+    Bookseller,
   }
 
   private readonly Type _merchantType;
 
   private bool _merchantInTown;
 
-  public MerchantIcon(Type merchantType) : base(Game1.mouseCursors, new Rectangle(192, 1411, 20, 20), 40)
+  public MerchantIcon(Type merchantType)
+    : base(Game1.mouseCursors, new Rectangle(192, 1411, 20, 20), 40)
   {
     _merchantType = merchantType;
 
@@ -45,7 +46,9 @@ internal class MerchantIcon : ClickableIcon
     switch (_merchantType)
     {
       case Type.Traveler:
-        _merchantInTown = ((Forest)Game1.getLocationFromName(nameof(Forest))).ShouldTravelingMerchantVisitToday();
+        _merchantInTown = (
+          (Forest)Game1.getLocationFromName(nameof(Forest))
+        ).ShouldTravelingMerchantVisitToday();
         break;
       case Type.Bookseller:
         // Town location has the bookseller bool private, so we'll just do it like they do it.
@@ -59,8 +62,10 @@ internal class MerchantIcon : ClickableIcon
 
   protected override bool _ShouldDraw()
   {
-    if ((_merchantType == Type.Bookseller && !Config.ShowBooksellerIcon) ||
-        (_merchantType == Type.Traveler && !Config.ShowTravelingMerchantIcon))
+    if (
+      (_merchantType == Type.Bookseller && !Config.ShowBooksellerIcon)
+      || (_merchantType == Type.Traveler && !Config.ShowTravelingMerchantIcon)
+    )
     {
       return false;
     }

@@ -13,12 +13,20 @@ internal class WildTreeTooltipContainer : LayoutContainer
   private const string WildTreeNameField = "UIInfoSuite.ExtendedData/DisplayName";
   private const int MaxTreeGrowthStage = 5;
 
-  private readonly TooltipText _treeDetailsElement = new("UIIS2::UnknownTree", 0.75f, identifier: "TreeDetails");
+  private readonly TooltipText _treeDetailsElement = new(
+    "UIIS2::UnknownTree",
+    0.75f,
+    identifier: "TreeDetails"
+  );
 
-  private readonly TooltipText _treeNameElement = TooltipText.Bold("UIIS2::UnknownTree", identifier: "TreeName");
+  private readonly TooltipText _treeNameElement = TooltipText.Bold(
+    "UIIS2::UnknownTree",
+    identifier: "TreeName"
+  );
   private Tree? _tree;
 
-  public WildTreeTooltipContainer(Tree? tree = null) : base("WildTreeTooltip")
+  public WildTreeTooltipContainer(Tree? tree = null)
+    : base("WildTreeTooltip")
   {
     Direction = LayoutDirection.Column;
 

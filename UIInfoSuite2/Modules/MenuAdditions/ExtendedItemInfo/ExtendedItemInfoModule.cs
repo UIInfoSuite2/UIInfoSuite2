@@ -60,7 +60,7 @@ internal class ExtendedItemInfoModule(
     bundleHelper.SyncBundleInformation();
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.MenuFeatures;
@@ -93,5 +93,5 @@ internal class ExtendedItemInfoModule(
       setValue: value => Config.ShowItemsRequiredForBundles = value
     );
   }
-#endregion
+  #endregion
 }

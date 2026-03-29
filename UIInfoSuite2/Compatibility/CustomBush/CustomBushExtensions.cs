@@ -12,7 +12,8 @@ namespace UIInfoSuite2.Compatibility.CustomBush;
 internal static class CustomBushExtensions
 {
   private static readonly Lazy<ApiManager> ApiManagerLazy = ModEntry.LazyGetSingleton<ApiManager>();
-  private static readonly Lazy<DropsHelper> DropsHelperLazy = ModEntry.LazyGetSingleton<DropsHelper>();
+  private static readonly Lazy<DropsHelper> DropsHelperLazy =
+    ModEntry.LazyGetSingleton<DropsHelper>();
 
   private static ICustomBushApi? CustomBushApi
   {
@@ -55,10 +56,12 @@ internal static class CustomBushExtensions
   public static List<PossibleDroppedItem> GetCustomBushDropItems(this Bush? bush)
   {
     ICustomBushApi? customBushApi = CustomBushApi;
-    if (bush is null ||
-        customBushApi is null ||
-        !bush.IsCustomBush() ||
-        !customBushApi.TryGetBush(bush, out ICustomBushData? data, out string? id))
+    if (
+      bush is null
+      || customBushApi is null
+      || !bush.IsCustomBush()
+      || !customBushApi.TryGetBush(bush, out ICustomBushData? data, out string? id)
+    )
     {
       return [];
     }
@@ -72,7 +75,11 @@ internal static class CustomBushExtensions
     string? id
   )
   {
-    if (id == null || string.IsNullOrEmpty(id) || !api.TryGetDrops(id, out IList<ICustomBushDrop>? drops))
+    if (
+      id == null
+      || string.IsNullOrEmpty(id)
+      || !api.TryGetDrops(id, out IList<ICustomBushDrop>? drops)
+    )
     {
       return [];
     }
@@ -91,7 +98,8 @@ internal static class CustomBushExtensions
       }
       else if (bush.Seasons.Count != 0)
       {
-        var seasonsCondition = $"SEASON {string.Join(' ', bush.Seasons.Select(Utility.getSeasonKey))}";
+        var seasonsCondition =
+          $"SEASON {string.Join(' ', bush.Seasons.Select(Utility.getSeasonKey))}";
         conditions.Add(seasonsCondition);
       }
 

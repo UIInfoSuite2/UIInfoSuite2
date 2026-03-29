@@ -44,7 +44,12 @@ internal class ProgressBar
     {
       _position = value;
       Bounds = new Rectangle((int)_position.X, (int)_position.Y, DialogBoxWidth, DialogBoxHeight);
-      InnerBounds = new Rectangle(Bounds.X + BarFillOffset.X, Bounds.Y + BarFillOffset.Y, BarWidth, BarHeight);
+      InnerBounds = new Rectangle(
+        Bounds.X + BarFillOffset.X,
+        Bounds.Y + BarFillOffset.Y,
+        BarWidth,
+        BarHeight
+      );
     }
   }
 
@@ -74,7 +79,11 @@ internal class ProgressBar
     );
 
     // Main bar fill
-    batch.Draw(Game1.staminaRect, new Rectangle(barFillPos.X, barFillPos.Y, barWidth, BarHeight), FillColor);
+    batch.Draw(
+      Game1.staminaRect,
+      new Rectangle(barFillPos.X, barFillPos.Y, barWidth, BarHeight),
+      FillColor
+    );
 
     DrawInnerContent();
   }

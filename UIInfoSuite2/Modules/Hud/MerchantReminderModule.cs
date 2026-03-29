@@ -24,8 +24,12 @@ internal class MerchantReminderModule(
   protected const string IconPrefix = "MerchantIcon";
 
   // Lazy init because the icon init uses textures that aren't loaded yet
-  private readonly Lazy<MerchantIcon> _booksellerIcon = new(() => new MerchantIcon(MerchantIcon.Type.Bookseller));
-  private readonly Lazy<MerchantIcon> _travelerIcon = new(() => new MerchantIcon(MerchantIcon.Type.Traveler));
+  private readonly Lazy<MerchantIcon> _booksellerIcon = new(() =>
+    new MerchantIcon(MerchantIcon.Type.Bookseller)
+  );
+  private readonly Lazy<MerchantIcon> _travelerIcon = new(() =>
+    new MerchantIcon(MerchantIcon.Type.Traveler)
+  );
 
   public override bool ShouldEnable()
   {
@@ -84,7 +88,7 @@ internal class MerchantReminderModule(
     }
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -100,7 +104,10 @@ internal class MerchantReminderModule(
     return I18n.Gmcm_Group_Merchant();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -131,5 +138,5 @@ internal class MerchantReminderModule(
       setValue: value => Config.HideMerchantIconWhenVisited = value
     );
   }
-#endregion
+  #endregion
 }

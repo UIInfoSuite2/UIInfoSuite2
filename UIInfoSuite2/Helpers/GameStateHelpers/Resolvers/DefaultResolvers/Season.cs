@@ -12,7 +12,11 @@ namespace UIInfoSuite2.Helpers.GameStateHelpers.Resolvers.DefaultResolvers;
 internal static partial class DefaultConditionResolvers
 {
   [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Accessed via Reflection")]
-  [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Must match Stardew GSQ Resolvers")]
+  [SuppressMessage(
+    "ReSharper",
+    "InconsistentNaming",
+    Justification = "Must match Stardew GSQ Resolvers"
+  )]
   public static ConditionResolver SEASON = new(
     nameof(GameStateQuery.DefaultResolvers.SEASON),
     FutureResolver_Season,
@@ -44,7 +48,10 @@ internal static partial class DefaultConditionResolvers
       {
         int dateYear = Game1.year + yearOffset;
         dates.AddRange(
-          Enumerable.Range(1, 28).Select(day => new WorldDate(dateYear, season, day)).Where(date => Game1.Date <= date)
+          Enumerable
+            .Range(1, 28)
+            .Select(day => new WorldDate(dateYear, season, day))
+            .Where(date => Game1.Date <= date)
         );
       }
     }
@@ -61,7 +68,6 @@ internal static partial class DefaultConditionResolvers
     {
       return I18n.GSQ_Requirements_ParseError().Format(joinedQueryString);
     }
-
 
     List<string> seasonStrings = new();
     for (var index = 1; index < query.Query.Length; index++)

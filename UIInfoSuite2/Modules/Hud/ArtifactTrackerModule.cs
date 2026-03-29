@@ -42,7 +42,9 @@ internal class ArtifactTrackerModule(
         return Game1.MasterPlayer.mailReceived.Contains("beenToWoods");
       default:
         // Weird fix for SVE using real locations for their events
-        return location.IsOutdoors && location.warps.Count > 0 && !location.DisplayName.StartsWith("Custom_");
+        return location.IsOutdoors
+          && location.warps.Count > 0
+          && !location.DisplayName.StartsWith("Custom_");
     }
   }
 
@@ -150,7 +152,7 @@ internal class ArtifactTrackerModule(
     Icon.UpdateText(_trackedArtifactSpots, _trackedSeedSpots);
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string? GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -166,7 +168,10 @@ internal class ArtifactTrackerModule(
     return I18n.Gmcm_Group_OtherIcons();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -183,5 +188,5 @@ internal class ArtifactTrackerModule(
       setValue: value => Config.ShowSeedSpotCount = value
     );
   }
-#endregion
+  #endregion
 }

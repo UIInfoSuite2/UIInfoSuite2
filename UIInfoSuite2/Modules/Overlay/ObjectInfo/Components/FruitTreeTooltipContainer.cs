@@ -18,20 +18,35 @@ internal class FruitTreeTooltipContainer : LayoutContainer
     identifier: "TreeGrowTimeRemaining"
   );
 
-  private readonly TooltipText _cropDropsElement = new("UIIS2::UnknownDrops", 0.75f, identifier: "TreeDrops");
+  private readonly TooltipText _cropDropsElement = new(
+    "UIIS2::UnknownDrops",
+    0.75f,
+    identifier: "TreeDrops"
+  );
 
-  private readonly TooltipIcon _cropIcon = new(Game1.mouseCursors, new Rectangle(322, 498, 12, 12), 40);
+  private readonly TooltipIcon _cropIcon = new(
+    Game1.mouseCursors,
+    new Rectangle(322, 498, 12, 12),
+    40
+  );
 
-  private readonly TooltipText _cropNameElement = TooltipText.Bold("UIIS2::UnknownTree", identifier: "FruitTreeName");
+  private readonly TooltipText _cropNameElement = TooltipText.Bold(
+    "UIIS2::UnknownTree",
+    identifier: "FruitTreeName"
+  );
   private readonly DropsHelper _dropsHelper;
   private FruitTree? _fruitTree;
 
-  public FruitTreeTooltipContainer(FruitTree? fruitTree = null) : base("FruitTreeTooltip")
+  public FruitTreeTooltipContainer(FruitTree? fruitTree = null)
+    : base("FruitTreeTooltip")
   {
     _dropsHelper = ModEntry.GetSingleton<DropsHelper>();
 
     ComponentSpacing = 10;
-    AddChildren(Column(null, _cropNameElement, _cropDaysRemainingElement, _cropDropsElement), _cropIcon);
+    AddChildren(
+      Column(null, _cropNameElement, _cropDaysRemainingElement, _cropDropsElement),
+      _cropIcon
+    );
     IsHidden = true;
 
     FruitTree = fruitTree;
@@ -68,7 +83,10 @@ internal class FruitTreeTooltipContainer : LayoutContainer
     FruitTreeInfo treeInfo = _dropsHelper.GetFruitTreeInfo(FruitTree);
     _cropNameElement.Text = treeInfo.TreeName;
     UpdateFruitTreeDays();
-    _cropDropsElement.Text = string.Join("\n", treeInfo.Items.Select(item => GetInfoStringForDrop(item, true)));
+    _cropDropsElement.Text = string.Join(
+      "\n",
+      treeInfo.Items.Select(item => GetInfoStringForDrop(item, true))
+    );
   }
 
   private void UpdateFruitTreeDays()
@@ -85,7 +103,12 @@ internal class FruitTreeTooltipContainer : LayoutContainer
 
   private static string GetInfoStringForDrop(PossibleDroppedItem item, bool isReadyToday)
   {
-    (ConditionFutureResult futureHarvestDates, ParsedItemData? parsedItemData, float chance, string? _) = item;
+    (
+      ConditionFutureResult futureHarvestDates,
+      ParsedItemData? parsedItemData,
+      float chance,
+      string? _
+    ) = item;
 
     WorldDate? nextDayToProduce = futureHarvestDates.GetNextDate(isReadyToday);
     if (nextDayToProduce == null)

@@ -16,13 +16,22 @@ namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components.BuildingContainers;
 
 internal class BuildingChestTooltipContainer : LayoutContainer
 {
-  private readonly TooltipText _buildingInputs = new("UIIS2::UnknownContent", 0.75f, identifier: "BuildingInputs");
-  private readonly TooltipText _buildingOutputs = new("UIIS2::UnknownContent", 0.75f, identifier: "BuildingOutputs");
+  private readonly TooltipText _buildingInputs = new(
+    "UIIS2::UnknownContent",
+    0.75f,
+    identifier: "BuildingInputs"
+  );
+  private readonly TooltipText _buildingOutputs = new(
+    "UIIS2::UnknownContent",
+    0.75f,
+    identifier: "BuildingOutputs"
+  );
   private Building? _building;
   private List<Chest> _inputChests = [];
   private List<Chest> _outputChests = [];
 
-  public BuildingChestTooltipContainer(Building? building = null) : base("BuildingContainersTooltip")
+  public BuildingChestTooltipContainer(Building? building = null)
+    : base("BuildingContainersTooltip")
   {
     Direction = LayoutDirection.Column;
     ComponentSpacing = 0;
@@ -116,8 +125,14 @@ internal class BuildingChestTooltipContainer : LayoutContainer
 
     IsHidden = false;
 
-    SetChests(MachineHelper.GetBuildingChestsFromType(Building, BuildingChestType.Load), BuildingChestType.Load);
-    SetChests(MachineHelper.GetBuildingChestsFromType(Building, BuildingChestType.Collect), BuildingChestType.Collect);
+    SetChests(
+      MachineHelper.GetBuildingChestsFromType(Building, BuildingChestType.Load),
+      BuildingChestType.Load
+    );
+    SetChests(
+      MachineHelper.GetBuildingChestsFromType(Building, BuildingChestType.Collect),
+      BuildingChestType.Collect
+    );
     UpdateBuildingChestData();
   }
 
@@ -138,11 +153,14 @@ internal class BuildingChestTooltipContainer : LayoutContainer
     return itemCounter;
   }
 
-
   private void UpdateBuildingChestData()
   {
-    Dictionary<string, int> inputItems = GetItemCountMap(_inputChests.SelectMany(chest => chest.Items));
-    Dictionary<string, int> outputItems = GetItemCountMap(_outputChests.SelectMany(chest => chest.Items));
+    Dictionary<string, int> inputItems = GetItemCountMap(
+      _inputChests.SelectMany(chest => chest.Items)
+    );
+    Dictionary<string, int> outputItems = GetItemCountMap(
+      _outputChests.SelectMany(chest => chest.Items)
+    );
 
     List<string> entries = [];
     _buildingInputs.IsHidden = true;

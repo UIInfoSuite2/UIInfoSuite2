@@ -18,7 +18,6 @@ public class ConfigManager : IDisposable
   private readonly IModHelper _helper;
   private readonly IManifest _manifest;
 
-
   public ConfigManager(
     IModHelper helper,
     IModEvents events,
@@ -83,7 +82,14 @@ public class ConfigManager : IDisposable
       return;
     }
 
-    modConfigMenuApi.Register(_manifest, () => { Config = new ModConfig(); }, SaveConfig);
+    modConfigMenuApi.Register(
+      _manifest,
+      () =>
+      {
+        Config = new ModConfig();
+      },
+      SaveConfig
+    );
 
     // Bucket configurable items into their correct pages
     List<IConfigurable> topLevelConfigs = [];
@@ -105,7 +111,11 @@ public class ConfigManager : IDisposable
     }
 
     // Add main section and add configs
-    modConfigMenuApi.AddSectionTitle(_manifest, I18n.Gmcm_MainMenu_Title, I18n.Gmcm_MainMenu_Tooltip);
+    modConfigMenuApi.AddSectionTitle(
+      _manifest,
+      I18n.Gmcm_MainMenu_Title,
+      I18n.Gmcm_MainMenu_Tooltip
+    );
 
     foreach (IConfigurable element in topLevelConfigs)
     {
@@ -119,7 +129,6 @@ public class ConfigManager : IDisposable
 
       element.AddConfigOptions(modConfigMenuApi, _manifest);
     }
-
 
     // Reset section tracker
     currentSection = "";
@@ -186,37 +195,43 @@ public class ConfigManager : IDisposable
       return;
     }
 
-    modConfigMenuApi.Register(_manifest, () => { Config = new ModConfig(); }, SaveConfig);
+    modConfigMenuApi.Register(
+      _manifest,
+      () =>
+      {
+        Config = new ModConfig();
+      },
+      SaveConfig
+    );
 
-// Main menu options
-
+    // Main menu options
 
     // Add links to subpages
     modConfigMenuApi.AddPageLink(
       _manifest,
       "hud-icons",
-      I18n.Gmcm_Page_HudIcons_Title,  // "HUD Icons"
+      I18n.Gmcm_Page_HudIcons_Title, // "HUD Icons"
       I18n.Gmcm_Page_HudIcons_Tooltip // "Configure status icons and indicators"
     );
 
     modConfigMenuApi.AddPageLink(
       _manifest,
       "tooltips",
-      I18n.Gmcm_Page_Tooltips_Title,  // "Tooltips"
+      I18n.Gmcm_Page_Tooltips_Title, // "Tooltips"
       I18n.Gmcm_Page_Tooltips_Tooltip // "Configure item and object tooltips"
     );
 
     modConfigMenuApi.AddPageLink(
       _manifest,
       "menu-features",
-      I18n.Gmcm_Page_MenuFeatures_Title,  // "Menu Features"
+      I18n.Gmcm_Page_MenuFeatures_Title, // "Menu Features"
       I18n.Gmcm_Page_MenuFeatures_Tooltip // "Configure additional menu features"
     );
 
     modConfigMenuApi.AddPageLink(
       _manifest,
       "keybinds",
-      I18n.Gmcm_Page_Keybinds_Title,  // "Keybinds"
+      I18n.Gmcm_Page_Keybinds_Title, // "Keybinds"
       I18n.Gmcm_Page_Keybinds_Tooltip // "Configure keyboard shortcuts"
     );
 
@@ -226,14 +241,14 @@ public class ConfigManager : IDisposable
     // Status Icons
     modConfigMenuApi.AddSectionTitle(
       _manifest,
-      I18n.Gmcm_Section_StatusIcons_Title,  // "Status Icons"
+      I18n.Gmcm_Section_StatusIcons_Title, // "Status Icons"
       I18n.Gmcm_Section_StatusIcons_Tooltip // "Configure status indicator icons"
     );
 
     // Notification Icons
     modConfigMenuApi.AddSectionTitle(
       _manifest,
-      I18n.Gmcm_Section_NotificationIcons_Title,  // "Notification Icons"
+      I18n.Gmcm_Section_NotificationIcons_Title, // "Notification Icons"
       I18n.Gmcm_Section_NotificationIcons_Tooltip // "Configure notification icons"
     );
 

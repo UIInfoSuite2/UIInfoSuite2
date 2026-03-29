@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Object = StardewValley.Object;
 
-
 namespace UIInfoSuite2.Utilities;
 
 public enum GridPatternShape
@@ -11,14 +10,14 @@ public enum GridPatternShape
   BasicDistance,
   Circle,
   Diamond,
-  Square
+  Square,
 }
 
 public enum AdditionalPointPlacement
 {
-  None,          // No additional points
+  None, // No additional points
   AllDirections, // Additional points in all directions at the specified distance
-  AxialOnly      // Additional points only on vertical and horizontal axes
+  AxialOnly, // Additional points only on vertical and horizontal axes
 }
 
 public struct GridPatternOptions
@@ -57,7 +56,8 @@ public static class GridPatternGenerator
   /// </returns>
   public static bool[][] GenerateCenteredGrid(GridPatternOptions options)
   {
-    var fullGridRadius = (int)Math.Ceiling(Math.Max(options.MainRange, options.AdditionalDistance ?? 0));
+    var fullGridRadius = (int)
+      Math.Ceiling(Math.Max(options.MainRange, options.AdditionalDistance ?? 0));
 
     // Actual grid size based on MaxGridSize
     int actualGridRadius = options.MaxGridSize.HasValue
@@ -77,13 +77,19 @@ public static class GridPatternGenerator
       {
         // Fill grid from center instead of top left using offset
         double distance = CalculateDistance(
-          row + offset,   // Offset the row to match full grid
-          col + offset,   // Offset the col to match full grid
+          row + offset, // Offset the row to match full grid
+          col + offset, // Offset the col to match full grid
           fullGridRadius, // Use the full grid radius for distance calc
           options.Shape
         );
 
-        grid[row][col] = IsPointInPattern(distance, row + offset, col + offset, fullGridRadius, options);
+        grid[row][col] = IsPointInPattern(
+          distance,
+          row + offset,
+          col + offset,
+          fullGridRadius,
+          options
+        );
       }
     }
 
@@ -95,11 +101,16 @@ public static class GridPatternGenerator
     int radiusForSprinkler = sprinklerObject.GetModifiedRadiusForSprinkler();
     return radiusForSprinkler switch
     {
-      0 => [[false, true, false], [true, true, true], [false, true, false]],
+      0 =>
+      [
+        [false, true, false],
+        [true, true, true],
+        [false, true, false],
+      ],
       <= 0 => [],
       _ => GenerateCenteredGrid(
         new GridPatternOptions { MainRange = radiusForSprinkler, Shape = GridPatternShape.Square }
-      )
+      ),
     };
   }
 
@@ -171,7 +182,7 @@ public static class GridPatternGenerator
       GridPatternShape.Diamond => dx + dy,
       // Manhattan distance
       GridPatternShape.Square => Math.Max(dx, dy),
-      _ => throw new ArgumentException($"Unsupported shape: {shape}")
+      _ => throw new ArgumentException($"Unsupported shape: {shape}"),
     };
   }
 
@@ -191,7 +202,13 @@ public static class GridPatternGenerator
   ///   Returns <c>true</c> if the point is included in the grid pattern based on the distance,
   ///   specified shape, and additional placement conditions. Otherwise, returns <c>false</c>.
   /// </returns>
-  private static bool IsPointInPattern(double distance, int row, int col, int gridRadius, GridPatternOptions options)
+  private static bool IsPointInPattern(
+    double distance,
+    int row,
+    int col,
+    int gridRadius,
+    GridPatternOptions options
+  )
   {
     // Point is in pattern if either:
     // 1. It's within the main range
@@ -205,8 +222,10 @@ public static class GridPatternGenerator
 
     // 2. OR it's at the additional distance (if specified) and meets placement criteria
     var atAdditionalDistance = false;
-    if (!options.AdditionalDistance.HasValue ||
-        !(Math.Abs(distance - options.AdditionalDistance.Value) < double.Epsilon))
+    if (
+      !options.AdditionalDistance.HasValue
+      || !(Math.Abs(distance - options.AdditionalDistance.Value) < double.Epsilon)
+    )
     {
       return withinMainRange || atAdditionalDistance;
     }

@@ -5,7 +5,7 @@ namespace UIInfoSuite2.Layout.Measurement;
 public enum PrimaryDimension
 {
   Height,
-  Width
+  Width,
 }
 
 public class AspectLockedDimensions
@@ -14,7 +14,11 @@ public class AspectLockedDimensions
   private PrimaryDimension _primaryDimension;
   private Rectangle _sourceDimensions;
 
-  public AspectLockedDimensions(Rectangle sourceBounds, float finalSize, PrimaryDimension primaryDimension)
+  public AspectLockedDimensions(
+    Rectangle sourceBounds,
+    float finalSize,
+    PrimaryDimension primaryDimension
+  )
   {
     _sourceDimensions = sourceBounds;
     _primaryDimension = primaryDimension;

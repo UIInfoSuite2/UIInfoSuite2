@@ -20,9 +20,13 @@ internal class ConstructionTrackerModule : SingleHudIconModule<CarpenterIcon>
 {
   // Rider insists on expanding this enormous generic for some reason
   // NetStringDictionary<BuilderData, NetRef<BuilderData>>
-  private readonly
-    NetDictionary<string, BuilderData, NetRef<BuilderData>, SerializableDictionary<string, BuilderData>,
-      NetStringDictionary<BuilderData, NetRef<BuilderData>>>.ContentsChangeEvent _buildersDictChangedEvent;
+  private readonly NetDictionary<
+    string,
+    BuilderData,
+    NetRef<BuilderData>,
+    SerializableDictionary<string, BuilderData>,
+    NetStringDictionary<BuilderData, NetRef<BuilderData>>
+  >.ContentsChangeEvent _buildersDictChangedEvent;
 
   private readonly FieldChange<NetInt, int> _houseUpgradeChangedEvent;
 
@@ -31,7 +35,8 @@ internal class ConstructionTrackerModule : SingleHudIconModule<CarpenterIcon>
     IMonitor logger,
     ConfigManager configManager,
     HudIconManager iconManager
-  ) : base(modEvents, logger, configManager, iconManager)
+  )
+    : base(modEvents, logger, configManager, iconManager)
   {
     _buildersDictChangedEvent = (key, _) =>
     {
@@ -43,7 +48,10 @@ internal class ConstructionTrackerModule : SingleHudIconModule<CarpenterIcon>
       UpdateIcon();
     };
 
-    _houseUpgradeChangedEvent = (_, _, _) => { UpdateIcon(); };
+    _houseUpgradeChangedEvent = (_, _, _) =>
+    {
+      UpdateIcon();
+    };
   }
 
   protected override string IconKey => "ConstructionIcon";
@@ -148,7 +156,7 @@ internal class ConstructionTrackerModule : SingleHudIconModule<CarpenterIcon>
     Game1.player.daysUntilHouseUpgrade.fieldChangeEvent += _houseUpgradeChangedEvent;
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -164,7 +172,10 @@ internal class ConstructionTrackerModule : SingleHudIconModule<CarpenterIcon>
     return I18n.Gmcm_Group_OtherIcons();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -174,5 +185,5 @@ internal class ConstructionTrackerModule : SingleHudIconModule<CarpenterIcon>
       setValue: value => Config.ShowRobinBuildingStatusIcon = value
     );
   }
-#endregion
+  #endregion
 }

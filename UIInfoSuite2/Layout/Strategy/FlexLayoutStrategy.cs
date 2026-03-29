@@ -20,15 +20,12 @@ internal class FlexLayoutStrategy : LayoutStrategy
 
   public FlexDirection Direction { get; set; } = FlexDirection.Row;
 
-
   public JustifyContent JustifyContent { get; set; } = JustifyContent.Start;
-
 
   public AlignItems AlignItems { get; set; } = AlignItems.Start;
 
   /// <summary>Minimum gap in pixels between adjacent flow children.</summary>
   public int Gap { get; set; } = 2;
-
 
   public Alignment? GridAlignment { get; set; }
 
@@ -37,6 +34,7 @@ internal class FlexLayoutStrategy : LayoutStrategy
   private bool IsRow => Direction is FlexDirection.Row or FlexDirection.RowReverse;
 
   private bool IsReverse => Direction is FlexDirection.RowReverse or FlexDirection.ColumnReverse;
+
   // endregion
   // endregion
 
@@ -78,7 +76,9 @@ internal class FlexLayoutStrategy : LayoutStrategy
       flowMain += Gap * (visibleFlowCount - 1);
     }
 
-    Dimensions flow = isRow ? new Dimensions(flowMain, flowCross) : new Dimensions(flowCross, flowMain);
+    Dimensions flow = isRow
+      ? new Dimensions(flowMain, flowCross)
+      : new Dimensions(flowCross, flowMain);
 
     return new Dimensions(Math.Max(flow.Width, absW), Math.Max(flow.Height, absH));
   }
@@ -96,7 +96,10 @@ internal class FlexLayoutStrategy : LayoutStrategy
     int containerCross = isRow ? contentSize.Height : contentSize.Width;
 
     // Separate, sort, and optionally reverse flow children
-    List<LayoutElement> flow = allChildren.Where(c => !c.IsAbsolute && !c.IsHidden).OrderBy(c => c.Order).ToList();
+    List<LayoutElement> flow = allChildren
+      .Where(c => !c.IsAbsolute && !c.IsHidden)
+      .OrderBy(c => c.Order)
+      .ToList();
 
     if (IsReverse)
     {
@@ -204,7 +207,7 @@ internal class FlexLayoutStrategy : LayoutStrategy
         AlignItems.Center => Math.Max(0, (containerCross - childCross) / 2),
         AlignItems.Stretch => 0, // size was already adjusted above
         // TODO: Baseline
-        _ => 0
+        _ => 0,
       };
 
       child.Bounds.OffsetX = isRow ? mainOffset : crossOffset;
@@ -240,6 +243,7 @@ internal class FlexLayoutStrategy : LayoutStrategy
       child.Bounds.OffsetY = offsetY;
     }
   }
+
   // endregion
 
   // region  Private helpers
@@ -261,17 +265,28 @@ internal class FlexLayoutStrategy : LayoutStrategy
     // For Row: horizontal → justify (main), vertical → align (cross)
     // For Column: vertical → justify (main), horizontal → align (cross)
     JustifyContent justify = isRow
-      ?
-      hCenter ? JustifyContent.Center : hEnd ? JustifyContent.End : JustifyContent.Start
+      ? hCenter
+        ? JustifyContent.Center
+        : hEnd
+          ? JustifyContent.End
+          : JustifyContent.Start
       : vCenter
         ? JustifyContent.Center
         : vEnd
           ? JustifyContent.End
           : JustifyContent.Start;
 
-    AlignItems crossAlign = isRow ? vCenter ? AlignItems.Center : vEnd ? AlignItems.End : AlignItems.Start :
-      hCenter ? AlignItems.Center :
-      hEnd ? AlignItems.End : AlignItems.Start;
+    AlignItems crossAlign = isRow
+      ? vCenter
+        ? AlignItems.Center
+        : vEnd
+          ? AlignItems.End
+          : AlignItems.Start
+      : hCenter
+        ? AlignItems.Center
+        : hEnd
+          ? AlignItems.End
+          : AlignItems.Start;
 
     return (justify, crossAlign);
   }
@@ -313,7 +328,9 @@ internal class FlexLayoutStrategy : LayoutStrategy
     else if (freeSpace < 0)
     {
       // Weighted shrink: each child shrinks proportional to (shrink-factor × current size)
-      float totalFactor = children.Sum(c => c.FlexShrink * (isRow ? c.Bounds.Width : c.Bounds.Height));
+      float totalFactor = children.Sum(c =>
+        c.FlexShrink * (isRow ? c.Bounds.Width : c.Bounds.Height)
+      );
       if (totalFactor <= 0)
       {
         return;
@@ -327,7 +344,8 @@ internal class FlexLayoutStrategy : LayoutStrategy
           continue;
         }
 
-        float weight = child.FlexShrink * (isRow ? child.Bounds.Width : child.Bounds.Height) / totalFactor;
+        float weight =
+          child.FlexShrink * (isRow ? child.Bounds.Width : child.Bounds.Height) / totalFactor;
         var reduction = (int)(overflow * weight);
         if (isRow)
         {

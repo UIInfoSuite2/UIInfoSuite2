@@ -35,7 +35,11 @@ public interface IConfigurable : IComparable<IConfigurable>, IComparable
       return orderComparison;
     }
 
-    int sectionComparison = string.Compare(GetConfigSection(), other.GetConfigSection(), StringComparison.Ordinal);
+    int sectionComparison = string.Compare(
+      GetConfigSection(),
+      other.GetConfigSection(),
+      StringComparison.Ordinal
+    );
     return sectionComparison != 0
       ? sectionComparison
       : string.Compare(GetSubHeader(), other.GetSubHeader(), StringComparison.Ordinal);

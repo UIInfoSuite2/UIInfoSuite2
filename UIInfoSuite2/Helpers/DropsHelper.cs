@@ -99,7 +99,8 @@ internal class DropsHelper
       }
       else if (treeData.Seasons.Count != 0)
       {
-        var seasonsCondition = $"SEASON {string.Join(' ', treeData.Seasons.Select(Utility.getSeasonKey))}";
+        var seasonsCondition =
+          $"SEASON {string.Join(' ', treeData.Seasons.Select(Utility.getSeasonKey))}";
         conditions.Add(seasonsCondition);
       }
 
@@ -132,7 +133,9 @@ internal class DropsHelper
     foreach (T drop in drops)
     {
       DropInfo dropInfo = extractDropInfo(drop);
-      ConditionFutureResult validDays = _gameStateHelper.ResolveQueryFuture(dropInfo.Condition ?? "");
+      ConditionFutureResult validDays = _gameStateHelper.ResolveQueryFuture(
+        dropInfo.Condition ?? ""
+      );
       string nextDayStr = validDays.GetNextDate()?.ToString() ?? "No Next Date";
 
       if (!validDays.ErroredConditions.IsEmpty())

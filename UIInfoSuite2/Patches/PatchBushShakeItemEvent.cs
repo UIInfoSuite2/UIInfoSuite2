@@ -12,7 +12,9 @@ namespace UIInfoSuite2.Patches;
 
 public class PatchBushShakeItemEvent(IMonitor logger) : IPatchable
 {
-  private static readonly Lazy<EventsManager> EventsManager = new(ModEntry.GetSingleton<EventsManager>);
+  private static readonly Lazy<EventsManager> EventsManager = new(
+    ModEntry.GetSingleton<EventsManager>
+  );
 
   // Patcher
   public void Patch(Harmony harmony)
@@ -46,7 +48,8 @@ public class PatchBushShakeItemEvent(IMonitor logger) : IPatchable
   {
     CodeMatcher matcher = new(instructions, generator);
 
-    matcher.MatchEndForward(new CodeMatch(IsItemShakeCall), new CodeMatch(OpCodes.Br))
+    matcher
+      .MatchEndForward(new CodeMatch(IsItemShakeCall), new CodeMatch(OpCodes.Br))
       .ThrowIfNotMatch("Unable to find item debris generation in Bush, tooltips may be unstable");
 
     matcher.Insert(

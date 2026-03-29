@@ -5,7 +5,7 @@ public enum FlexDirection
   Row,
   Column,
   RowReverse,
-  ColumnReverse
+  ColumnReverse,
 }
 
 public enum JustifyContent
@@ -15,7 +15,7 @@ public enum JustifyContent
   Center,
   SpaceBetween,
   SpaceAround,
-  SpaceEvenly
+  SpaceEvenly,
 }
 
 public enum AlignItems
@@ -24,12 +24,12 @@ public enum AlignItems
   End,
   Center,
   Stretch,
-  Baseline
+  Baseline,
 }
 
 public enum FlexWrap
 {
   NoWrap,
   Wrap,
-  WrapReverse
+  WrapReverse,
 }

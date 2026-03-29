@@ -6,7 +6,8 @@ using UIInfoSuite2.Extensions;
 
 namespace UIInfoSuite2.Models.Icons;
 
-internal class NpcBirthdayIcon(NPC character) : ClickableIcon(Game1.mouseCursors, new Rectangle(229, 410, 14, 14), 40)
+internal class NpcBirthdayIcon(NPC character)
+  : ClickableIcon(Game1.mouseCursors, new Rectangle(229, 410, 14, 14), 40)
 {
   private const float HeadshotScale = 2.3f;
   private readonly PerScreen<bool> _canBeGiftedToday = new(() => true);

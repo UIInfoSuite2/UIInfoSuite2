@@ -13,14 +13,20 @@ using UIInfoSuite2.Modules.Base;
 
 namespace UIInfoSuite2.Modules.MenuAdditions;
 
-internal class PartialHeartFillModule(IModEvents modEvents, IMonitor logger, ConfigManager configManager)
-  : BaseModule(modEvents, logger, configManager), IPatchable, IConfigurable
+internal class PartialHeartFillModule(
+  IModEvents modEvents,
+  IMonitor logger,
+  ConfigManager configManager
+) : BaseModule(modEvents, logger, configManager), IPatchable, IConfigurable
 {
   public void Patch(Harmony harmony)
   {
     harmony.Patch(
       AccessTools.DeclaredMethod(typeof(SocialPage), nameof(SocialPage.drawNPCSlotHeart)),
-      postfix: new HarmonyMethod(typeof(PartialHeartFillModule), nameof(SocialPage_drawNPCSlotHeart_Postfix))
+      postfix: new HarmonyMethod(
+        typeof(PartialHeartFillModule),
+        nameof(SocialPage_drawNPCSlotHeart_Postfix)
+      )
     );
   }
 
@@ -46,12 +52,16 @@ internal class PartialHeartFillModule(IModEvents modEvents, IMonitor logger, Con
   {
     var module = ModEntry.GetSingleton<PartialHeartFillModule>();
 
-    if (!module.Enabled ||
-        entry.Friendship is null ||
-        // The only heart we fill is the next partial
-        hearts != entry.HeartLevel ||
-        // Heart is locked until we start dating
-        (entry.IsDatable && !isDating && !isCurrentSpouse && hearts >= 8))
+    if (
+      !module.Enabled
+      || entry.Friendship is null
+      ||
+      // The only heart we fill is the next partial
+      hearts != entry.HeartLevel
+      ||
+      // Heart is locked until we start dating
+      (entry.IsDatable && !isDating && !isCurrentSpouse && hearts >= 8)
+    )
     {
       return;
     }
@@ -84,7 +94,7 @@ internal class PartialHeartFillModule(IModEvents modEvents, IMonitor logger, Con
     );
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.MenuFeatures;
@@ -110,5 +120,5 @@ internal class PartialHeartFillModule(IModEvents modEvents, IMonitor logger, Con
       setValue: value => Config.ShowHeartFills = value
     );
   }
-#endregion
+  #endregion
 }

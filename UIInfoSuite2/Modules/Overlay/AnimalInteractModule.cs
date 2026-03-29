@@ -22,8 +22,11 @@ using UIInfoSuite2.UIElements;
 namespace UIInfoSuite2.Modules.Overlay;
 
 // ReSharper disable once ClassNeverInstantiated.Global Instantiated by SimpleInjector
-internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, ConfigManager configManager)
-  : BaseModule(modEvents, logger, configManager), IConfigurable
+internal class AnimalInteractModule(
+  IModEvents modEvents,
+  IMonitor logger,
+  ConfigManager configManager
+) : BaseModule(modEvents, logger, configManager), IConfigurable
 {
   private readonly PerScreen<float> _alpha = new();
   private readonly PerScreen<float> _yMovementPerDraw = new();
@@ -98,7 +101,8 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
 
   private void DrawAnimalHasProduct()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation = GetAnimalsInCurrentLocation();
+    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation =
+      GetAnimalsInCurrentLocation();
     if (animalsInCurrentLocation == null)
     {
       return;
@@ -112,7 +116,12 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
       string? currentProduce = animal.currentProduce.Value;
       bool hasAllowedProduce = currentProduce != null && currentProduce != "430"; // Truffle
       bool isGrown = animal.age.Value >= animal.GetAnimalData().DaysToMature;
-      if (harvestType == FarmAnimalHarvestType.DropOvernight || animal.IsEmoting || !hasAllowedProduce || !isGrown)
+      if (
+        harvestType == FarmAnimalHarvestType.DropOvernight
+        || animal.IsEmoting
+        || !hasAllowedProduce
+        || !isGrown
+      )
       {
         continue;
       }
@@ -126,7 +135,9 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
 
       Game1.spriteBatch.Draw(
         Game1.emoteSpriteSheet,
-        Utility.ModifyCoordinatesForUIScale(new Vector2(positionAboveAnimal.X + 14f, positionAboveAnimal.Y)),
+        Utility.ModifyCoordinatesForUIScale(
+          new Vector2(positionAboveAnimal.X + 14f, positionAboveAnimal.Y)
+        ),
         new Rectangle(
           3 * (Game1.tileSize / 4) % Game1.emoteSpriteSheet.Width,
           3 * (Game1.tileSize / 4) / Game1.emoteSpriteSheet.Width * (Game1.tileSize / 4),
@@ -145,7 +156,9 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
       Rectangle sourceRectangle = produceData.GetSourceRect();
       Game1.spriteBatch.Draw(
         produceData.GetTexture(),
-        Utility.ModifyCoordinatesForUIScale(new Vector2(positionAboveAnimal.X + 28f, positionAboveAnimal.Y + 8f)),
+        Utility.ModifyCoordinatesForUIScale(
+          new Vector2(positionAboveAnimal.X + 28f, positionAboveAnimal.Y + 8f)
+        ),
         sourceRectangle,
         Color.White * 0.9f,
         0.0f,
@@ -165,15 +178,16 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
   private static bool IsLargeAnimal(FarmAnimal animal)
   {
     string animalType = animal.type.Value.ToLower();
-    return animalType.Contains("cow") ||
-           animalType.Contains("sheep") ||
-           animalType.Contains("goat") ||
-           animalType.Contains("pig");
+    return animalType.Contains("cow")
+      || animalType.Contains("sheep")
+      || animalType.Contains("goat")
+      || animalType.Contains("pig");
   }
 
   private void DrawIconForFarmAnimals()
   {
-    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation = GetAnimalsInCurrentLocation();
+    NetLongDictionary<FarmAnimal, NetRef<FarmAnimal>>? animalsInCurrentLocation =
+      GetAnimalsInCurrentLocation();
 
     if (animalsInCurrentLocation == null)
     {
@@ -183,7 +197,11 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
     foreach ((_, FarmAnimal animal) in animalsInCurrentLocation.Pairs)
     {
       int animalFriendship = animal.friendshipTowardFarmer.Value;
-      if (animal.IsEmoting || animal.wasPet.Value || (animalFriendship >= 1000 && Config.HideAnimalPetOnMaxFriendship))
+      if (
+        animal.IsEmoting
+        || animal.wasPet.Value
+        || (animalFriendship >= 1000 && Config.HideAnimalPetOnMaxFriendship)
+      )
       {
         continue;
       }
@@ -223,7 +241,9 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
   {
     Game1.spriteBatch.Draw(
       Game1.mouseCursors,
-      Utility.ModifyCoordinatesForUIScale(new Vector2(handPosition.X, handPosition.Y + _yMovementPerDraw.Value)),
+      Utility.ModifyCoordinatesForUIScale(
+        new Vector2(handPosition.X, handPosition.Y + _yMovementPerDraw.Value)
+      ),
       new Rectangle(32, 0, 16, 16),
       Color.White * _alpha.Value,
       0.0f,
@@ -248,7 +268,7 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
     {
       AnimalHouse animalHouse => animalHouse.Animals,
       Farm farm => farm.Animals,
-      _ => null
+      _ => null,
     };
 
     return animals;
@@ -259,7 +279,7 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
     return Game1.currentLocation.characters.Where(character => character is Pet).Cast<Pet>();
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.Tooltips;
@@ -299,5 +319,5 @@ internal class AnimalInteractModule(IModEvents modEvents, IMonitor logger, Confi
       setValue: value => Config.ShowAnimalProduceReady = value
     );
   }
-#endregion
+  #endregion
 }

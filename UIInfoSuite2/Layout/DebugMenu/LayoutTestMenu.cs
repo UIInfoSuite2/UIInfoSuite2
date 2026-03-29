@@ -32,13 +32,14 @@ internal class LayoutTestMenu : IClickableMenu
   private int _scrollOffset;
   private int _totalContentHeight;
 
-  public LayoutTestMenu() : base(Math.Max(10, Game1.uiViewport.Width / 2 - 500), 40, 1000, Game1.uiViewport.Height - 80)
+  public LayoutTestMenu()
+    : base(Math.Max(10, Game1.uiViewport.Width / 2 - 500), 40, 1000, Game1.uiViewport.Height - 80)
   {
     BuildTests();
     LayoutAll();
   }
 
-#region Test Cases
+  #region Test Cases
   private void BuildTests()
   {
     // Row – basic
@@ -50,7 +51,13 @@ internal class LayoutTestMenu : IClickableMenu
     // Column – basic
     Add(
       "Column | spacing=8",
-      LayoutContainer.Column("t-col-basic", 8, Box(120, 20, Red), Box(120, 35, Green), Box(120, 25, Blue))
+      LayoutContainer.Column(
+        "t-col-basic",
+        8,
+        Box(120, 20, Red),
+        Box(120, 35, Green),
+        Box(120, 25, Blue)
+      )
     );
 
     // JustifyContent variants (fixed 500px row)
@@ -60,7 +67,7 @@ internal class LayoutTestMenu : IClickableMenu
       ("End", JustifyContent.End),
       ("SpaceBetween", JustifyContent.SpaceBetween),
       ("SpaceAround", JustifyContent.SpaceAround),
-      ("SpaceEvenly", JustifyContent.SpaceEvenly)
+      ("SpaceEvenly", JustifyContent.SpaceEvenly),
     ];
     foreach ((string name, JustifyContent value) in justifyModes)
     {
@@ -82,7 +89,7 @@ internal class LayoutTestMenu : IClickableMenu
       ("Start", AlignItems.Start),
       ("Center", AlignItems.Center),
       ("End", AlignItems.End),
-      ("Stretch", AlignItems.Stretch)
+      ("Stretch", AlignItems.Stretch),
     ];
     foreach ((string name, AlignItems value) in alignModes)
     {
@@ -195,7 +202,12 @@ internal class LayoutTestMenu : IClickableMenu
         Box(90, 18, Yellow)
       );
 
-      LayoutContainer rightCol = LayoutContainer.Column("t-nest-right", 4, Box(90, 30, Blue), Box(90, 20, Purple));
+      LayoutContainer rightCol = LayoutContainer.Column(
+        "t-nest-right",
+        4,
+        Box(90, 30, Blue),
+        Box(90, 20, Purple)
+      );
 
       LayoutContainer c = LayoutContainer.Row("t-nested", 12, leftCol, rightCol);
       Add("Nested | Row -> [Column: Red/Orange/Yellow] + [Column: Blue/Purple]", c);
@@ -269,11 +281,11 @@ internal class LayoutTestMenu : IClickableMenu
       Add("Alignment=Center | 400x80, children centered", c);
     }
   }
-#endregion
+  #endregion
 
   private readonly record struct TestEntry(string Label, LayoutContainer Container);
 
-#region Helpers
+  #region Helpers
   private static TestColorBox Box(int w, int h, Color color)
   {
     return new TestColorBox(w, h, color);
@@ -293,13 +305,17 @@ internal class LayoutTestMenu : IClickableMenu
       _totalContentHeight += LabelHeight + test.Container.Bounds.Height + TestGap;
     }
   }
-#endregion
+  #endregion
 
-#region IClickableMenu Overrides
+  #region IClickableMenu Overrides
   public override void draw(SpriteBatch b)
   {
     // Dim background
-    b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.5f);
+    b.Draw(
+      Game1.fadeToBlackRect,
+      Game1.graphics.GraphicsDevice.Viewport.Bounds,
+      Color.Black * 0.5f
+    );
 
     // Menu background
     drawTextureBox(b, xPositionOnScreen, yPositionOnScreen, width, height, Color.White);
@@ -376,7 +392,11 @@ internal class LayoutTestMenu : IClickableMenu
         new Rectangle(xPositionOnScreen + width - 10, contentTop, 6, visibleHeight),
         Color.Gray * 0.3f
       );
-      b.Draw(Game1.staminaRect, new Rectangle(xPositionOnScreen + width - 10, barY, 6, barH), Color.Gray * 0.7f);
+      b.Draw(
+        Game1.staminaRect,
+        new Rectangle(xPositionOnScreen + width - 10, barY, 6, barH),
+        Color.Gray * 0.7f
+      );
     }
 
     drawMouse(b);
@@ -395,5 +415,5 @@ internal class LayoutTestMenu : IClickableMenu
       exitThisMenu();
     }
   }
-#endregion
+  #endregion
 }

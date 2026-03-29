@@ -5,11 +5,11 @@ namespace UIInfoSuite2.Config;
 
 public sealed class ModConfig
 {
-#region Advanced Config
+  #region Advanced Config
   public bool DrawDebugBounds { get; set; } = false;
-#endregion
+  #endregion
 
-#region HUD Items Config
+  #region HUD Items Config
   // Icons
   public int HudIconsPerRow { get; set; } = 5;
 
@@ -66,9 +66,9 @@ public sealed class ModConfig
   // Artifact Spots
   public bool ShowArtifactSpotCount { get; set; } = true;
   public bool ShowSeedSpotCount { get; set; } = true;
-#endregion
+  #endregion
 
-#region Menu Tweaks Config
+  #region Menu Tweaks Config
   // Social menu exact hearts
   public bool ShowHeartFills { get; set; } = true;
 
@@ -88,9 +88,9 @@ public sealed class ModConfig
   public bool DisplayMenuShortcuts { get; set; } = true;
   public bool DisplayCalendarAndBillboardShortcut { get; set; } = true;
   public bool DisplaySlayerQuestsShortcut { get; set; } = true;
-#endregion
+  #endregion
 
-#region Tooltips Config
+  #region Tooltips Config
   // Crops & Machines
   public bool ShowCropTooltip { get; set; } = true;
   public bool ShowMachineTooltip { get; set; } = true;
@@ -100,17 +100,20 @@ public sealed class ModConfig
   public bool ShowBombRanges { get; set; } = true;
 
   public bool ShowRangeOnKeyDownWhileHovered =>
-    ShowItemRangeHoverKeybind.Keybinds.Length > 0 || ShowAllItemRangesHoverKeybind.Keybinds.Length > 0;
+    ShowItemRangeHoverKeybind.Keybinds.Length > 0
+    || ShowAllItemRangesHoverKeybind.Keybinds.Length > 0;
 
   public bool OnlyShowRangeOnKeyPress { get; set; }
-#endregion
+  #endregion
 
-#region Keybinds Config
+  #region Keybinds Config
   public KeybindList OpenCalendarKeybind { get; set; } = KeybindList.ForSingle();
   public KeybindList OpenQuestBoardKeybind { get; set; } = KeybindList.ForSingle();
   public KeybindList OpenSlayerQuestKeybind { get; set; } = KeybindList.ForSingle();
   public KeybindList ToggleItemRangesKeybind { get; set; } = KeybindList.ForSingle();
-  public KeybindList ShowItemRangeHoverKeybind { get; set; } = KeybindList.ForSingle(SButton.LeftControl);
-  public KeybindList ShowAllItemRangesHoverKeybind { get; set; } = KeybindList.Parse("LeftControl + LeftAlt");
-#endregion
+  public KeybindList ShowItemRangeHoverKeybind { get; set; } =
+    KeybindList.ForSingle(SButton.LeftControl);
+  public KeybindList ShowAllItemRangesHoverKeybind { get; set; } =
+    KeybindList.Parse("LeftControl + LeftAlt");
+  #endregion
 }

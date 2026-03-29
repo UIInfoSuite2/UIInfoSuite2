@@ -36,13 +36,19 @@ internal abstract class HudIconModule(
   protected abstract void SetupIcons();
   protected abstract void RemoveIcons();
 
-  protected void RemoveIconsWhere(Func<KeyValuePair<string, ClickableIcon>, bool> predicate, int expectedRemoved)
+  protected void RemoveIconsWhere(
+    Func<KeyValuePair<string, ClickableIcon>, bool> predicate,
+    int expectedRemoved
+  )
   {
     int removed = IconManager.RemoveIconWhere(predicate);
     Logger.Log($"Removed {removed} icons");
     if (removed != expectedRemoved)
     {
-      Logger.Log($"Expected to remove {expectedRemoved} icons, but removed {removed}", LogLevel.Warn);
+      Logger.Log(
+        $"Expected to remove {expectedRemoved} icons, but removed {removed}",
+        LogLevel.Warn
+      );
     }
   }
 
@@ -62,7 +68,7 @@ internal abstract class HudIconModule(
     SetupIcons();
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public virtual int GetOrder()
   {
     return 0;
@@ -83,6 +89,9 @@ internal abstract class HudIconModule(
     return null;
   }
 
-  public abstract void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest);
-#endregion
+  public abstract void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  );
+  #endregion
 }

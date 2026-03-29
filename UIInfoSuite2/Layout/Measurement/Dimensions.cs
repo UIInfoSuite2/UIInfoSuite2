@@ -10,8 +10,11 @@ public struct Dimensions(int width, int height) : IEquatable<Dimensions>
   public int Width = width;
   public int Height = height;
 
-  public Dimensions() : this(0, 0) { }
-  public Dimensions(float width, float height) : this((int)width, (int)height) { }
+  public Dimensions()
+    : this(0, 0) { }
+
+  public Dimensions(float width, float height)
+    : this((int)width, (int)height) { }
 
   public void Deconstruct(out int width, out int height)
   {
@@ -121,7 +124,7 @@ public struct Dimensions(int width, int height) : IEquatable<Dimensions>
   }
 
   // Object overrides
-  public readonly override bool Equals(object? obj)
+  public override readonly bool Equals(object? obj)
   {
     return obj is Dimensions other && Equals(other);
   }
@@ -133,12 +136,12 @@ public struct Dimensions(int width, int height) : IEquatable<Dimensions>
 
   // Note: Since the struct is mutable, GetHashCode() should be marked with the readonly modifier
   // to ensure it uses the current state of the fields
-  public readonly override int GetHashCode()
+  public override readonly int GetHashCode()
   {
     return HashCode.Combine(Width, Height);
   }
 
-  public readonly override string ToString()
+  public override readonly string ToString()
   {
     return $"Width: {Width}, Height: {Height}";
   }

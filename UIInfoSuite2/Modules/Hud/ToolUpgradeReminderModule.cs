@@ -54,7 +54,6 @@ internal class ToolUpgradeReminderModule(
     UpdateToolInfo();
   }
 
-
   private void UpdateToolInfo()
   {
     if (Icon.Tool != Game1.player.toolBeingUpgraded.Value)
@@ -63,7 +62,7 @@ internal class ToolUpgradeReminderModule(
     }
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string? GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -79,7 +78,10 @@ internal class ToolUpgradeReminderModule(
     return I18n.Gmcm_Group_OtherIcons();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -89,5 +91,5 @@ internal class ToolUpgradeReminderModule(
       setValue: value => Config.ShowToolUpgradeIcon = value
     );
   }
-#endregion
+  #endregion
 }

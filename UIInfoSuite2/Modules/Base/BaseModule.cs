@@ -5,7 +5,8 @@ using UIInfoSuite2.Config;
 
 namespace UIInfoSuite2.Modules.Base;
 
-public abstract class BaseModule(IModEvents modEvents, IMonitor logger, ConfigManager configManager) : IDisposable
+public abstract class BaseModule(IModEvents modEvents, IMonitor logger, ConfigManager configManager)
+  : IDisposable
 {
   protected readonly ConfigManager ConfigManager = configManager;
   protected readonly IMonitor Logger = logger;
