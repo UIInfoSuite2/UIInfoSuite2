@@ -3,7 +3,7 @@ using StardewModdingAPI.Utilities;
 
 namespace UIInfoSuite2.Infrastructure.Config;
 
-public sealed class NewModConfig
+public sealed class ModConfig
 {
 #region HUD Items Config
   // XP Bar
@@ -18,6 +18,7 @@ public sealed class NewModConfig
 
   // Weather
   public bool ShowWeatherIcon { get; set; } = true;
+  public bool ShowIslandWeather { get; set; } = true;
 
   // Merchant
   public bool ShowTravelingMerchantIcon { get; set; } = true;
@@ -66,14 +67,21 @@ public sealed class NewModConfig
 
 #region Tooltips Config
   // Crops & Machines
-  public bool ShowCropAndBarrelTooltip { get; set; } = true;
+  public bool ShowCropTooltip { get; set; } = true;
+  public bool ShowMachineTooltip { get; set; } = true;
 
   // Item Range
   public bool ShowItemEffectRanges { get; set; } = true;
+  public bool ShowRangeOnKeyDownWhileHovered { get; set; } = true;
+  public bool ShowBombRanges { get; set; } = true;
 #endregion
 
 #region Keybinds Config
-  public KeybindList OpenCalendarKeybind { get; set; } = KeybindList.ForSingle(SButton.B);
-  public KeybindList OpenQuestBoardKeybind { get; set; } = KeybindList.ForSingle(SButton.H);
+  public KeybindList OpenCalendarKeybind { get; set; } = KeybindList.ForSingle();
+  public KeybindList OpenQuestBoardKeybind { get; set; } = KeybindList.ForSingle();
+  public KeybindList OpenSlayerQuestKeybind { get; set; } = KeybindList.ForSingle();
+  public KeybindList ToggleItemRangesKeybind { get; set; } = KeybindList.ForSingle();
+  public KeybindList ShowItemRangeHoverKeybind { get; set; } = KeybindList.ForSingle(SButton.LeftControl);
+  public KeybindList ShowAllItemRangesHoverKeybind { get; set; } = KeybindList.Parse("LeftControl + LeftAlt");
 #endregion
 }
