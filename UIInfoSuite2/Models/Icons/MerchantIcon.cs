@@ -7,6 +7,11 @@ namespace UIInfoSuite2.Models.Icons;
 
 internal class MerchantIcon : ClickableIcon
 {
+  // Keep the merchant icon texture alive for the entirety of the game so we don't have to worry about disposing
+  private static readonly Lazy<Texture2D> _merchantIconTexture = new(() =>
+    ModEntry.GetSingleton<IModHelper>().ModContent.Load<Texture2D>("assets/merchant.png")
+  );
+
   public enum Type
   {
     Traveler,
@@ -26,6 +31,8 @@ internal class MerchantIcon : ClickableIcon
     {
       case Type.Traveler:
         HoverText = I18n.TravelingMerchantIsInTown();
+        BaseTexture.Value = _merchantIconTexture.Value;
+        SetSourceBounds(new Rectangle(0, 0, 20, 20));
         break;
       case Type.Bookseller:
         HoverText = I18n.BooksellerIsInTown();
