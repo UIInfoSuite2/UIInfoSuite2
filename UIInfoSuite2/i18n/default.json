@@ -130,6 +130,7 @@
   "gmcm.group.luck": "Luck Icon",
   "gmcm.group.weather": "Weather Icons",
   "gmcm.group.xpBar": "Experience Bar",
+  "gmcm.group.buffTimers": "Buff Timers",
   "gmcm.group.merchant": "Merchants",
   "gmcm.group.birthday": "Birthday Reminder",
   "gmcm.group.seasonalForage": "Seasonal Forage",
@@ -218,6 +219,11 @@
   "gmcm.modules.icons.artifacts.enable.tooltip": "Lists the number of uncollected artifact spots around the map",
   "gmcm.modules.icons.artifacts.seeds.enable": "Show seed spot count",
   "gmcm.modules.icons.artifacts.seeds.enable.tooltip": "Lists the number of uncollected seed spots around the map",
+  // Buff Timers
+  "gmcm.modules.hud.buffTimers.enable": "Show buff duration timers",
+  "gmcm.modules.hud.buffTimers.enable.tooltip": "Display countdown timers below active buff icons",
+  "gmcm.modules.hud.buffTimers.expireSound": "Play buff expire sound",
+  "gmcm.modules.hud.buffTimers.expireSound.tooltip": "Play a sound effect when a buff expires",
   // HUD Tooltips
   "gmcm.section.tooltips.title": "HUD Tooltips",
   "gmcm.section.tooltips.title.tooltip": "Control HUD Tooltips and other Quality-of-Life features in your world",

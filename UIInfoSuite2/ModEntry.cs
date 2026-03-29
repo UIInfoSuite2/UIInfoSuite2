@@ -145,6 +145,7 @@ internal class ModEntry : Mod
     Register<ObjectEffectRangeModule>();
     Register<ObjectInfoModule>();
     Register<ExperienceModule>();
+    Register<BuffTimerModule>();
 
     _container.Verify();
 
