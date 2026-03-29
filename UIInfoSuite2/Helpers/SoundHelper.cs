@@ -11,6 +11,7 @@ namespace UIInfoSuite2.Helpers;
 public enum Sounds
 {
   LevelUp,
+  BuffExpired,
 }
 
 public class SoundHelper
@@ -25,6 +26,7 @@ public class SoundHelper
     _modId = helper.ModContent.ModID;
 
     RegisterSound(helper, Sounds.LevelUp, "LevelUp.wav");
+    RegisterSound(helper, Sounds.BuffExpired, "buff_expire.wav");
 
     helper.Events.Content.AssetRequested += OnAssetRequested;
   }
