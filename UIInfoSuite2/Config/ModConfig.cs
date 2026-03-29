@@ -25,6 +25,10 @@ public sealed class ModConfig
   public bool ShowExperienceGain { get; set; } = true;
   public bool ShowLevelUpAnimation { get; set; } = true;
 
+  // Buff Timers
+  public bool ShowBuffTimers { get; set; } = true;
+  public bool PlayBuffExpireSound { get; set; } = true;
+
   // Luck
   public bool ShowLuckIcon { get; set; } = true;
   public bool ShowExactLuckValue { get; set; }
