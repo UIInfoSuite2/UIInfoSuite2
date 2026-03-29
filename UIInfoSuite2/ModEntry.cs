@@ -190,14 +190,17 @@ internal class ModEntry : Mod
 
     foreach (BaseModule module in GetAllModules())
     {
-      if (!module.Enabled && module.ShouldEnable())
+      switch (module.Enabled)
       {
-        module.Enable();
-      }
-
-      if (module.Enabled && !module.ShouldEnable())
-      {
-        module.Disable();
+        case false when module.ShouldEnable():
+          module.Enable();
+          break;
+        case true when !module.ShouldEnable():
+          module.Disable();
+          break;
+        default:
+          module.OnConfigChange();
+          break;
       }
     }
   }

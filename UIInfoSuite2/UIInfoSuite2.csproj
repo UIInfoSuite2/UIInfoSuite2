@@ -20,10 +20,6 @@
     <PackageReference Include="SimpleInjector" Version="5.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
-  </ItemGroup>
-
   <Import Project="stardewvalley.targets" Condition="Exists('stardewvalley.targets')" />
 
   <!-- Clean deployed assets before SMAPI deploy to prevent stale files from lingering -->

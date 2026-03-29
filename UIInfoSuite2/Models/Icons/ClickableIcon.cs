@@ -71,10 +71,10 @@ internal class ClickableIcon
 
   public int RenderPriority { get; set; }
 
-  public string HoverText
+  public virtual string HoverText
   {
     get => _hoverText.Value;
-    set => _hoverText.Value = Game1.parseText(value, HoverFont, 600);
+    set => _hoverText.Value = FormatHoverText(value);
   }
 
   public AspectLockedDimensions Dimensions => ScalingDimensions.Value;
@@ -98,6 +98,11 @@ internal class ClickableIcon
   protected ClickableTextureComponent Icon => _icon.Value;
 
   public Vector2 IconPosition => new(Icon.bounds.X, Icon.bounds.Y);
+
+  public string FormatHoverText(string text)
+  {
+    return Game1.parseText(text, HoverFont, 600);
+  }
 
   public void SetSourceBounds(Rectangle rectangle, bool generateComponent = true)
   {

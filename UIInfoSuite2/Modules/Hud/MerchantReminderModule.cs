@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Extensions;
+using StardewValley.Internal;
+using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Objects;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
+using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Managers;
 using UIInfoSuite2.Models.Icons;
 using UIInfoSuite2.Modules.Base;
@@ -18,10 +23,12 @@ internal class MerchantReminderModule(
   IModEvents modEvents,
   IMonitor logger,
   ConfigManager configManager,
-  HudIconManager iconManager
+  HudIconManager iconManager,
+  BundleHelper bundleHelper
 ) : HudIconModule(modEvents, logger, configManager, iconManager)
 {
-  protected const string IconPrefix = "MerchantIcon";
+  private const string _rsvMerchantLocation = "Custom_Ridgeside_RSVTheHike";
+  private const string _iconPrefix = "MerchantIcon";
 
   // Lazy init because the icon init uses textures that aren't loaded yet
   private readonly Lazy<MerchantIcon> _booksellerIcon = new(() =>
@@ -29,6 +36,9 @@ internal class MerchantReminderModule(
   );
   private readonly Lazy<MerchantIcon> _travelerIcon = new(() =>
     new MerchantIcon(MerchantIcon.Type.Traveler)
+  );
+  private readonly Lazy<MerchantIcon> _rsvTravelerIcon = new(() =>
+    new MerchantIcon(MerchantIcon.Type.RsvTraveler)
   );
 
   public override bool ShouldEnable()
@@ -38,13 +48,14 @@ internal class MerchantReminderModule(
 
   protected override void SetupIcons()
   {
-    IconManager.AddIcon($"{IconPrefix}-Traveler", _travelerIcon.Value);
-    IconManager.AddIcon($"{IconPrefix}-Bookseller", _booksellerIcon.Value);
+    IconManager.AddIcon($"{_iconPrefix}-Traveler", _travelerIcon.Value);
+    IconManager.AddIcon($"{_iconPrefix}-RsvTraveler", _rsvTravelerIcon.Value);
+    IconManager.AddIcon($"{_iconPrefix}-Bookseller", _booksellerIcon.Value);
   }
 
   protected override void RemoveIcons()
   {
-    RemoveIconsWhere(IconPrefix, 2);
+    RemoveIconsWhere(_iconPrefix, 2);
   }
 
   public override void OnEnable()
@@ -52,8 +63,7 @@ internal class MerchantReminderModule(
     base.OnEnable();
     ModEvents.GameLoop.DayStarted += OnDayStarted;
     ModEvents.Display.MenuChanged += OnMenuChanged;
-    _travelerIcon.Value.UpdateMerchantIcon();
-    _booksellerIcon.Value.UpdateMerchantIcon();
+    UpdateIcons();
   }
 
   public override void OnDisable()
@@ -63,10 +73,14 @@ internal class MerchantReminderModule(
     base.OnDisable();
   }
 
+  public override void OnConfigChange()
+  {
+    UpdateIcons();
+  }
+
   private void OnDayStarted(object? sender, EventArgs e)
   {
-    _travelerIcon.Value.UpdateMerchantIcon();
-    _booksellerIcon.Value.UpdateMerchantIcon();
+    UpdateIcons();
   }
 
   private void OnMenuChanged(object? sender, MenuChangedEventArgs e)
@@ -76,15 +90,76 @@ internal class MerchantReminderModule(
       return;
     }
 
-    // TODO this can probably be replaced with a shopid check like below, was implemented before the shop data rework
-    if (menu.forSale.Any(s => s is not Hat) && Game1.currentLocation.Name == "Forest")
-    {
-      _travelerIcon.Value.VisitedMerchant = true;
-    }
-
     if (menu.ShopId == "Bookseller")
     {
-      _travelerIcon.Value.VisitedMerchant = true;
+      _booksellerIcon.Value.VisitedMerchant = true;
+    }
+
+    if (menu.forSale.Any(s => s is Hat))
+    {
+      // Sorry Hat Maus, we're not interested right now...
+      return;
+    }
+
+    // TODO this can probably be replaced with a shopid check like below, was implemented before the shop data rework
+    switch (Game1.currentLocation.Name)
+    {
+      case "Forest":
+        _travelerIcon.Value.VisitedMerchant = true;
+        break;
+      case _rsvMerchantLocation:
+        _rsvTravelerIcon.Value.VisitedMerchant = true;
+        break;
+    }
+  }
+
+  private void UpdateIcons()
+  {
+    _travelerIcon.Value.ResetMerchantAvailability(
+      ((Forest)Game1.getLocationFromName(nameof(Forest))).ShouldTravelingMerchantVisitToday()
+    );
+    // Icon takes care of checking if mods are enabled for its ShouldDraw check
+    _rsvTravelerIcon.Value.ResetMerchantAvailability(Game1.dayOfMonth % 7 == 3);
+    _booksellerIcon.Value.ResetMerchantAvailability(
+      Utility.getDaysOfBooksellerThisSeason().Contains(Game1.dayOfMonth)
+    );
+    CheckForBundleItems();
+  }
+
+  private void CheckForBundleItems()
+  {
+    try
+    {
+      Dictionary<ISalable, ItemStockInformation> stock = ShopBuilder.GetShopStock("Traveler");
+      HashSet<string> bundles = [];
+      foreach (ISalable salable in stock.Keys)
+      {
+        if (salable is not Item item)
+        {
+          continue;
+        }
+
+        bundles.AddRange(
+          bundleHelper
+            .BundlesRequiringItem(item)
+            .Select(data => $"{item.DisplayName} ({data.Bundle.DisplayName})")
+        );
+      }
+
+      List<string> bundleList = bundles.ToList();
+      if (Config.MerchantAlwaysHasBundleItem)
+      {
+        bundleList.Add("Debug Leek (Spring Foraging)");
+      }
+      bundleList.Sort();
+      _travelerIcon.Value.SetBundleItems(bundleList);
+    }
+    catch (Exception e)
+    {
+      Logger.Log(
+        $"MerchantReminderModule: merchant stock check failed, {e.Message}",
+        LogLevel.Warn
+      );
     }
   }
 
@@ -136,6 +211,20 @@ internal class MerchantReminderModule(
       tooltip: I18n.Gmcm_Modules_Icons_Merchant_HideOnVisit_Tooltip,
       getValue: () => Config.HideMerchantIconWhenVisited,
       setValue: value => Config.HideMerchantIconWhenVisited = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleIcon,
+      tooltip: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleIcon_Tooltip,
+      getValue: () => Config.ShowMerchantBundleIcon,
+      setValue: value => Config.ShowMerchantBundleIcon = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleItems,
+      tooltip: I18n.Gmcm_Modules_Icons_Merchant_ShowBundleItems_Tooltip,
+      getValue: () => Config.ShowMerchantBundleItems,
+      setValue: value => Config.ShowMerchantBundleItems = value
     );
   }
   #endregion
