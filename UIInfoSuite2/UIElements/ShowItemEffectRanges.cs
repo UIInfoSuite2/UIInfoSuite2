@@ -10,11 +10,13 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Network;
+using UIInfoSuite2.Infrastructure.Config;
+using UIInfoSuite2.Infrastructure.Modules;
 using Object = StardewValley.Object;
 
 namespace UIInfoSuite2.UIElements;
 
-internal class ShowItemEffectRanges : IDisposable
+internal class ShowItemEffectRanges : BaseModule
 {
 #region Properties
   private readonly PerScreen<List<Point>> _effectiveAreaCurrent = new(() => new List<Point>());
@@ -23,55 +25,35 @@ internal class ShowItemEffectRanges : IDisposable
 
   private readonly Mutex _mutex = new();
 
-  private readonly IModHelper _helper;
-
-  private bool ButtonControlShow { get; set; }
-  private bool ShowBombRange { get; set; }
-
   private bool ButtonShowOneRange { get; set; }
   private bool ButtonShowAllRanges { get; set; }
 #endregion
 
 
 #region Lifecycle
-  public ShowItemEffectRanges(IModHelper helper)
+  public ShowItemEffectRanges(IModEvents modEvents, IMonitor logger, ConfigManager configManager) : base(
+    modEvents,
+    logger,
+    configManager
+  ) { }
+
+  public override bool ShouldEnable()
   {
-    _helper = helper;
+    return Config.ShowItemEffectRanges;
   }
 
-  public void Dispose()
+  public override void OnEnable()
   {
-    ToggleOption(false);
+    ModEvents.Display.RenderingHud += OnRenderingHud;
+    ModEvents.GameLoop.UpdateTicked += OnUpdateTicked;
+    ModEvents.Input.ButtonsChanged += OnButtonChanged;
   }
 
-  public void ToggleOption(bool showItemEffectRanges)
+  public override void OnDisable()
   {
-    ToggleButtonControlShowOption(showItemEffectRanges);
-
-    _helper.Events.Display.RenderingHud -= OnRenderingHud;
-    _helper.Events.GameLoop.UpdateTicked -= OnUpdateTicked;
-
-    if (showItemEffectRanges)
-    {
-      _helper.Events.Display.RenderingHud += OnRenderingHud;
-      _helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
-    }
-  }
-
-  public void ToggleButtonControlShowOption(bool buttonControlShow)
-  {
-    ButtonControlShow = buttonControlShow;
-
-    _helper.Events.Input.ButtonsChanged -= OnButtonChanged;
-    if (buttonControlShow)
-    {
-      _helper.Events.Input.ButtonsChanged += OnButtonChanged;
-    }
-  }
-
-  public void ToggleShowBombRangeOption(bool showBombRange)
-  {
-    ShowBombRange = showBombRange;
+    ModEvents.Display.RenderingHud -= OnRenderingHud;
+    ModEvents.GameLoop.UpdateTicked -= OnUpdateTicked;
+    ModEvents.Input.ButtonsChanged -= OnButtonChanged;
   }
 #endregion
 
@@ -108,15 +90,8 @@ internal class ShowItemEffectRanges : IDisposable
     {
       UpdateEffectiveArea();
       GetOverlapValue();
-      if (ButtonShowOneRange)
-      {
-        ButtonShowOneRange = false;
-      }
-
-      if (ButtonShowAllRanges)
-      {
-        ButtonShowAllRanges = false;
-      }
+      ButtonShowAllRanges = false;
+      ButtonShowOneRange = false;
     }
   }
 
@@ -173,20 +148,19 @@ internal class ShowItemEffectRanges : IDisposable
 
   private void OnButtonChanged(object? sender, ButtonsChangedEventArgs e)
   {
-    if (ModEntry._modConfig != null)
+    if (!Context.IsPlayerFree)
     {
-      if (Context.IsPlayerFree)
-      {
-        if (ModEntry._modConfig.ShowOneRange.IsDown())
-        {
-          ButtonShowOneRange = true;
-        }
+      return;
+    }
 
-        if (ModEntry._modConfig.ShowAllRange.IsDown())
-        {
-          ButtonShowAllRanges = true;
-        }
-      }
+    if (Config.ShowItemRangeHoverKeybind.IsDown())
+    {
+      ButtonShowOneRange = true;
+    }
+
+    if (Config.ShowItemRangeHoverKeybind.IsDown())
+    {
+      ButtonShowAllRanges = true;
     }
   }
 #endregion
@@ -214,7 +188,7 @@ internal class ShowItemEffectRanges : IDisposable
     }
 
     // Every other item is here
-    if (ButtonControlShow && (ButtonShowOneRange || ButtonShowAllRanges))
+    if (Config.ShowRangeOnKeyDownWhileHovered && (ButtonShowOneRange || ButtonShowAllRanges))
     {
       Vector2 gamepadTile = Game1.player.CurrentTool != null
         ? Utility.snapToInt(Game1.player.GetToolLocation() / Game1.tileSize)
@@ -385,7 +359,7 @@ internal class ShowItemEffectRanges : IDisposable
         arrayToUse = GetDistanceArray(ObjectsWithDistance.MossySeed);
         AddTilesToHighlightedArea(arrayToUse, false, (int)validTile.X, (int)validTile.Y);
       }
-      else if (ShowBombRange && itemName.IndexOf("Bomb", StringComparison.OrdinalIgnoreCase) >= 0)
+      else if (Config.ShowBombRanges && itemName.IndexOf("Bomb", StringComparison.OrdinalIgnoreCase) >= 0)
       {
         if (itemName.Contains("ega"))
         {
@@ -592,7 +566,7 @@ internal class ShowItemEffectRanges : IDisposable
 
   private static bool IsDistanceDirectionOK(int i, int j, int radius, bool? onlyClearExceptions)
   {
-    return onlyClearExceptions.HasValue && onlyClearExceptions.Value ? radius - j == 0 || radius - i == 0 : true;
+    return !onlyClearExceptions.HasValue || !onlyClearExceptions.Value || radius - j == 0 || radius - i == 0;
   }
 
   private static bool IsExceptionalDistanceOK(double? exceptionalDistance, double distance)
