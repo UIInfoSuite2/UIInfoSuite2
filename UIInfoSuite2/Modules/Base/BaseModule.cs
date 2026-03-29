@@ -39,4 +39,6 @@ public abstract class BaseModule(IModEvents modEvents, IMonitor logger, ConfigMa
   public abstract void OnEnable();
 
   public abstract void OnDisable();
+
+  public virtual void OnConfigChange() { }
 }
