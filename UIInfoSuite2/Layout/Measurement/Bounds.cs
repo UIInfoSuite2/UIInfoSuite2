@@ -61,7 +61,13 @@ public static class InsetsExtensions
   public static IInsets Plus(this IInsets a, int b)
   {
     var clone = (IInsets)a.Clone();
-    clone.SetInsets(a.Top.OrZero() + b, a.Left.OrZero() + b, a.Bottom.OrZero() + b, a.Right.OrZero() + b, true);
+    clone.SetInsets(
+      a.Top.OrZero() + b,
+      a.Left.OrZero() + b,
+      a.Bottom.OrZero() + b,
+      a.Right.OrZero() + b,
+      true
+    );
     return clone;
   }
 
@@ -81,7 +87,13 @@ public static class InsetsExtensions
   public static IInsets Minus(this IInsets a, int b)
   {
     var clone = (IInsets)a.Clone();
-    clone.SetInsets(a.Top.OrZero() - b, a.Left.OrZero() - b, a.Bottom.OrZero() - b, a.Right.OrZero() - b, true);
+    clone.SetInsets(
+      a.Top.OrZero() - b,
+      a.Left.OrZero() - b,
+      a.Bottom.OrZero() - b,
+      a.Right.OrZero() - b,
+      true
+    );
     return clone;
   }
 
@@ -101,13 +113,24 @@ public static class InsetsExtensions
   public static IInsets Times(this IInsets a, int b)
   {
     var clone = (IInsets)a.Clone();
-    clone.SetInsets(a.Top.OrZero() * b, a.Left.OrZero() * b, a.Bottom.OrZero() * b, a.Right.OrZero() * b, true);
+    clone.SetInsets(
+      a.Top.OrZero() * b,
+      a.Left.OrZero() * b,
+      a.Bottom.OrZero() * b,
+      a.Right.OrZero() * b,
+      true
+    );
     return clone;
   }
 
   public static IInsets DividedBy(this IInsets a, IInsets b)
   {
-    if (b.Top.OrZero() == 0 || b.Left.OrZero() == 0 || b.Bottom.OrZero() == 0 || b.Right.OrZero() == 0)
+    if (
+      b.Top.OrZero() == 0
+      || b.Left.OrZero() == 0
+      || b.Bottom.OrZero() == 0
+      || b.Right.OrZero() == 0
+    )
     {
       throw new DivideByZeroException("Cannot divide by zero in any inset value");
     }
@@ -131,7 +154,13 @@ public static class InsetsExtensions
     }
 
     var clone = (IInsets)a.Clone();
-    clone.SetInsets(a.Top.OrZero() / b, a.Left.OrZero() / b, a.Bottom.OrZero() / b, a.Right.OrZero() / b, true);
+    clone.SetInsets(
+      a.Top.OrZero() / b,
+      a.Left.OrZero() / b,
+      a.Bottom.OrZero() / b,
+      a.Right.OrZero() / b,
+      true
+    );
     return clone;
   }
 
@@ -204,7 +233,13 @@ internal class Insets : IInsets, IEquatable<Insets>
 
   public object Clone()
   {
-    return new Insets { Top = Top, Left = Left, Bottom = Bottom, Right = Right };
+    return new Insets
+    {
+      Top = Top,
+      Left = Left,
+      Bottom = Bottom,
+      Right = Right,
+    };
   }
 
   public void SetInsets(IInsets insets, bool quiet = false)
@@ -342,8 +377,12 @@ internal class TrackedInsets(
   private readonly TrackableValue<int?> _right = new(right, callbackAction, "top");
   private readonly TrackableValue<int?> _top = new(top, callbackAction, "bottom");
 
-  public TrackedInsets(int allValue = 0, Action<string?>? callbackAction = null, string callbackIdentifier = "nil") :
-    this(allValue, allValue, allValue, allValue, callbackAction, callbackIdentifier) { }
+  public TrackedInsets(
+    int allValue = 0,
+    Action<string?>? callbackAction = null,
+    string callbackIdentifier = "nil"
+  )
+    : this(allValue, allValue, allValue, allValue, callbackAction, callbackIdentifier) { }
 
   public bool ExecuteCallback { get; set; } = true;
 
@@ -375,7 +414,7 @@ internal class TrackedInsets(
   {
     return new TrackedInsets(Top, Left, Bottom, Right, callbackAction, callbackIdentifier)
     {
-      ExecuteCallback = ExecuteCallback
+      ExecuteCallback = ExecuteCallback,
     };
   }
 
@@ -426,7 +465,6 @@ internal class TrackedInsets(
       Callback("all");
     }
   }
-
 
   public bool IsDirty => _top.IsDirty || _left.IsDirty || _bottom.IsDirty || _right.IsDirty;
 
@@ -506,7 +544,6 @@ internal class TrackedInsets(
 
   public override string ToString()
   {
-    return
-      $"{nameof(Top)}: {Top}, {nameof(Left)}: {Left}, {nameof(Bottom)}: {Bottom}, {nameof(Right)}: {Right}, {nameof(IsDirty)}: {IsDirty}";
+    return $"{nameof(Top)}: {Top}, {nameof(Left)}: {Left}, {nameof(Bottom)}: {Bottom}, {nameof(Right)}: {Right}, {nameof(IsDirty)}: {IsDirty}";
   }
 }

@@ -4,7 +4,8 @@ using StardewValley;
 
 namespace UIInfoSuite2.Models.Icons;
 
-internal class QueenOfSauceIcon() : ClickableIcon(Game1.mouseCursors, new Rectangle(609, 361, 28, 28), 40)
+internal class QueenOfSauceIcon()
+  : ClickableIcon(Game1.mouseCursors, new Rectangle(609, 361, 28, 28), 40)
 {
   private readonly PerScreen<bool> _knowsRecipe = new(() => true);
   private CraftingRecipe? _recipe;
@@ -40,15 +41,18 @@ internal class QueenOfSauceIcon() : ClickableIcon(Game1.mouseCursors, new Rectan
     }
 
     KnowsRecipe = knowsSinceLastCheck;
-    ModEntry.DebugLog($"Player {Game1.player.Name} recipe knowledge has changed. Knows Recipe: {knowsSinceLastCheck}");
+    ModEntry.DebugLog(
+      $"Player {Game1.player.Name} recipe knowledge has changed. Knows Recipe: {knowsSinceLastCheck}"
+    );
   }
 
   protected override bool _ShouldDraw()
   {
-    bool recipeAvailable = (Game1.dayOfMonth % 7 == 0 || (Game1.dayOfMonth - 3) % 7 == 0) &&
-                           Game1.stats.DaysPlayed > 5 &&
-                           Recipe is not null &&
-                           !KnowsRecipe;
+    bool recipeAvailable =
+      (Game1.dayOfMonth % 7 == 0 || (Game1.dayOfMonth - 3) % 7 == 0)
+      && Game1.stats.DaysPlayed > 5
+      && Recipe is not null
+      && !KnowsRecipe;
     return base._ShouldDraw() && recipeAvailable;
   }
 }

@@ -18,24 +18,23 @@ namespace UIInfoSuite2.UIElements;
 
 internal class ShowItemEffectRanges : BaseModule
 {
-#region Properties
+  #region Properties
   private readonly PerScreen<List<Point>> _effectiveAreaCurrent = new(() => new List<Point>());
   private readonly PerScreen<HashSet<Point>> _effectiveAreaOther = new(() => new HashSet<Point>());
-  private readonly PerScreen<HashSet<Point>> _effectiveAreaIntersection = new(() => new HashSet<Point>());
+  private readonly PerScreen<HashSet<Point>> _effectiveAreaIntersection = new(() =>
+    new HashSet<Point>()
+  );
 
   private readonly Mutex _mutex = new();
 
   private bool ButtonShowOneRange { get; set; }
   private bool ButtonShowAllRanges { get; set; }
-#endregion
+  #endregion
 
 
-#region Lifecycle
-  public ShowItemEffectRanges(IModEvents modEvents, IMonitor logger, ConfigManager configManager) : base(
-    modEvents,
-    logger,
-    configManager
-  ) { }
+  #region Lifecycle
+  public ShowItemEffectRanges(IModEvents modEvents, IMonitor logger, ConfigManager configManager)
+    : base(modEvents, logger, configManager) { }
 
   public override bool ShouldEnable()
   {
@@ -55,10 +54,10 @@ internal class ShowItemEffectRanges : BaseModule
     ModEvents.GameLoop.UpdateTicked -= OnUpdateTicked;
     ModEvents.Input.ButtonsChanged -= OnButtonChanged;
   }
-#endregion
+  #endregion
 
 
-#region Event subscriptions
+  #region Event subscriptions
   private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
   {
     if (!e.IsMultipleOf(4))
@@ -109,7 +108,9 @@ internal class ShowItemEffectRanges : BaseModule
           );
           e.SpriteBatch.Draw(
             Game1.mouseCursors,
-            Utility.ModifyCoordinatesForUIScale(Game1.GlobalToLocal(Utility.ModifyCoordinatesForUIScale(position))),
+            Utility.ModifyCoordinatesForUIScale(
+              Game1.GlobalToLocal(Utility.ModifyCoordinatesForUIScale(position))
+            ),
             new Rectangle(194, 388, 16, 16),
             Color.White * 0.7f,
             0.0f,
@@ -128,7 +129,9 @@ internal class ShowItemEffectRanges : BaseModule
           );
           e.SpriteBatch.Draw(
             Game1.mouseCursors,
-            Utility.ModifyCoordinatesForUIScale(Game1.GlobalToLocal(Utility.ModifyCoordinatesForUIScale(position))),
+            Utility.ModifyCoordinatesForUIScale(
+              Game1.GlobalToLocal(Utility.ModifyCoordinatesForUIScale(position))
+            ),
             new Rectangle(194, 388, 16, 16),
             Color.Red * 0.7f,
             0.0f,
@@ -163,10 +166,10 @@ internal class ShowItemEffectRanges : BaseModule
       ButtonShowAllRanges = true;
     }
   }
-#endregion
+  #endregion
 
 
-#region Logic
+  #region Logic
   private void UpdateEffectiveArea()
   {
     int[][] arrayToUse;
@@ -182,7 +185,12 @@ internal class ShowItemEffectRanges : BaseModule
       {
         if (nextBuilding is JunimoHut nextHut)
         {
-          AddTilesToHighlightedArea(arrayToUse, false, nextHut.tileX.Value + 1, nextHut.tileY.Value + 1);
+          AddTilesToHighlightedArea(
+            arrayToUse,
+            false,
+            nextHut.tileX.Value + 1,
+            nextHut.tileY.Value + 1
+          );
         }
       }
     }
@@ -190,27 +198,29 @@ internal class ShowItemEffectRanges : BaseModule
     // Every other item is here
     if (Config.ShowRangeOnKeyDownWhileHovered && (ButtonShowOneRange || ButtonShowAllRanges))
     {
-      Vector2 gamepadTile = Game1.player.CurrentTool != null
-        ? Utility.snapToInt(Game1.player.GetToolLocation() / Game1.tileSize)
-        : Utility.snapToInt(Game1.player.GetGrabTile());
+      Vector2 gamepadTile =
+        Game1.player.CurrentTool != null
+          ? Utility.snapToInt(Game1.player.GetToolLocation() / Game1.tileSize)
+          : Utility.snapToInt(Game1.player.GetGrabTile());
       Vector2 mouseTile = Game1.currentCursorTile;
-      Vector2 tile = Game1.options.gamepadControls && Game1.timerUntilMouseFade <= 0 ? gamepadTile : mouseTile;
+      Vector2 tile =
+        Game1.options.gamepadControls && Game1.timerUntilMouseFade <= 0 ? gamepadTile : mouseTile;
       if (Game1.currentLocation.Objects?.TryGetValue(tile, out Object? currentObject) ?? false)
       {
         if (currentObject != null)
         {
           Vector2 currentTile = Game1.GetPlacementGrabTile();
           Game1.isCheckingNonMousePlacement = !Game1.IsPerformingMousePlacement();
-          Vector2 validTile = Utility.snapToInt(
-                                Utility.GetNearbyValidPlacementPosition(
-                                  Game1.player,
-                                  Game1.currentLocation,
-                                  currentObject,
-                                  (int)currentTile.X * Game1.tileSize,
-                                  (int)currentTile.Y * Game1.tileSize
-                                )
-                              ) /
-                              Game1.tileSize;
+          Vector2 validTile =
+            Utility.snapToInt(
+              Utility.GetNearbyValidPlacementPosition(
+                Game1.player,
+                Game1.currentLocation,
+                currentObject,
+                (int)currentTile.X * Game1.tileSize,
+                (int)currentTile.Y * Game1.tileSize
+              )
+            ) / Game1.tileSize;
           Game1.isCheckingNonMousePlacement = false;
 
           if (currentObject.Name.IndexOf("arecrow", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -228,12 +238,18 @@ internal class ShowItemEffectRanges : BaseModule
               {
                 if (!next.Equals(currentObject))
                 {
-                  int[][] arrayToUse_ = next.Name.IndexOf("eluxe", StringComparison.OrdinalIgnoreCase) >= 0
-                    ? GetDistanceArray(ObjectsWithDistance.DeluxeScarecrow, false, next)
-                    : GetDistanceArray(ObjectsWithDistance.Scarecrow, false, next);
+                  int[][] arrayToUse_ =
+                    next.Name.IndexOf("eluxe", StringComparison.OrdinalIgnoreCase) >= 0
+                      ? GetDistanceArray(ObjectsWithDistance.DeluxeScarecrow, false, next)
+                      : GetDistanceArray(ObjectsWithDistance.Scarecrow, false, next);
                   if (!arrayToUse_.SequenceEqual(arrayToUse))
                   {
-                    AddTilesToHighlightedArea(arrayToUse, false, (int)next.TileLocation.X, (int)next.TileLocation.Y);
+                    AddTilesToHighlightedArea(
+                      arrayToUse,
+                      false,
+                      (int)next.TileLocation.X,
+                      (int)next.TileLocation.Y
+                    );
                   }
                 }
               }
@@ -244,8 +260,9 @@ internal class ShowItemEffectRanges : BaseModule
             IEnumerable<Vector2> unplacedSprinklerTiles = currentObject.GetSprinklerTiles();
             if (currentObject.TileLocation != validTile)
             {
-              unplacedSprinklerTiles =
-                unplacedSprinklerTiles.Select(tile => tile - currentObject.TileLocation + validTile);
+              unplacedSprinklerTiles = unplacedSprinklerTiles.Select(tile =>
+                tile - currentObject.TileLocation + validTile
+              );
             }
 
             AddTilesToHighlightedArea(unplacedSprinklerTiles, true);
@@ -267,12 +284,16 @@ internal class ShowItemEffectRanges : BaseModule
             arrayToUse = GetDistanceArray(ObjectsWithDistance.Beehouse);
             AddTilesToHighlightedArea(arrayToUse, false, (int)validTile.X, (int)validTile.Y);
           }
-          else if (currentObject.Name.IndexOf("mushroom log", StringComparison.OrdinalIgnoreCase) >= 0)
+          else if (
+            currentObject.Name.IndexOf("mushroom log", StringComparison.OrdinalIgnoreCase) >= 0
+          )
           {
             arrayToUse = GetDistanceArray(ObjectsWithDistance.MushroomLog);
             AddTilesToHighlightedArea(arrayToUse, false, (int)validTile.X, (int)validTile.Y);
           }
-          else if (currentObject.Name.IndexOf("mossy seed", StringComparison.OrdinalIgnoreCase) >= 0)
+          else if (
+            currentObject.Name.IndexOf("mossy seed", StringComparison.OrdinalIgnoreCase) >= 0
+          )
           {
             arrayToUse = GetDistanceArray(ObjectsWithDistance.MossySeed);
             AddTilesToHighlightedArea(arrayToUse, false, (int)validTile.X, (int)validTile.Y);
@@ -286,16 +307,16 @@ internal class ShowItemEffectRanges : BaseModule
 
       Vector2 currentTile = Game1.GetPlacementGrabTile();
       Game1.isCheckingNonMousePlacement = !Game1.IsPerformingMousePlacement();
-      Vector2 validTile = Utility.snapToInt(
-                            Utility.GetNearbyValidPlacementPosition(
-                              Game1.player,
-                              Game1.currentLocation,
-                              currentItem,
-                              (int)currentTile.X * Game1.tileSize,
-                              (int)currentTile.Y * Game1.tileSize
-                            )
-                          ) /
-                          Game1.tileSize;
+      Vector2 validTile =
+        Utility.snapToInt(
+          Utility.GetNearbyValidPlacementPosition(
+            Game1.player,
+            Game1.currentLocation,
+            currentItem,
+            (int)currentTile.X * Game1.tileSize,
+            (int)currentTile.Y * Game1.tileSize
+          )
+        ) / Game1.tileSize;
       Game1.isCheckingNonMousePlacement = false;
 
       if (itemName.IndexOf("arecrow", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -308,10 +329,16 @@ internal class ShowItemEffectRanges : BaseModule
         similarObjects = GetSimilarObjectsInLocation("arecrow");
         foreach (Object next in similarObjects)
         {
-          arrayToUse = next.Name.IndexOf("eluxe", StringComparison.OrdinalIgnoreCase) >= 0
-            ? GetDistanceArray(ObjectsWithDistance.DeluxeScarecrow, false, next)
-            : GetDistanceArray(ObjectsWithDistance.Scarecrow, false, next);
-          AddTilesToHighlightedArea(arrayToUse, false, (int)next.TileLocation.X, (int)next.TileLocation.Y);
+          arrayToUse =
+            next.Name.IndexOf("eluxe", StringComparison.OrdinalIgnoreCase) >= 0
+              ? GetDistanceArray(ObjectsWithDistance.DeluxeScarecrow, false, next)
+              : GetDistanceArray(ObjectsWithDistance.Scarecrow, false, next);
+          AddTilesToHighlightedArea(
+            arrayToUse,
+            false,
+            (int)next.TileLocation.X,
+            (int)next.TileLocation.Y
+          );
         }
       }
       else if (itemName.IndexOf("sprinkler", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -332,7 +359,9 @@ internal class ShowItemEffectRanges : BaseModule
         IEnumerable<Vector2> unplacedSprinklerTiles = currentItem.GetSprinklerTiles();
         if (currentItem.TileLocation != validTile)
         {
-          unplacedSprinklerTiles = unplacedSprinklerTiles.Select(tile => tile - currentItem.TileLocation + validTile);
+          unplacedSprinklerTiles = unplacedSprinklerTiles.Select(tile =>
+            tile - currentItem.TileLocation + validTile
+          );
         }
 
         AddTilesToHighlightedArea(unplacedSprinklerTiles, true);
@@ -359,7 +388,10 @@ internal class ShowItemEffectRanges : BaseModule
         arrayToUse = GetDistanceArray(ObjectsWithDistance.MossySeed);
         AddTilesToHighlightedArea(arrayToUse, false, (int)validTile.X, (int)validTile.Y);
       }
-      else if (Config.ShowBombRanges && itemName.IndexOf("Bomb", StringComparison.OrdinalIgnoreCase) >= 0)
+      else if (
+        Config.ShowBombRanges
+        && itemName.IndexOf("Bomb", StringComparison.OrdinalIgnoreCase) >= 0
+      )
       {
         if (itemName.Contains("ega"))
         {
@@ -379,7 +411,12 @@ internal class ShowItemEffectRanges : BaseModule
     }
   }
 
-  private void AddTilesToHighlightedArea(IEnumerable<Vector2> tiles, bool overlap, int xPos = 0, int yPos = 0)
+  private void AddTilesToHighlightedArea(
+    IEnumerable<Vector2> tiles,
+    bool overlap,
+    int xPos = 0,
+    int yPos = 0
+  )
   {
     if (_mutex.WaitOne())
     {
@@ -468,13 +505,17 @@ internal class ShowItemEffectRanges : BaseModule
   private void GetOverlapValue()
   {
     var temp = new PerScreen<HashSet<Point>>();
-    _effectiveAreaIntersection.Value = _effectiveAreaOther.Value.Intersect(_effectiveAreaCurrent.Value).ToHashSet();
+    _effectiveAreaIntersection.Value = _effectiveAreaOther
+      .Value.Intersect(_effectiveAreaCurrent.Value)
+      .ToHashSet();
     temp.Value = _effectiveAreaCurrent.Value.Except(_effectiveAreaOther.Value).ToHashSet();
-    _effectiveAreaOther.Value = _effectiveAreaOther.Value.Except(_effectiveAreaCurrent.Value).ToHashSet();
+    _effectiveAreaOther.Value = _effectiveAreaOther
+      .Value.Except(_effectiveAreaCurrent.Value)
+      .ToHashSet();
     _effectiveAreaOther.Value = _effectiveAreaOther.Value.Union(temp.Value).ToHashSet();
   }
 
-#region Distance map
+  #region Distance map
   private enum ObjectsWithDistance
   {
     JunimoHut,
@@ -489,10 +530,14 @@ internal class ShowItemEffectRanges : BaseModule
     MossySeed,
     CherryBomb,
     Bomb,
-    MegaBomb
+    MegaBomb,
   }
 
-  private int[][] GetDistanceArray(ObjectsWithDistance type, bool hasPressureNozzle = false, Object? instance = null)
+  private int[][] GetDistanceArray(
+    ObjectsWithDistance type,
+    bool hasPressureNozzle = false,
+    Object? instance = null
+  )
   {
     switch (type)
     {
@@ -505,7 +550,9 @@ internal class ShowItemEffectRanges : BaseModule
       case ObjectsWithDistance.DeluxeScarecrow:
         return GetCircularMask((instance?.GetRadiusForScarecrow() ?? 17) - 0.01);
       case ObjectsWithDistance.Sprinkler:
-        return hasPressureNozzle ? GetCircularMask(100, maxDisplaySquareRadius: 1) : GetCircularMask(1);
+        return hasPressureNozzle
+          ? GetCircularMask(100, maxDisplaySquareRadius: 1)
+          : GetCircularMask(1);
       case ObjectsWithDistance.QualitySprinkler:
         return hasPressureNozzle
           ? GetCircularMask(100, maxDisplaySquareRadius: 2)
@@ -542,7 +589,10 @@ internal class ShowItemEffectRanges : BaseModule
       (int)Math.Ceiling(maxDistance),
       exceptionalDistance.HasValue ? (int)Math.Ceiling(exceptionalDistance.Value) : 0
     );
-    radius = Math.Min(radius, maxDisplaySquareRadius.HasValue ? maxDisplaySquareRadius.Value : radius);
+    radius = Math.Min(
+      radius,
+      maxDisplaySquareRadius.HasValue ? maxDisplaySquareRadius.Value : radius
+    );
     int size = 2 * radius + 1;
 
     var result = new int[size][];
@@ -552,11 +602,14 @@ internal class ShowItemEffectRanges : BaseModule
       for (var j = 0; j < size; j++)
       {
         double distance = GetDistance(i, j, radius);
-        int val = IsInDistance(maxDistance, distance) ||
-                  (IsDistanceDirectionOK(i, j, radius, onlyClearExceptions) &&
-                   IsExceptionalDistanceOK(exceptionalDistance, distance))
-          ? 1
-          : 0;
+        int val =
+          IsInDistance(maxDistance, distance)
+          || (
+            IsDistanceDirectionOK(i, j, radius, onlyClearExceptions)
+            && IsExceptionalDistanceOK(exceptionalDistance, distance)
+          )
+            ? 1
+            : 0;
         result[i][j] = val;
       }
     }
@@ -566,7 +619,10 @@ internal class ShowItemEffectRanges : BaseModule
 
   private static bool IsDistanceDirectionOK(int i, int j, int radius, bool? onlyClearExceptions)
   {
-    return !onlyClearExceptions.HasValue || !onlyClearExceptions.Value || radius - j == 0 || radius - i == 0;
+    return !onlyClearExceptions.HasValue
+      || !onlyClearExceptions.Value
+      || radius - j == 0
+      || radius - i == 0;
   }
 
   private static bool IsExceptionalDistanceOK(double? exceptionalDistance, double distance)
@@ -583,6 +639,6 @@ internal class ShowItemEffectRanges : BaseModule
   {
     return Math.Sqrt((radius - i) * (radius - i) + (radius - j) * (radius - j));
   }
-#endregion
-#endregion
+  #endregion
+  #endregion
 }

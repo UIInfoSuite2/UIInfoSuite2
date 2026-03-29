@@ -3,7 +3,8 @@ using UIInfoSuite2.Compatibility;
 
 namespace UIInfoSuite2.Config.Configurable;
 
-public class ConfigurableHudIconPositioning(ConfigManager configManager) : BaseConfigurable(configManager)
+public class ConfigurableHudIconPositioning(ConfigManager configManager)
+  : BaseConfigurable(configManager)
 {
   public override int GetOrder()
   {
@@ -20,7 +21,10 @@ public class ConfigurableHudIconPositioning(ConfigManager configManager) : BaseC
     return ConfigSectionNames.HudGlobal;
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddNumberOption(
       manifest,

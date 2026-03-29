@@ -12,7 +12,7 @@ namespace UIInfoSuite2.Models.Tooltip.Base;
 internal enum TooltipShadowType
 {
   ItemTooltip,
-  UtilityDrawShadow
+  UtilityDrawShadow,
 }
 
 internal class TooltipText : LayoutElement
@@ -32,7 +32,8 @@ internal class TooltipText : LayoutElement
     bool bold = false,
     bool withShadow = true,
     string? identifier = null
-  ) : base(identifier)
+  )
+    : base(identifier)
   {
     _font = new TrackableValue<SpriteFont>(font ?? Game1.dialogueFont, MeasureAndUpdate, "Font");
     _text = new TrackableValue<string>(text, MeasureAndUpdate, "Text");
@@ -95,14 +96,25 @@ internal class TooltipText : LayoutElement
   /// <param name="bold">Whether the font is bold.</param>
   /// <param name="scale">The scale to apply to the size.</param>
   /// <param name="font">The font to measure. Defaults to <see cref="Game1.dialogueFont" /> if <c>null</c>.</param>
-  public static Dimensions MeasureString(string text, bool bold = false, float scale = 1f, SpriteFont? font = null)
+  public static Dimensions MeasureString(
+    string text,
+    bool bold = false,
+    float scale = 1f,
+    SpriteFont? font = null
+  )
   {
     return bold
-      ? new Dimensions(SpriteText.getWidthOfString(text), SpriteText.getHeightOfString(text)) * scale
+      ? new Dimensions(SpriteText.getWidthOfString(text), SpriteText.getHeightOfString(text))
+        * scale
       : Dimensions.FromVector2((font ?? Game1.dialogueFont).MeasureString(text) * scale);
   }
 
-  public static TooltipText Bold(string text, float scale = 1.0f, Color? color = null, string? identifier = null)
+  public static TooltipText Bold(
+    string text,
+    float scale = 1.0f,
+    Color? color = null,
+    string? identifier = null
+  )
   {
     return new TooltipText(text, scale, color, null, true, false, identifier);
   }
@@ -160,10 +172,50 @@ internal class TooltipText : LayoutElement
         case TooltipShadowType.ItemTooltip:
           // Emulate Item#drawTooltip shadow for blending in with native tooltips.
           // @formatter:off
-          spriteBatch.DrawString(Font, Text, position + new Vector2(2f, 2f), Game1.textShadowColor * 1f, 0, Vector2.Zero, Scale, SpriteEffects.None, 0f);
-          spriteBatch.DrawString(Font, Text, position + new Vector2(0.0f, 2f), Game1.textShadowColor * 1f, 0, Vector2.Zero, Scale, SpriteEffects.None, 0f);
-          spriteBatch.DrawString(Font, Text, position + new Vector2(2f, 0.0f), Game1.textShadowColor * 1f, 0, Vector2.Zero, Scale, SpriteEffects.None, 0f);
-          spriteBatch.DrawString(Font, Text, position, Game1.textColor * 0.9f * 1f, 0, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+          spriteBatch.DrawString(
+            Font,
+            Text,
+            position + new Vector2(2f, 2f),
+            Game1.textShadowColor * 1f,
+            0,
+            Vector2.Zero,
+            Scale,
+            SpriteEffects.None,
+            0f
+          );
+          spriteBatch.DrawString(
+            Font,
+            Text,
+            position + new Vector2(0.0f, 2f),
+            Game1.textShadowColor * 1f,
+            0,
+            Vector2.Zero,
+            Scale,
+            SpriteEffects.None,
+            0f
+          );
+          spriteBatch.DrawString(
+            Font,
+            Text,
+            position + new Vector2(2f, 0.0f),
+            Game1.textShadowColor * 1f,
+            0,
+            Vector2.Zero,
+            Scale,
+            SpriteEffects.None,
+            0f
+          );
+          spriteBatch.DrawString(
+            Font,
+            Text,
+            position,
+            Game1.textColor * 0.9f * 1f,
+            0,
+            Vector2.Zero,
+            Scale,
+            SpriteEffects.None,
+            0f
+          );
           // @formatter:on
           break;
         case TooltipShadowType.UtilityDrawShadow:
@@ -184,7 +236,17 @@ internal class TooltipText : LayoutElement
     }
     else
     {
-      spriteBatch.DrawString(Font, Text, position, Color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+      spriteBatch.DrawString(
+        Font,
+        Text,
+        position,
+        Color,
+        0,
+        Vector2.Zero,
+        Scale,
+        SpriteEffects.None,
+        0f
+      );
     }
   }
 

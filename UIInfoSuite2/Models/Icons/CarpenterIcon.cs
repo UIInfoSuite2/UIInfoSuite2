@@ -17,7 +17,8 @@ internal class CarpenterIcon : ClickableIcon
     PrimaryDimension primaryDimension = PrimaryDimension.Width,
     Action<object?, ButtonPressedEventArgs, Vector2>? clickHandlerAction = null,
     SpriteFont? hoverFont = null
-  ) : base(baseTexture, sourceBounds, finalSize, primaryDimension, clickHandlerAction, hoverFont)
+  )
+    : base(baseTexture, sourceBounds, finalSize, primaryDimension, clickHandlerAction, hoverFont)
   {
     _isRobinBuilding = new IconTriggerField<bool>(this, false);
   }

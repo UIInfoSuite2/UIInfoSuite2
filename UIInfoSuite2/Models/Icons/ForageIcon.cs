@@ -8,7 +8,8 @@ internal class ForageIcon : ClickableIcon
   private bool _isHazelnut;
   private bool _todayHasForage;
 
-  public ForageIcon() : base(Game1.objectSpriteSheet, new Rectangle(128, 193, 15, 15), 40)
+  public ForageIcon()
+    : base(Game1.objectSpriteSheet, new Rectangle(128, 193, 15, 15), 40)
   {
     UpdateForageForDay();
   }

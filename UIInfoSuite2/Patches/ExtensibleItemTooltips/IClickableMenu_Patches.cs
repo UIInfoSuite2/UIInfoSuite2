@@ -42,9 +42,10 @@ internal static class IClickableMenu_Patches
   private const byte ArgBoxWidthOverride = 23;
 
   private const byte ArgBoxHeightOverride = 24;
+
   // endregion
 
-// region Reflected Method Helpers
+  // region Reflected Method Helpers
   private static Profiler _profiler = null!;
 
   private static readonly MethodInfo _draw = AccessTools.Method(
@@ -68,9 +69,15 @@ internal static class IClickableMenu_Patches
   );
 
   // Anchor methods for size-injection matching
-  private static readonly MethodInfo _getOldMouseX = AccessTools.Method(typeof(Game1), nameof(Game1.getOldMouseX));
+  private static readonly MethodInfo _getOldMouseX = AccessTools.Method(
+    typeof(Game1),
+    nameof(Game1.getOldMouseX)
+  );
 
-  private static readonly MethodInfo _colorGetWhite = AccessTools.PropertyGetter(typeof(Color), nameof(Color.White));
+  private static readonly MethodInfo _colorGetWhite = AccessTools.PropertyGetter(
+    typeof(Color),
+    nameof(Color.White)
+  );
 
   // Anchor methods for draw-hook matching (same as previous)
   private static readonly MethodInfo _dialogueFontMeasureStr = AccessTools.Method(
@@ -85,9 +92,15 @@ internal static class IClickableMenu_Patches
     [typeof(StringBuilder)]
   );
 
-  private static readonly FieldInfo _dialogueFont = AccessTools.Field(typeof(Game1), nameof(Game1.dialogueFont));
+  private static readonly FieldInfo _dialogueFont = AccessTools.Field(
+    typeof(Game1),
+    nameof(Game1.dialogueFont)
+  );
 
-  private static readonly FieldInfo _staminaRect = AccessTools.Field(typeof(Game1), nameof(Game1.staminaRect));
+  private static readonly FieldInfo _staminaRect = AccessTools.Field(
+    typeof(Game1),
+    nameof(Game1.staminaRect)
+  );
 
   private static readonly FieldInfo _vecY = AccessTools.Field(typeof(Vector2), nameof(Vector2.Y));
 
@@ -96,14 +109,22 @@ internal static class IClickableMenu_Patches
     nameof(Item.getCategoryColor)
   );
 
-  private static readonly MethodInfo _drawTooltip = AccessTools.Method(typeof(Item), nameof(Item.drawTooltip));
+  private static readonly MethodInfo _drawTooltip = AccessTools.Method(
+    typeof(Item),
+    nameof(Item.drawTooltip)
+  );
 
   // endregion
   // ==============================================================================
 
   public static void Patch(Harmony harmony)
   {
-    _profiler = new Profiler("drawHoverText", 400, 100, str => ModEntry.DebugLog(str, LogLevel.Debug));
+    _profiler = new Profiler(
+      "drawHoverText",
+      400,
+      100,
+      str => ModEntry.DebugLog(str, LogLevel.Debug)
+    );
 
     MethodInfo? drawHoverTextMethod = typeof(IClickableMenu).GetMethod(
       "drawHoverText",
@@ -133,17 +154,26 @@ internal static class IClickableMenu_Patches
         typeof(Color?),
         typeof(float),
         typeof(int),
-        typeof(int)
+        typeof(int),
       ]
     );
 
     harmony.Patch(
       drawHoverTextMethod,
 #if DEBUG
-      new HarmonyMethod(typeof(IClickableMenu_Patches), nameof(Prefix_IClickableMenu_DrawHoverText)),
-      new HarmonyMethod(typeof(IClickableMenu_Patches), nameof(Postfix_IClickableMenu_DrawHoverText)),
+      new HarmonyMethod(
+        typeof(IClickableMenu_Patches),
+        nameof(Prefix_IClickableMenu_DrawHoverText)
+      ),
+      new HarmonyMethod(
+        typeof(IClickableMenu_Patches),
+        nameof(Postfix_IClickableMenu_DrawHoverText)
+      ),
 #endif
-      new HarmonyMethod(typeof(IClickableMenu_Patches), nameof(Transpile_IClickableMenu_DrawHoverText))
+      new HarmonyMethod(
+        typeof(IClickableMenu_Patches),
+        nameof(Transpile_IClickableMenu_DrawHoverText)
+      )
     );
   }
 
@@ -161,7 +191,6 @@ internal static class IClickableMenu_Patches
 
   // ── Transpiler ─────────────────────────────────────────────────────────────
 
-
   public static IEnumerable<CodeInstruction> Transpile_IClickableMenu_DrawHoverText(
     IEnumerable<CodeInstruction> instructions,
     ILGenerator gen
@@ -175,7 +204,7 @@ internal static class IClickableMenu_Patches
     // (m.Start() + MatchForward) so shifts from earlier insertions are harmless.
 
     InsertAdjustLayout(m);
-    InsertAdjustTitleBoxHeight_SubBox(m);  // before Color.get_White
+    InsertAdjustTitleBoxHeight_SubBox(m); // before Color.get_White
     InsertAdjustTitleBoxHeight_Divider(m); // before ldloc.1 (Rectangle width arg)
 
     // ── Phase 2: draw hooks ────────────────────────────────────────────────
@@ -191,7 +220,7 @@ internal static class IClickableMenu_Patches
       (ContainerPatchPoint.AfterDescription, FindAfterDescription),
       (ContainerPatchPoint.AfterBuffs, FindAfterBuffs),
       (ContainerPatchPoint.BeforeFooter, FindBeforeFooter),
-      (ContainerPatchPoint.AfterFooter, FindAfterFooter)
+      (ContainerPatchPoint.AfterFooter, FindAfterFooter),
     };
 
     var pending = new List<(int Pos, ContainerPatchPoint Point)>();
@@ -244,7 +273,7 @@ internal static class IClickableMenu_Patches
       new CodeInstruction(OpCodes.Ldarg_S, ArgHoveredItem).MoveLabelsFrom(m.Instruction),
       new CodeInstruction(OpCodes.Call, _updateHoveredItem),
       new CodeInstruction(OpCodes.Ldloca_S, LocalStartingHeight), // ref startingHeight
-      new CodeInstruction(OpCodes.Ldloca_S, LocalWidth),          // ref num1
+      new CodeInstruction(OpCodes.Ldloca_S, LocalWidth), // ref num1
       new CodeInstruction(OpCodes.Ldarg_S, ArgBoxWidthOverride),
       new CodeInstruction(OpCodes.Ldarg_S, ArgBoxHeightOverride),
       new CodeInstruction(OpCodes.Call, _adjustLayout)
@@ -265,12 +294,16 @@ internal static class IClickableMenu_Patches
 
     if (m.IsInvalid)
     {
-      ModEntry.Instance.Monitor.Log("[DrawHoverTextPatcher] AdjustTitleBoxHeight(sub-box) anchor not found");
+      ModEntry.Instance.Monitor.Log(
+        "[DrawHoverTextPatcher] AdjustTitleBoxHeight(sub-box) anchor not found"
+      );
       return;
     }
 
     m.Advance(2) // land after `sub`, before `call Color.get_White`
-      .Insert(new CodeInstruction(OpCodes.Call, _adjustTitleBoxHeight).MoveLabelsFrom(m.Instruction));
+      .Insert(
+        new CodeInstruction(OpCodes.Call, _adjustTitleBoxHeight).MoveLabelsFrom(m.Instruction)
+      );
   }
 
   /// Divider Rectangle y-offset: `y1 + titleBoxHeight` where titleBoxHeight ends with
@@ -289,15 +322,19 @@ internal static class IClickableMenu_Patches
 
     if (m.IsInvalid)
     {
-      ModEntry.Instance.Monitor.Log("[DrawHoverTextPatcher] AdjustTitleBoxHeight(divider) anchor not found");
+      ModEntry.Instance.Monitor.Log(
+        "[DrawHoverTextPatcher] AdjustTitleBoxHeight(divider) anchor not found"
+      );
       return;
     }
 
     m.Advance(2) // land after `sub`, before `ldloc.1`
-      .Insert(new CodeInstruction(OpCodes.Call, _adjustTitleBoxHeight).MoveLabelsFrom(m.Instruction));
+      .Insert(
+        new CodeInstruction(OpCodes.Call, _adjustTitleBoxHeight).MoveLabelsFrom(m.Instruction)
+      );
   }
 
-#region Match Helper Functions
+  #region Match Helper Functions
   // ── Draw call builder ──────────────────────────────────────────────────────
 
   // At every draw hook point, local 1 = width1 = num1 + 4 (the transition
@@ -306,14 +343,14 @@ internal static class IClickableMenu_Patches
   {
     return
     [
-      new CodeInstruction(OpCodes.Ldarg_0),                 // b
-      new CodeInstruction(OpCodes.Ldloc_S, LocalX),         // x
-      new CodeInstruction(OpCodes.Ldloca_S, LocalDrawY),    // ref drawY
-      new CodeInstruction(OpCodes.Ldloc_1),                 // innerWidth (= width1)
-      new CodeInstruction(OpCodes.Ldarg_S, ArgAlpha),       // alpha
+      new CodeInstruction(OpCodes.Ldarg_0), // b
+      new CodeInstruction(OpCodes.Ldloc_S, LocalX), // x
+      new CodeInstruction(OpCodes.Ldloca_S, LocalDrawY), // ref drawY
+      new CodeInstruction(OpCodes.Ldloc_1), // innerWidth (= width1)
+      new CodeInstruction(OpCodes.Ldarg_S, ArgAlpha), // alpha
       new CodeInstruction(OpCodes.Ldarg_S, ArgHoveredItem), // hoveredItem
       new CodeInstruction(OpCodes.Ldc_I4, (int)point),
-      new CodeInstruction(OpCodes.Call, _draw)
+      new CodeInstruction(OpCodes.Call, _draw),
     ];
   }
 
@@ -381,7 +418,11 @@ internal static class IClickableMenu_Patches
 
   private static void FindAfterBuffs(CodeMatcher m)
   {
-    m.MatchStartForward(new CodeMatch(OpCodes.Ldc_I4_8), new CodeMatch(OpCodes.Sub), new CodeMatch(OpCodes.Stloc_S))
+    m.MatchStartForward(
+        new CodeMatch(OpCodes.Ldc_I4_8),
+        new CodeMatch(OpCodes.Sub),
+        new CodeMatch(OpCodes.Stloc_S)
+      )
       .Advance(3);
   }
 
@@ -414,5 +455,5 @@ internal static class IClickableMenu_Patches
       .MatchStartForward(new CodeMatch(OpCodes.Brfalse));
     // long-form; skips entire extra-item box
   }
-#endregion
+  #endregion
 }

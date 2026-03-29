@@ -15,5 +15,5 @@ public enum Alignment
   MiddleRight,
   BottomLeft,
   BottomCenter,
-  BottomRight
+  BottomRight,
 }

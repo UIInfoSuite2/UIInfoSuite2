@@ -32,19 +32,30 @@ internal readonly struct Texture2DData
   }
 }
 
-internal record VanillaWeatherRecord(Point texturePos, string WeatherStr, string? IslandWeatherStr = null)
+internal record VanillaWeatherRecord(
+  Point texturePos,
+  string WeatherStr,
+  string? IslandWeatherStr = null
+)
 {
   public string GetWeatherStr(bool isIslandWeather)
   {
-    return isIslandWeather || string.IsNullOrEmpty(IslandWeatherStr) ? WeatherStr : IslandWeatherStr;
+    return isIslandWeather || string.IsNullOrEmpty(IslandWeatherStr)
+      ? WeatherStr
+      : IslandWeatherStr;
   }
 }
 
-internal class WeatherIcon(bool isIslandWeather) : ClickableIcon(Game1.mouseCursors, new Rectangle(0, 0, 15, 15), 40)
+internal class WeatherIcon(bool isIslandWeather)
+  : ClickableIcon(Game1.mouseCursors, new Rectangle(0, 0, 15, 15), 40)
 {
   private static readonly Dictionary<string, VanillaWeatherRecord> VanillaWeatherData = new()
   {
-    [Game1.weather_rain] = new VanillaWeatherRecord(new Point(504, 333), I18n.RainNextDay(), I18n.IslandRainNextDay()),
+    [Game1.weather_rain] = new VanillaWeatherRecord(
+      new Point(504, 333),
+      I18n.RainNextDay(),
+      I18n.IslandRainNextDay()
+    ),
     [Game1.weather_lightning] = new VanillaWeatherRecord(
       new Point(426, 346),
       I18n.ThunderstormNextDay(), //
@@ -54,7 +65,7 @@ internal class WeatherIcon(bool isIslandWeather) : ClickableIcon(Game1.mouseCurs
     [Game1.weather_green_rain] = new VanillaWeatherRecord(
       new Point(178, 363), // from mouseCursors_1_6
       I18n.RainNextDay()
-    )
+    ),
   };
 
   private static readonly Lazy<ApiManager> ApiManager = new(ModEntry.GetSingleton<ApiManager>);
@@ -111,7 +122,8 @@ internal class WeatherIcon(bool isIslandWeather) : ClickableIcon(Game1.mouseCurs
       HoverText = weatherData.Forecast ?? $"Custom Weather: {weatherData.DisplayName}";
     }
 
-    Texture2D tex = weatherStr == Game1.weather_green_rain ? Game1.mouseCursors_1_6 : Game1.mouseCursors;
+    Texture2D tex =
+      weatherStr == Game1.weather_green_rain ? Game1.mouseCursors_1_6 : Game1.mouseCursors;
     Point pos = weatherRecord.texturePos;
     int iconSize = isIslandWeather ? 18 : 15;
 
@@ -188,7 +200,10 @@ internal class WeatherIcon(bool isIslandWeather) : ClickableIcon(Game1.mouseCurs
     // Use our own texture in case the game's has been overwritten by a content pack.
     // Notably happens with the Cat TV Mod
     var weatherBorderData = new Texture2DData(
-      Texture2D.FromFile(Game1.graphics.GraphicsDevice, Path.Combine(helper.DirectoryPath, "assets", "weatherbox.png"))
+      Texture2D.FromFile(
+        Game1.graphics.GraphicsDevice,
+        Path.Combine(helper.DirectoryPath, "assets", "weatherbox.png")
+      )
     );
     var subTextureColors = new Color[15 * 15];
 
@@ -205,7 +220,13 @@ internal class WeatherIcon(bool isIslandWeather) : ClickableIcon(Game1.mouseCurs
     {
       subTextureColors = new Color[9 * 14];
       cursorsData.GetSubTexture(subTextureColors, new Rectangle(146, 149, 9, 14));
-      Tools.SetSubTexture(subTextureColors, weatherIconColors, iconSize, new Rectangle(9, 4, 9, 14), true);
+      Tools.SetSubTexture(
+        subTextureColors,
+        weatherIconColors,
+        iconSize,
+        new Rectangle(9, 4, 9, 14),
+        true
+      );
     }
 
     iconSheet.SetData(weatherIconColors);

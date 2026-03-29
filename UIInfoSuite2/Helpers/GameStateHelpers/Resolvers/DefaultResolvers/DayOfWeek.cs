@@ -10,7 +10,11 @@ namespace UIInfoSuite2.Helpers.GameStateHelpers.Resolvers.DefaultResolvers;
 internal static partial class DefaultConditionResolvers
 {
   [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Accessed via Reflection")]
-  [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Must match Stardew GSQ Resolvers")]
+  [SuppressMessage(
+    "ReSharper",
+    "InconsistentNaming",
+    Justification = "Must match Stardew GSQ Resolvers"
+  )]
   private static ConditionResolver DAY_OF_WEEK = new(
     nameof(GameStateQuery.DefaultResolvers.DAY_OF_WEEK),
     FutureResolver_DayOfWeek,
@@ -61,7 +65,8 @@ internal static partial class DefaultConditionResolvers
   )
   {
     HashSet<DayOfWeek> parsedWeekdays = ParseWeekdaysFromQuery(query);
-    List<string> parsedDayStrings = parsedWeekdays.OrderBy(day => day == DayOfWeek.Sunday ? 6 : (int)day - 1)
+    List<string> parsedDayStrings = parsedWeekdays
+      .OrderBy(day => day == DayOfWeek.Sunday ? 6 : (int)day - 1)
       .Select(day => Game1.shortDayDisplayNameFromDayOfSeason((int)day))
       .Where(s => !string.IsNullOrEmpty(s))
       .ToList();
@@ -70,10 +75,15 @@ internal static partial class DefaultConditionResolvers
     return $"{I18n.Days()} {displayStr}";
   }
 
-  private static HashSet<DayOfWeek> ParseWeekdaysFromQuery(GameStateQuery.ParsedGameStateQuery query)
+  private static HashSet<DayOfWeek> ParseWeekdaysFromQuery(
+    GameStateQuery.ParsedGameStateQuery query
+  )
   {
-    return query.Query.Skip(1)
-      .Select(str => WorldDate.TryGetDayOfWeekFor(str, out DayOfWeek dayOfWeek) ? dayOfWeek : new DayOfWeek?())
+    return query
+      .Query.Skip(1)
+      .Select(str =>
+        WorldDate.TryGetDayOfWeekFor(str, out DayOfWeek dayOfWeek) ? dayOfWeek : new DayOfWeek?()
+      )
       .Where(v => v.HasValue)
       .Select(v => v!.Value)
       .ToHashSet();

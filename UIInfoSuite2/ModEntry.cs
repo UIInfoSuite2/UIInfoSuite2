@@ -31,6 +31,7 @@ using UIInfoSuite2.Patches.ExtensibleItemTooltips;
 
 #if DEBUG
 [assembly: MetadataUpdateHandler(typeof(HotReloadService))]
+
 #endif
 
 namespace UIInfoSuite2;
@@ -39,9 +40,11 @@ internal class ModEntry : Mod
 {
   private static readonly Type[] BucketTypes =
   [
-    typeof(BaseModule), typeof(HudIconModule), typeof(IPatchable), typeof(IConfigurable)
+    typeof(BaseModule),
+    typeof(HudIconModule),
+    typeof(IPatchable),
+    typeof(IConfigurable),
   ];
-
 
   private readonly Container _container = new();
 
@@ -49,12 +52,14 @@ internal class ModEntry : Mod
 
   public static ModConfig Config => GetSingleton<ConfigManager>().Config;
 
-  public static T GetSingleton<T>() where T : class
+  public static T GetSingleton<T>()
+    where T : class
   {
     return Instance._container.GetInstance<T>();
   }
 
-  public static Lazy<T> LazyGetSingleton<T>() where T : class
+  public static Lazy<T> LazyGetSingleton<T>()
+    where T : class
   {
     return new Lazy<T>(() => Instance._container.GetInstance<T>());
   }
@@ -64,12 +69,13 @@ internal class ModEntry : Mod
     return GetContainerCollection<BaseModule>();
   }
 
-  public static IEnumerable<T> GetContainerCollection<T>() where T : class
+  public static IEnumerable<T> GetContainerCollection<T>()
+    where T : class
   {
     return Instance._container.GetAllInstances<T>();
   }
 
-#region Entry
+  #region Entry
   public override void Entry(IModHelper helper)
   {
     Instance = this;
@@ -169,7 +175,7 @@ internal class ModEntry : Mod
       }
     );
   }
-#endregion
+  #endregion
 
 
   private void ReloadModules()
@@ -236,13 +242,20 @@ internal class ModEntry : Mod
 
   private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
   {
-    _container.GetInstance<ApiManager>().TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.5.0", true);
-    _container.GetInstance<ApiManager>().TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "1.0.1");
-    _container.GetInstance<ApiManager>().TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
+    _container
+      .GetInstance<ApiManager>()
+      .TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.5.0", true);
+    _container
+      .GetInstance<ApiManager>()
+      .TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "1.0.1");
+    _container
+      .GetInstance<ApiManager>()
+      .TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
   }
 
-#region Module Setup
-  private void Register<T>() where T : class
+  #region Module Setup
+  private void Register<T>()
+    where T : class
   {
     _container.RegisterSingleton<T>();
 
@@ -254,9 +267,9 @@ internal class ModEntry : Mod
       }
     }
   }
-#endregion
+  #endregion
 
-#region Debug
+  #region Debug
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void DebugLog(string message, LogLevel level = LogLevel.Trace)
   {
@@ -272,5 +285,5 @@ internal class ModEntry : Mod
     Instance.Monitor.Log(message, level);
 #endif
   }
-#endregion
+  #endregion
 }

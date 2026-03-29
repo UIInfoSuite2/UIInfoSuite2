@@ -28,7 +28,7 @@ internal class SeasonalForageDisplayModule(
     return new ForageIcon();
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -44,7 +44,10 @@ internal class SeasonalForageDisplayModule(
     return I18n.Gmcm_Group_SeasonalForage();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -68,5 +71,5 @@ internal class SeasonalForageDisplayModule(
       setValue: value => Config.ShowSeasonalForageBeachIcon = value
     );
   }
-#endregion
+  #endregion
 }

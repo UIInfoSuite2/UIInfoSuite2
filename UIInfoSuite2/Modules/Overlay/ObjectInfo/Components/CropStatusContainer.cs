@@ -18,7 +18,8 @@ internal class CropStatusContainer : LayoutContainer
   private HoeDirt? _hoeDirt;
   private Tree? _tree;
 
-  public CropStatusContainer(HoeDirt? dirt = null) : base("CropStatus")
+  public CropStatusContainer(HoeDirt? dirt = null)
+    : base("CropStatus")
   {
     ComponentSpacing = 5;
     AutoHideWhenEmpty = true;
@@ -54,14 +55,23 @@ internal class CropStatusContainer : LayoutContainer
   )
   {
     ParsedItemData thing = ItemRegistry.GetDataOrErrorItem(itemId);
-    return new TooltipIcon(thing.GetTexture(), thing.GetSourceRect(), finalSize, dimension, identifier);
+    return new TooltipIcon(
+      thing.GetTexture(),
+      thing.GetSourceRect(),
+      finalSize,
+      dimension,
+      identifier
+    );
   }
 
   private static List<TooltipIcon> GetFertilizerIcons(HoeDirt dirtTile)
   {
     return dirtTile.fertilizer.Value == null
       ? []
-      : dirtTile.fertilizer.Value.Split("|").Select(fertilizerStr => CreateItemIcon(fertilizerStr)).ToList();
+      : dirtTile
+        .fertilizer.Value.Split("|")
+        .Select(fertilizerStr => CreateItemIcon(fertilizerStr))
+        .ToList();
   }
 
   private void WatchFertilizerField(NetString field, string oldValue, string newValue)

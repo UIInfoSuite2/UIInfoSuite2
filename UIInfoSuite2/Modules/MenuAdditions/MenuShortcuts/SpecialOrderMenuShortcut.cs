@@ -13,12 +13,14 @@ internal class SpecialOrderMenuShortcut(int finalHeight) : MenuShortcutElement(f
   private const float InitialHeight = 31;
   private const float InitialWidth = 48;
 
-  private readonly Lazy<Texture2D> _texture =
-    new(() => Game1.content.Load<Texture2D>(Path.Combine("Maps", "summer_town")));
+  private readonly Lazy<Texture2D> _texture = new(() =>
+    Game1.content.Load<Texture2D>(Path.Combine("Maps", "summer_town"))
+  );
 
   protected override float ScaleFactor => RenderedHeight / InitialHeight;
   protected override Texture2D Texture => _texture.Value;
-  protected override Rectangle SourceRectangle => new(464, 993, (int)InitialWidth, (int)InitialHeight);
+  protected override Rectangle SourceRectangle =>
+    new(464, 993, (int)InitialWidth, (int)InitialHeight);
 
   public override bool ShouldDraw
   {
@@ -37,7 +39,11 @@ internal class SpecialOrderMenuShortcut(int finalHeight) : MenuShortcutElement(f
     return I18n.SpecialOrders();
   }
 
-  protected override void HandleClickEvent(object? sender, ButtonPressedEventArgs args, Vector2 mouseCoords)
+  protected override void HandleClickEvent(
+    object? sender,
+    ButtonPressedEventArgs args,
+    Vector2 mouseCoords
+  )
   {
     Game1.activeClickableMenu.SetChildMenu(new SpecialOrdersBoard());
   }

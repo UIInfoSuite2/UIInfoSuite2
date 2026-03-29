@@ -37,8 +37,7 @@ internal class ObjectEffectRangeModule(
 
   private bool ButtonShowAllRanges { get; set; }
 
-
-#region Lifecycle
+  #region Lifecycle
   public override bool ShouldEnable()
   {
     return Config.ShowItemEffectRanges;
@@ -59,10 +58,10 @@ internal class ObjectEffectRangeModule(
     ModEvents.Input.ButtonsChanged -= OnButtonChanged;
     ModEvents.GameLoop.DayEnding -= OnDayEnding;
   }
-#endregion
+  #endregion
 
 
-#region Event subscriptions
+  #region Event subscriptions
   private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
   {
     if (!e.IsMultipleOf(4))
@@ -116,17 +115,18 @@ internal class ObjectEffectRangeModule(
     _effectiveAreaRange.Value.Clear();
     WorldObjectRange.ClearCache();
   }
-#endregion
+  #endregion
 
 
-#region Logic
+  #region Logic
   private bool ShouldDisplayRanges()
   {
     bool isValidMenuState = Game1.activeClickableMenu is null;
     bool isValidPlayerState = UIElementUtils.IsRenderingNormally();
     if (Game1.activeClickableMenu is CarpenterMenu carpenterMenu)
     {
-      bool isValidBuilding = carpenterMenu.currentBuilding is JunimoHut || carpenterMenu.buildingToMove is JunimoHut;
+      bool isValidBuilding =
+        carpenterMenu.currentBuilding is JunimoHut || carpenterMenu.buildingToMove is JunimoHut;
       isValidMenuState = carpenterMenu.onFarm && isValidBuilding;
       isValidPlayerState |= isValidMenuState;
     }
@@ -255,21 +255,20 @@ internal class ObjectEffectRangeModule(
   {
     Vector2 currentTile = Game1.GetPlacementGrabTile();
     Game1.isCheckingNonMousePlacement = !Game1.IsPerformingMousePlacement();
-    Vector2 validTile = Utility.snapToInt(
-                          Utility.GetNearbyValidPlacementPosition(
-                            Game1.player,
-                            Game1.currentLocation,
-                            currentItem,
-                            (int)currentTile.X * Game1.tileSize,
-                            (int)currentTile.Y * Game1.tileSize
-                          )
-                        ) /
-                        Game1.tileSize;
+    Vector2 validTile =
+      Utility.snapToInt(
+        Utility.GetNearbyValidPlacementPosition(
+          Game1.player,
+          Game1.currentLocation,
+          currentItem,
+          (int)currentTile.X * Game1.tileSize,
+          (int)currentTile.Y * Game1.tileSize
+        )
+      ) / Game1.tileSize;
     Game1.isCheckingNonMousePlacement = false;
 
     return validTile;
   }
-
 
   private void UpdateTilesForArea()
   {
@@ -296,7 +295,11 @@ internal class ObjectEffectRangeModule(
     List<Object> otherItems = GetSimilarObjects(currentItem);
     foreach (Object areaObject in otherItems)
     {
-      WorldObjectRange? otherObjRange = GetEffectiveTilesForObject(areaObject, false, placementTile);
+      WorldObjectRange? otherObjRange = GetEffectiveTilesForObject(
+        areaObject,
+        false,
+        placementTile
+      );
       if (otherObjRange is null)
       {
         continue;
@@ -336,7 +339,11 @@ internal class ObjectEffectRangeModule(
   ///   A <see cref="WorldObjectRange" /> instance representing the tiles covered by the object, or <c>null</c> if the
   ///   object is not relevant.
   /// </returns>
-  private WorldObjectRange? GetEffectiveTilesForObject(Object selectedObject, bool isHeldItem, Vector2 currentMouseTile)
+  private WorldObjectRange? GetEffectiveTilesForObject(
+    Object selectedObject,
+    bool isHeldItem,
+    Vector2 currentMouseTile
+  )
   {
     Vector2 centerTile = isHeldItem ? currentMouseTile : selectedObject.TileLocation;
 
@@ -359,7 +366,12 @@ internal class ObjectEffectRangeModule(
         selectedObject,
         OverlayType.Scarecrow,
         centerTile,
-        new GridPatternOptions { Shape = GridPatternShape.Circle, MainRange = radius, MaxGridSize = maxGridSize }
+        new GridPatternOptions
+        {
+          Shape = GridPatternShape.Circle,
+          MainRange = radius,
+          MaxGridSize = maxGridSize,
+        }
       );
     }
 
@@ -378,7 +390,7 @@ internal class ObjectEffectRangeModule(
           Shape = GridPatternShape.Diamond,
           MainRange = 5,
           AdditionalDistance = 5,
-          AdditionalPointPlacement = AdditionalPointPlacement.AxialOnly
+          AdditionalPointPlacement = AdditionalPointPlacement.AxialOnly,
         }
       );
     }
@@ -439,7 +451,10 @@ internal class ObjectEffectRangeModule(
     return GetSimilarObjectsInLocation(otherObject => IsSimilarObject(selectedObject, otherObject));
   }
 
-  private List<Object> GetSimilarObjectsInLocation(Func<Object, bool> predicate, GameLocation? pLocation = null)
+  private List<Object> GetSimilarObjectsInLocation(
+    Func<Object, bool> predicate,
+    GameLocation? pLocation = null
+  )
   {
     GameLocation location = pLocation ?? Game1.currentLocation;
     var similarObjects = new List<Object>(50);
@@ -455,14 +470,19 @@ internal class ObjectEffectRangeModule(
     return similarObjects;
   }
 
-  private List<Object> GetSimilarObjectsInLocation(string nameSearchString, GameLocation? pLocation = null)
+  private List<Object> GetSimilarObjectsInLocation(
+    string nameSearchString,
+    GameLocation? pLocation = null
+  )
   {
-    return string.IsNullOrEmpty(nameSearchString) ? [] : GetSimilarObjectsInLocation(NameSelector, pLocation);
+    return string.IsNullOrEmpty(nameSearchString)
+      ? []
+      : GetSimilarObjectsInLocation(NameSelector, pLocation);
 
     bool NameSelector(Object o)
     {
       return o.Name.Contains(nameSearchString, StringComparison.OrdinalIgnoreCase);
     }
   }
-#endregion
+  #endregion
 }

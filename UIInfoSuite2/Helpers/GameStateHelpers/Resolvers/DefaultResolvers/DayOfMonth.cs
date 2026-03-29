@@ -10,7 +10,11 @@ namespace UIInfoSuite2.Helpers.GameStateHelpers.Resolvers.DefaultResolvers;
 internal static partial class DefaultConditionResolvers
 {
   [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Accessed via Reflection")]
-  [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Must match Stardew GSQ Resolvers")]
+  [SuppressMessage(
+    "ReSharper",
+    "InconsistentNaming",
+    Justification = "Must match Stardew GSQ Resolvers"
+  )]
   private static ConditionResolver DAY_OF_MONTH = new(
     nameof(GameStateQuery.DefaultResolvers.DAY_OF_MONTH),
     FutureResolver_DayOfMonth,
@@ -57,14 +61,17 @@ internal static partial class DefaultConditionResolvers
   )
   {
     HashSet<int> parsedDays = ParseDaysFromQuery(query);
-    string parsedDaysStr = parsedDays.Count == 0 ? "???" : string.Join(", ", parsedDays.OrderBy(n => n));
+    string parsedDaysStr =
+      parsedDays.Count == 0 ? "???" : string.Join(", ", parsedDays.OrderBy(n => n));
 
     return $"{I18n.Days()} {parsedDaysStr}";
   }
 
   private static HashSet<int> ParseDaysFromQuery(GameStateQuery.ParsedGameStateQuery query)
   {
-    HashSet<int> days = query.Negated ? new HashSet<int>(Enumerable.Range(1, 28)) : new HashSet<int>();
+    HashSet<int> days = query.Negated
+      ? new HashSet<int>(Enumerable.Range(1, 28))
+      : new HashSet<int>();
     HashSet<int> evenNumbers = Enumerable.Range(1, 28).Where(x => x % 2 == 0).ToHashSet();
     HashSet<int> oddNumbers = Enumerable.Range(1, 28).Where(x => x % 2 != 0).ToHashSet();
 

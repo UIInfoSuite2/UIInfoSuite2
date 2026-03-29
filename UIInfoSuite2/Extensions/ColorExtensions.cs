@@ -7,14 +7,15 @@ public static class ColorExtensions
 {
   public static Color Desaturate(this Color color, float desaturationFactor)
   {
-    float hue, saturation, lum;
+    float hue,
+      saturation,
+      lum;
     ColorToHsl(color, out hue, out saturation, out lum);
     float newSaturation = Math.Max(0, Math.Min(saturation * (1 - desaturationFactor), 1));
     Color newColor = HslToColor(hue, newSaturation, lum);
     newColor.A = color.A;
     return newColor;
   }
-
 
   // Help from https://gist.github.com/profexorgeek/a407c0c96f69a37a2f2554b43491e247
   private static void ColorToHsl(Color color, out float h, out float s, out float l)
@@ -32,7 +33,6 @@ public static class ColorExtensions
 
     // luminance is the ave of max and min
     l = (max + min) / 2f;
-
 
     if (delta > 0)
     {
@@ -112,12 +112,10 @@ public static class ColorExtensions
     {
       ret = p + (q - p) * 6 * t;
     }
-
     else if (2 * t < 1)
     {
       ret = q;
     }
-
     else if (3 * t < 2)
     {
       ret = p + (q - p) * (2f / 3f - t) * 6f;

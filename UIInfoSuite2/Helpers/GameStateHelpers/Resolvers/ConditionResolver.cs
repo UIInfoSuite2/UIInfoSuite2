@@ -12,7 +12,7 @@ internal enum QuerySpecificity
   Neutral,
   Specific,
   VerySpecific,
-  Unknown
+  Unknown,
 }
 
 internal class ConditionResolver
@@ -52,17 +52,20 @@ internal class ConditionResolver
   public bool IsErrorResolver { get; }
   public bool CanResolveToDate { get; }
 
-
   public ISet<WorldDate> ResolveFuture(
     GameStateQuery.ParsedGameStateQuery query,
     GameStateQueryContext context,
     int lookupWindowYears
   )
   {
-    return _futureResolverDelegate?.Invoke(query, context, lookupWindowYears) ?? ImmutableHashSet<WorldDate>.Empty;
+    return _futureResolverDelegate?.Invoke(query, context, lookupWindowYears)
+      ?? ImmutableHashSet<WorldDate>.Empty;
   }
 
-  public string GenerateRequirementsStr(string joinedQueryString, GameStateQuery.ParsedGameStateQuery query)
+  public string GenerateRequirementsStr(
+    string joinedQueryString,
+    GameStateQuery.ParsedGameStateQuery query
+  )
   {
     return _requirementStrDelegate(joinedQueryString, query);
   }

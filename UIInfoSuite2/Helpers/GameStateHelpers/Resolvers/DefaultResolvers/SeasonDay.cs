@@ -10,7 +10,11 @@ namespace UIInfoSuite2.Helpers.GameStateHelpers.Resolvers.DefaultResolvers;
 internal static partial class DefaultConditionResolvers
 {
   [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Accessed via Reflection")]
-  [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Must match Stardew GSQ Resolvers")]
+  [SuppressMessage(
+    "ReSharper",
+    "InconsistentNaming",
+    Justification = "Must match Stardew GSQ Resolvers"
+  )]
   private static ConditionResolver SEASON_DAY = new(
     nameof(GameStateQuery.DefaultResolvers.SEASON_DAY),
     FutureResolver_SeasonDay,
@@ -27,8 +31,10 @@ internal static partial class DefaultConditionResolvers
     HashSet<WorldDate> dates = new();
     for (var index = 1; index < query.Query.Length; index += 2)
     {
-      if (!ArgUtility.TryGetEnum(query.Query, index, out Season season, out string _) ||
-          !ArgUtility.TryGetInt(query.Query, index + 1, out int day, out string _))
+      if (
+        !ArgUtility.TryGetEnum(query.Query, index, out Season season, out string _)
+        || !ArgUtility.TryGetInt(query.Query, index + 1, out int day, out string _)
+      )
       {
         continue;
       }
@@ -58,15 +64,17 @@ internal static partial class DefaultConditionResolvers
       { Season.Spring, new HashSet<int>() },
       { Season.Summer, new HashSet<int>() },
       { Season.Fall, new HashSet<int>() },
-      { Season.Winter, new HashSet<int>() }
+      { Season.Winter, new HashSet<int>() },
     };
 
     // Populate from the query
 
     for (var index = 1; index < query.Query.Length; index += 2)
     {
-      if (!ArgUtility.TryGetEnum(query.Query, index, out Season season, out string _) ||
-          !ArgUtility.TryGetInt(query.Query, index + 1, out int day, out string _))
+      if (
+        !ArgUtility.TryGetEnum(query.Query, index, out Season season, out string _)
+        || !ArgUtility.TryGetInt(query.Query, index + 1, out int day, out string _)
+      )
       {
         continue;
       }

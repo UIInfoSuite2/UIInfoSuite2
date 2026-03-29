@@ -11,7 +11,8 @@ public static class CollectionExtensions
   public static GetOrCreateResult<TValue> GetOrCreateWithResult<TKey, TValue>(
     this IDictionary<TKey, TValue> dictionary,
     TKey key
-  ) where TValue : new()
+  )
+    where TValue : new()
   {
     if (dictionary.TryGetValue(key, out TValue? value))
     {
@@ -39,7 +40,10 @@ public static class CollectionExtensions
     return new GetOrCreateResult<TValue>(dictionary[key], true);
   }
 
-  public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+  public static TValue GetOrCreate<TKey, TValue>(
+    this IDictionary<TKey, TValue> dictionary,
+    TKey key
+  )
     where TValue : new()
   {
     return dictionary.GetOrCreateWithResult(key).Result;
@@ -87,13 +91,20 @@ public static class CollectionExtensions
     return dictionary.TryGetValue(key, out TValue? foundDictValue) ? foundDictValue : defaultValue;
   }
 
-  public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+  public static TValue GetOrDefault<TKey, TValue>(
+    this IDictionary<TKey, TValue> dictionary,
+    TKey key
+  )
     where TValue : unmanaged
   {
     return dictionary.GetOrDefault(key, default);
   }
 
-  public static void AddIfNotNull<TValue>(this IList<TValue> list, TValue? value, bool allowEmptyStrings = false)
+  public static void AddIfNotNull<TValue>(
+    this IList<TValue> list,
+    TValue? value,
+    bool allowEmptyStrings = false
+  )
   {
     if (value == null)
     {

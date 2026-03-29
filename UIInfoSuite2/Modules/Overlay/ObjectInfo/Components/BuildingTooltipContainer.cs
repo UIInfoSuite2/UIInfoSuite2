@@ -9,12 +9,16 @@ namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;
 
 internal class BuildingTooltipContainer : LayoutContainer
 {
-  private readonly TooltipText _buildingName = TooltipText.Bold("UIIS2::UnknownBuilding", identifier: "BuildingName");
+  private readonly TooltipText _buildingName = TooltipText.Bold(
+    "UIIS2::UnknownBuilding",
+    identifier: "BuildingName"
+  );
   private readonly BuildingChestTooltipContainer _chestsContainer = new();
   private readonly FishPondTooltipContainer _fishPondContainer = new();
   private Building? _building;
 
-  public BuildingTooltipContainer(Building? building = null) : base("BuildingTooltip")
+  public BuildingTooltipContainer(Building? building = null)
+    : base("BuildingTooltip")
   {
     Direction = LayoutDirection.Column;
     ComponentSpacing = 0;

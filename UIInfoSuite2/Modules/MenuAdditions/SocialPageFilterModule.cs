@@ -24,22 +24,25 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
   private readonly PerScreen<string?> _filter = new(() => null);
 
   // mapping from original entry -> filtered index
-  private readonly PerScreen<Dictionary<int, int>> _socialEntryMapping = new(() => new Dictionary<int, int>());
+  private readonly PerScreen<Dictionary<int, int>> _socialEntryMapping = new(() =>
+    new Dictionary<int, int>()
+  );
 
-  private readonly Lazy<TextBox> _textBox = new(() => new TextBox(null, null, Game1.dialogueFont, Game1.textColor)
+  private readonly Lazy<TextBox> _textBox = new(() =>
+    new TextBox(null, null, Game1.dialogueFont, Game1.textColor)
     {
-      X = 20, Y = 20, Width = 256, Height = 192
+      X = 20,
+      Y = 20,
+      Width = 256,
+      Height = 192,
     }
   );
 
   private readonly TextBoxEvent _textBoxEvent;
   private readonly PerScreen<bool> _useFilteredIndex = new(() => false);
 
-  public SocialPageFilterModule(IModEvents modEvents, IMonitor logger, ConfigManager configManager) : base(
-    modEvents,
-    logger,
-    configManager
-  )
+  public SocialPageFilterModule(IModEvents modEvents, IMonitor logger, ConfigManager configManager)
+    : base(modEvents, logger, configManager)
   {
     _textBoxEvent = OnTextBoxEvt;
   }
@@ -48,16 +51,25 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
   {
     harmony.Patch(
       AccessTools.DeclaredMethod(typeof(SocialPage), nameof(SocialPage.draw)),
-      transpiler: new HarmonyMethod(typeof(SocialPageFilterModule), nameof(SocialPage_draw_Transpiler)),
+      transpiler: new HarmonyMethod(
+        typeof(SocialPageFilterModule),
+        nameof(SocialPage_draw_Transpiler)
+      ),
       postfix: new HarmonyMethod(typeof(SocialPageFilterModule), nameof(SocialPage_draw_Postfix))
     );
     harmony.Patch(
       AccessTools.DeclaredMethod(typeof(SocialPage), nameof(SocialPage.receiveLeftClick)),
-      transpiler: new HarmonyMethod(typeof(SocialPageFilterModule), nameof(SocialPage_receiveLeftClick_Transpiler))
+      transpiler: new HarmonyMethod(
+        typeof(SocialPageFilterModule),
+        nameof(SocialPage_receiveLeftClick_Transpiler)
+      )
     );
     harmony.Patch(
       AccessTools.DeclaredMethod(typeof(SocialPage), nameof(SocialPage.isCharacterSlotClickable)),
-      postfix: new HarmonyMethod(typeof(SocialPageFilterModule), nameof(SocialPage_isCharacterSlotClickable_Postfix))
+      postfix: new HarmonyMethod(
+        typeof(SocialPageFilterModule),
+        nameof(SocialPage_isCharacterSlotClickable_Postfix)
+      )
     );
   }
 
@@ -104,8 +116,10 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
       return socialPage.SocialEntries;
     }
 
-    List<SocialPage.SocialEntry> entries = socialPage.SocialEntries
-      .Where(entry => entry.DisplayName.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+    List<SocialPage.SocialEntry> entries = socialPage
+      .SocialEntries.Where(entry =>
+        entry.DisplayName.Contains(filter, StringComparison.InvariantCultureIgnoreCase)
+      )
       .ToList();
     for (var i = 0; i < entries.Count; i++)
     {
@@ -132,7 +146,8 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
        IL_00f3: callvirt     instance int32 class [System.Collections]System.Collections.Generic.List`1<class StardewValley.Menus.ClickableTextureComponent>::get_Count()
        IL_00f8: blt.s        IL_00b5
      */
-    matcher.MatchEndForward(
+    matcher
+      .MatchEndForward(
         new CodeMatch(OpCodes.Ldloc_3),
         new CodeMatch(OpCodes.Ldarg_0),
         new CodeMatch(i => i.opcode == OpCodes.Ldfld),
@@ -147,7 +162,8 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
        IL_00ad: ldfld        int32 StardewValley.Menus.SocialPage::slotPosition
        IL_00b2: stloc.3      // slotPosition
      */
-    matcher.Start()
+    matcher
+      .Start()
       .MatchStartForward(
         new CodeMatch(OpCodes.Ldarg_0),
         new CodeMatch(i => i.opcode == OpCodes.Ldfld),
@@ -180,7 +196,8 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
        IL_0134: stloc.2      // socialEntry
      */
 
-    matcher.MatchStartForward(
+    matcher
+      .MatchStartForward(
         new CodeMatch(OpCodes.Ldarg_0),
         new CodeMatch(OpCodes.Ldloc_1),
         new CodeMatch(i => i.opcode == OpCodes.Call),
@@ -188,12 +205,18 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
       )
       .ThrowIfNotMatch("Couldn't find insertion point for left click matcher")
       .Advance(2)
-      .SetInstruction(CodeInstruction.Call(typeof(SocialPageFilterModule), nameof(GetFilteredSocialEntry)));
+      .SetInstruction(
+        CodeInstruction.Call(typeof(SocialPageFilterModule), nameof(GetFilteredSocialEntry))
+      );
 
     return matcher.InstructionEnumeration();
   }
 
-  private static void SocialPage_isCharacterSlotClickable_Postfix(int i, ref bool __result, SocialPage __instance)
+  private static void SocialPage_isCharacterSlotClickable_Postfix(
+    int i,
+    ref bool __result,
+    SocialPage __instance
+  )
   {
     var module = ModEntry.GetSingleton<SocialPageFilterModule>();
     if (!module._useFilteredIndex.Value || module._socialEntryMapping.Value.IsEmpty())
@@ -213,7 +236,10 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
     }
   }
 
-  public static SocialPage.SocialEntry? GetFilteredSocialEntry(SocialPage socialPage, int visualIndex)
+  public static SocialPage.SocialEntry? GetFilteredSocialEntry(
+    SocialPage socialPage,
+    int visualIndex
+  )
   {
     var module = ModEntry.GetSingleton<SocialPageFilterModule>();
 
@@ -280,7 +306,7 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
     module._textBox.Value.Draw(b);
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.MenuFeatures;
@@ -297,5 +323,5 @@ internal class SocialPageFilterModule : BaseModule, IPatchable, IConfigurable
   }
 
   public void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest) { }
-#endregion
+  #endregion
 }

@@ -10,7 +10,11 @@ namespace UIInfoSuite2.Helpers.GameStateHelpers.Resolvers.DefaultResolvers;
 internal static partial class DefaultConditionResolvers
 {
   [SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Accessed via Reflection")]
-  [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Must match Stardew GSQ Resolvers")]
+  [SuppressMessage(
+    "ReSharper",
+    "InconsistentNaming",
+    Justification = "Must match Stardew GSQ Resolvers"
+  )]
   public static ConditionResolver IS_GREEN_RAIN_DAY = new(
     nameof(GameStateQuery.DefaultResolvers.IS_GREEN_RAIN_DAY),
     FutureResolver_IsGreenRainDay,
@@ -28,9 +32,16 @@ internal static partial class DefaultConditionResolvers
     var greenRainDays = new[] { 5, 6, 7, 14, 15, 16, 18, 23 };
     for (var yearOffset = 0; yearOffset < lookupWindowYears; yearOffset++)
     {
-      Random seededRandom = Utility.CreateRandom((Game1.year + yearOffset) * 777, Game1.uniqueIDForThisGame);
+      Random seededRandom = Utility.CreateRandom(
+        (Game1.year + yearOffset) * 777,
+        Game1.uniqueIDForThisGame
+      );
       int greenRainDayThisYear = seededRandom.ChooseFrom(greenRainDays);
-      var greenRainDate = new WorldDate(Game1.year + yearOffset, Season.Summer, greenRainDayThisYear);
+      var greenRainDate = new WorldDate(
+        Game1.year + yearOffset,
+        Season.Summer,
+        greenRainDayThisYear
+      );
       if (Game1.Date > greenRainDate)
       {
         continue;

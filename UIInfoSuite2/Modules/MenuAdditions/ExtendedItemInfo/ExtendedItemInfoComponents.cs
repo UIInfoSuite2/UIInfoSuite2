@@ -25,7 +25,10 @@ internal class ShippingBinIconElement : LayoutElement
   private readonly Dimensions _dimensions;
   private readonly AspectLockedDimensions _scaleHelper;
 
-  public ShippingBinIconElement(int finalSize = 32, PrimaryDimension primaryDimension = PrimaryDimension.Width)
+  public ShippingBinIconElement(
+    int finalSize = 32,
+    PrimaryDimension primaryDimension = PrimaryDimension.Width
+  )
   {
     this.WithPadding(0);
     int targetSize = primaryDimension == PrimaryDimension.Width ? finalSize : finalSize - 2;
@@ -38,7 +41,12 @@ internal class ShippingBinIconElement : LayoutElement
     return _dimensions;
   }
 
-  public static void DrawShippingBinIcon(SpriteBatch spriteBatch, int positionX, int positionY, float scale)
+  public static void DrawShippingBinIcon(
+    SpriteBatch spriteBatch,
+    int positionX,
+    int positionY,
+    float scale
+  )
   {
     Vector2 position = new(positionX, positionY);
     spriteBatch.Draw(
@@ -76,10 +84,13 @@ internal class DescriptionContainer : TooltipExtensionContainer
   internal static readonly Dictionary<BundleData, LayoutContainer> ContainerCache = new();
   private readonly BundleHelper _bundleHelper;
   private readonly List<LayoutContainer> _bundles = [];
-  private readonly Lazy<LayoutContainer> _museumDonationContainer = new(CreateMuseumDonationContainer);
+  private readonly Lazy<LayoutContainer> _museumDonationContainer = new(
+    CreateMuseumDonationContainer
+  );
 
-  private readonly Lazy<LibraryMuseum> _museumInstance =
-    new(() => Game1.RequireLocation<LibraryMuseum>("ArchaeologyHouse"));
+  private readonly Lazy<LibraryMuseum> _museumInstance = new(() =>
+    Game1.RequireLocation<LibraryMuseum>("ArchaeologyHouse")
+  );
 
   private readonly Lazy<LayoutContainer> _shippingBinContainer = new(CreateShippingBinContainer);
 
@@ -92,7 +103,10 @@ internal class DescriptionContainer : TooltipExtensionContainer
 
   private static LayoutContainer CreateShippingBinContainer()
   {
-    return CreateIconRow(new ShippingBinIconElement(), TooltipText.FromAchievement(34, "Full Shipment"));
+    return CreateIconRow(
+      new ShippingBinIconElement(),
+      TooltipText.FromAchievement(34, "Full Shipment")
+    );
   }
 
   private static LayoutContainer GetBundleContainer(BundleRequiredItem bundleDisplayData)
@@ -102,9 +116,14 @@ internal class DescriptionContainer : TooltipExtensionContainer
       return container;
     }
 
-    var bundleText = new TooltipText($"{bundleDisplayData.Bundle.DisplayName} ({bundleDisplayData.ItemData.Count})");
+    var bundleText = new TooltipText(
+      $"{bundleDisplayData.Bundle.DisplayName} ({bundleDisplayData.ItemData.Count})"
+    );
 
-    LayoutContainer newContainer = CreateIconRow(TooltipIcon.FromBundle(bundleDisplayData, 32), bundleText);
+    LayoutContainer newContainer = CreateIconRow(
+      TooltipIcon.FromBundle(bundleDisplayData, 32),
+      bundleText
+    );
     ContainerCache[bundleDisplayData.Bundle] = newContainer;
 
     return newContainer;
@@ -119,7 +138,12 @@ internal class DescriptionContainer : TooltipExtensionContainer
         "ExtendedItemInfo: Could not find Gunther in the game, creating a fake one for ourselves.",
         LogLevel.Warn
       );
-      gunther = new NPC { Name = "Gunther", Age = 0, Sprite = new AnimatedSprite("Characters\\Gunther") };
+      gunther = new NPC
+      {
+        Name = "Gunther",
+        Age = 0,
+        Sprite = new AnimatedSprite("Characters\\Gunther"),
+      };
     }
 
     // Gunther has no dedicated mugshot bounds in data, and the default bounds don't scale very well, so we'll use our own.
@@ -144,7 +168,8 @@ internal class DescriptionContainer : TooltipExtensionContainer
       .WithPadding(0)
       .WithMargin(0);
 
-    LayoutContainer newContainer = Row(null, 10, iconElement, textElement).WithAlignment(Alignment.Center);
+    LayoutContainer newContainer = Row(null, 10, iconElement, textElement)
+      .WithAlignment(Alignment.Center);
     return newContainer;
   }
 
@@ -162,11 +187,12 @@ internal class DescriptionContainer : TooltipExtensionContainer
     }
 
     bool notDonatedYet = _museumInstance.Value.isItemSuitableForDonation(hoveredItem);
-    bool notShippedYet = hoveredItem is SObject hoveredObject &&
-                         hoveredObject.countsForShippedCollection() &&
-                         !Game1.player.basicShipped.ContainsKey(hoveredObject.ItemId) &&
-                         hoveredObject.Type != "Fish" &&
-                         hoveredObject.Category != SObject.skillBooksCategory;
+    bool notShippedYet =
+      hoveredItem is SObject hoveredObject
+      && hoveredObject.countsForShippedCollection()
+      && !Game1.player.basicShipped.ContainsKey(hoveredObject.ItemId)
+      && hoveredObject.Type != "Fish"
+      && hoveredObject.Category != SObject.skillBooksCategory;
 
     foreach (BundleRequiredItem bundleItemData in _bundleHelper.BundlesRequiringItem(hoveredItem))
     {

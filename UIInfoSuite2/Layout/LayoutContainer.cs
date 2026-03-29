@@ -22,7 +22,7 @@ internal class LayoutContainer : LayoutElement
   public enum LayoutDirection
   {
     Row,
-    Column
+    Column,
   }
 
   private readonly List<LayoutElement> _children = [];
@@ -30,13 +30,15 @@ internal class LayoutContainer : LayoutElement
   private readonly List<LayoutElement> _visibleChildren = [];
   private LayoutStrategy _strategy = null!; // set in every constructor path
 
-  public LayoutContainer(string? identifier, params LayoutElement[] children) : base(identifier)
+  public LayoutContainer(string? identifier, params LayoutElement[] children)
+    : base(identifier)
   {
     _strategy = _flexStrategy;
     AddChildren(children);
   }
 
-  public LayoutContainer(params LayoutElement[] children) : this(null, children) { }
+  public LayoutContainer(params LayoutElement[] children)
+    : this(null, children) { }
 
   /// <summary>
   ///   When true, the container automatically hides itself whenever all of its children are hidden,
@@ -64,7 +66,8 @@ internal class LayoutContainer : LayoutElement
         : LayoutDirection.Column;
     set
     {
-      FlexDirection mapped = value == LayoutDirection.Row ? FlexDirection.Row : FlexDirection.Column;
+      FlexDirection mapped =
+        value == LayoutDirection.Row ? FlexDirection.Row : FlexDirection.Column;
       if (_flexStrategy.Direction == mapped)
       {
         return;
@@ -215,7 +218,11 @@ internal class LayoutContainer : LayoutElement
     return c;
   }
 
-  public static LayoutContainer Row(string? identifier, int spacing, params LayoutElement[] children)
+  public static LayoutContainer Row(
+    string? identifier,
+    int spacing,
+    params LayoutElement[] children
+  )
   {
     var c = new LayoutContainer(identifier);
     c.Direction = LayoutDirection.Row;
@@ -232,7 +239,11 @@ internal class LayoutContainer : LayoutElement
     return c;
   }
 
-  public static LayoutContainer Column(string? identifier, int spacing, params LayoutElement[] children)
+  public static LayoutContainer Column(
+    string? identifier,
+    int spacing,
+    params LayoutElement[] children
+  )
   {
     var c = new LayoutContainer(identifier);
     c.ComponentSpacing = spacing;
@@ -242,7 +253,6 @@ internal class LayoutContainer : LayoutElement
   }
 
   // endregion
-
 
   public void AddChildren(params LayoutElement[] components)
   {
@@ -330,6 +340,7 @@ internal class LayoutContainer : LayoutElement
 
     return _strategy.MeasureContent(_children);
   }
+
   // endregion
 
   // region Drawing
@@ -359,7 +370,11 @@ internal class LayoutContainer : LayoutElement
 
     foreach (LayoutElement component in _visibleChildren)
     {
-      component.Draw(spriteBatch, baseX + component.Bounds.OffsetX, baseY + component.Bounds.OffsetY);
+      component.Draw(
+        spriteBatch,
+        baseX + component.Bounds.OffsetX,
+        baseY + component.Bounds.OffsetY
+      );
     }
   }
 

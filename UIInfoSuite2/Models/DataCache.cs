@@ -4,7 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace UIInfoSuite2.Models;
 
-public class DataCache<TKey, TValue> where TKey : IEquatable<TKey>
+public class DataCache<TKey, TValue>
+  where TKey : IEquatable<TKey>
 {
   private readonly Dictionary<TKey, TValue> _cacheMap;
 

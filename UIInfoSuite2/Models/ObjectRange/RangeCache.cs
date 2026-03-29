@@ -51,7 +51,9 @@ internal class RangeCache
       Vector2 position = tile * tileToPixelScale;
       b.Draw(
         Game1.mouseCursors,
-        Utility.ModifyCoordinatesForUIScale(Game1.GlobalToLocal(Utility.ModifyCoordinatesForUIScale(position))),
+        Utility.ModifyCoordinatesForUIScale(
+          Game1.GlobalToLocal(Utility.ModifyCoordinatesForUIScale(position))
+        ),
         sourceRect,
         (count == 1 ? Color.White : Color.Red) * 0.7f,
         0.0f,

@@ -33,12 +33,22 @@ internal class GameStateHelper
       case "FALSE":
         return ConditionFutureResult.Empty;
       default:
-        var context = new GameStateQueryContext(location, player, targetItem, inputItem, random, ignoreQueryKeys);
+        var context = new GameStateQueryContext(
+          location,
+          player,
+          targetItem,
+          inputItem,
+          random,
+          ignoreQueryKeys
+        );
         return ResolveQueryFutureImpl(queryString, context);
     }
   }
 
-  public ConditionFutureResult ResolveQueryFutureImpl(string? queryString, GameStateQueryContext context)
+  public ConditionFutureResult ResolveQueryFutureImpl(
+    string? queryString,
+    GameStateQueryContext context
+  )
   {
     ConditionFutureResult defaultDaysResult = ConditionFutureResult.TodayAndTomorrow();
 
@@ -66,13 +76,19 @@ internal class GameStateHelper
 
       if (!conditionResolver.CanResolveToDate)
       {
-        resultForCondition.AddConditionStatus(conditionResolver.QueryStr, conditionResolver.Resolve(context));
+        resultForCondition.AddConditionStatus(
+          conditionResolver.QueryStr,
+          conditionResolver.Resolve(context)
+        );
         continue;
       }
 
       ConditionFutureResult resultForResolver = conditionResolver.ResolveFuture(context);
       resultForCondition.MergeConditionResult(resultForResolver);
-      resultForCondition.AddConditionStatus(conditionResolver.QueryStr, resultForResolver.HasResolvedDate);
+      resultForCondition.AddConditionStatus(
+        conditionResolver.QueryStr,
+        resultForResolver.HasResolvedDate
+      );
     }
 
     return resultForCondition;

@@ -16,21 +16,29 @@ internal class MonsterSlayerShortcut : MenuShortcutElement
 
   // Create our custom texture at some point
   private readonly Lazy<Texture2D> _texture = new(() =>
-    {
-      Texture2D customTexture = new(Game1.graphics.GraphicsDevice, (int)InitialWidth, (int)InitialHeight);
-      customTexture.SetData(new Color[customTexture.Width * customTexture.Height]);
-      var gilTexture = Game1.content.Load<Texture2D>(Path.Combine("Maps", "townInterior"));
-      var papersTexture = Game1.content.Load<Texture2D>(Path.Combine("Maps", "townInterior_2"));
+  {
+    Texture2D customTexture = new(
+      Game1.graphics.GraphicsDevice,
+      (int)InitialWidth,
+      (int)InitialHeight
+    );
+    customTexture.SetData(new Color[customTexture.Width * customTexture.Height]);
+    var gilTexture = Game1.content.Load<Texture2D>(Path.Combine("Maps", "townInterior"));
+    var papersTexture = Game1.content.Load<Texture2D>(Path.Combine("Maps", "townInterior_2"));
 
+    Tools.CopySection(
+      papersTexture,
+      customTexture,
+      new Rectangle(368, 576, 15, 32),
+      new Point(0, 0)
+    );
+    Tools.CopySection(gilTexture, customTexture, new Rectangle(183, 624, 19, 32), new Point(19, 0));
 
-      Tools.CopySection(papersTexture, customTexture, new Rectangle(368, 576, 15, 32), new Point(0, 0));
-      Tools.CopySection(gilTexture, customTexture, new Rectangle(183, 624, 19, 32), new Point(19, 0));
+    return customTexture;
+  });
 
-      return customTexture;
-    }
-  );
-
-  public MonsterSlayerShortcut(int finalHeight) : base(finalHeight) { }
+  public MonsterSlayerShortcut(int finalHeight)
+    : base(finalHeight) { }
 
   protected override float ScaleFactor => RenderedHeight / InitialHeight;
 
@@ -44,7 +52,11 @@ internal class MonsterSlayerShortcut : MenuShortcutElement
     return I18n.SlayerGoals();
   }
 
-  protected override void HandleClickEvent(object? sender, ButtonPressedEventArgs args, Vector2 mouseCoords)
+  protected override void HandleClickEvent(
+    object? sender,
+    ButtonPressedEventArgs args,
+    Vector2 mouseCoords
+  )
   {
     Game1.RequireLocation<AdventureGuild>("AdventureGuild").showMonsterKillList();
   }

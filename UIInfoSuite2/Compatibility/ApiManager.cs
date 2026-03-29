@@ -23,7 +23,8 @@ public class ApiManager(IMonitor logger)
     string modId,
     string? minimumVersion = null,
     bool warnIfNotPresent = false
-  ) where T : class
+  )
+    where T : class
   {
     IModInfo? modInfo = helper.ModRegistry.Get(modId);
     if (modInfo == null)
@@ -67,7 +68,8 @@ public class ApiManager(IMonitor logger)
     return api;
   }
 
-  public bool GetApi<T>(string modId, [NotNullWhen(true)] out T? apiInstance) where T : class
+  public bool GetApi<T>(string modId, [NotNullWhen(true)] out T? apiInstance)
+    where T : class
   {
     apiInstance = null;
     if (!_registeredApis.TryGetValue(modId, out object? api))
@@ -81,7 +83,10 @@ public class ApiManager(IMonitor logger)
       return true;
     }
 
-    logger.Log($"API was registered for mod {modId} but the requested type is not supported", LogLevel.Warn);
+    logger.Log(
+      $"API was registered for mod {modId} but the requested type is not supported",
+      LogLevel.Warn
+    );
     return false;
   }
 }

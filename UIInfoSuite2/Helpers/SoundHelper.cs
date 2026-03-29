@@ -10,7 +10,7 @@ namespace UIInfoSuite2.Helpers;
 
 public enum Sounds
 {
-  LevelUp
+  LevelUp,
 }
 
 public class SoundHelper
@@ -39,15 +39,19 @@ public class SoundHelper
     if (e.NameWithoutLocale.IsEquivalentTo("Data/AudioChanges"))
     {
       e.Edit(asset =>
-        {
-          IDictionary<string, AudioCueData> data = asset.AsDictionary<string, AudioCueData>().Data;
-          data.TryAddMany(_cueData);
-        }
-      );
+      {
+        IDictionary<string, AudioCueData> data = asset.AsDictionary<string, AudioCueData>().Data;
+        data.TryAddMany(_cueData);
+      });
     }
   }
 
-  private void RegisterSound(IModHelper helper, Sounds sound, string fileName, string category = "Sound")
+  private void RegisterSound(
+    IModHelper helper,
+    Sounds sound,
+    string fileName,
+    string category = "Sound"
+  )
   {
     string id = GetQualifiedSoundName(sound);
     _cueData[id] = new AudioCueData
@@ -57,7 +61,7 @@ public class SoundHelper
       FilePaths = [Path.Combine(helper.DirectoryPath, "assets", fileName)],
       StreamedVorbis = false,
       Looped = false,
-      UseReverb = true
+      UseReverb = true,
     };
 
     _logger.Log($"Registered Sound: {id}");

@@ -22,12 +22,17 @@ internal class TooltipIcon : LayoutElement
     float finalSize,
     PrimaryDimension primaryDimension = PrimaryDimension.Width,
     string? identifier = null
-  ) : base(identifier)
+  )
+    : base(identifier)
   {
     _dimensions = new AspectLockedDimensions(sourceBounds, finalSize, primaryDimension);
     _texture = new TrackableValue<Texture2D>(texture, MeasureAndUpdate, "Texture");
     _sourceBounds = new TrackableValue<Rectangle>(sourceBounds, MeasureAndUpdate, "SourceBounds");
-    _primaryDimension = new TrackableValue<PrimaryDimension>(primaryDimension, MeasureAndUpdate, "StretchDimension");
+    _primaryDimension = new TrackableValue<PrimaryDimension>(
+      primaryDimension,
+      MeasureAndUpdate,
+      "StretchDimension"
+    );
     _finalSize = new TrackableValue<float>(finalSize, MeasureAndUpdate, "FinalSize");
 
     MeasureAndUpdate("init");
@@ -48,7 +53,11 @@ internal class TooltipIcon : LayoutElement
     );
   }
 
-  public static TooltipIcon FromNpc(NPC npc, int finalSize, PrimaryDimension primaryDimension = PrimaryDimension.Width)
+  public static TooltipIcon FromNpc(
+    NPC npc,
+    int finalSize,
+    PrimaryDimension primaryDimension = PrimaryDimension.Width
+  )
   {
     return new TooltipIcon(npc.Sprite.Texture, npc.GetHeadShot(), finalSize, primaryDimension);
   }
@@ -56,7 +65,11 @@ internal class TooltipIcon : LayoutElement
   private void MeasureAndUpdate(string? sender)
   {
     AspectLockedDimensions previousDimensions = _dimensions;
-    _dimensions = new AspectLockedDimensions(_sourceBounds.Value, _finalSize.Value, _primaryDimension.Value);
+    _dimensions = new AspectLockedDimensions(
+      _sourceBounds.Value,
+      _finalSize.Value,
+      _primaryDimension.Value
+    );
     if (previousDimensions.Bounds != _dimensions.Bounds)
     {
       MarkLayoutDirty(sender ?? "unknown");
@@ -85,7 +98,6 @@ internal class TooltipIcon : LayoutElement
     _primaryDimension.SetAndMark(dimension, runCallback: false);
     MeasureAndUpdate("SetSize");
   }
-
 
   protected override void DrawContent(SpriteBatch spriteBatch, int positionX, int positionY)
   {

@@ -24,5 +24,8 @@ public abstract class BaseConfigurable(ConfigManager configManager) : IConfigura
   }
 
   public abstract string GetConfigSection();
-  public abstract void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest);
+  public abstract void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  );
 }

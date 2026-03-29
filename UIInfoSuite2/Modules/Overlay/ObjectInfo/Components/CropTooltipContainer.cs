@@ -18,7 +18,11 @@ internal class CropTooltipContainer : LayoutContainer
     identifier: "CropTimeRemaining"
   );
 
-  private readonly TooltipIcon _cropIcon = new(Game1.mouseCursors, new Rectangle(322, 498, 12, 12), 20);
+  private readonly TooltipIcon _cropIcon = new(
+    Game1.mouseCursors,
+    new Rectangle(322, 498, 12, 12),
+    20
+  );
 
   private readonly TooltipText _cropNameElement = TooltipText.Bold(
     "UIIS2::UnknownCrop",
@@ -29,14 +33,18 @@ internal class CropTooltipContainer : LayoutContainer
   private readonly DropsHelper _dropsHelper;
   private Crop? _crop;
 
-  public CropTooltipContainer(Crop? crop = null) : base("CropTooltip")
+  public CropTooltipContainer(Crop? crop = null)
+    : base("CropTooltip")
   {
     _dropsHelper = ModEntry.GetSingleton<DropsHelper>();
     Direction = LayoutDirection.Column;
 
     ComponentSpacing = 0;
 
-    AddChildren(Row(null, 10, _cropNameElement, _cropIcon).WithAlignment(Alignment.Center), _cropDaysRemainingElement);
+    AddChildren(
+      Row(null, 10, _cropNameElement, _cropIcon).WithAlignment(Alignment.Center),
+      _cropDaysRemainingElement
+    );
     IsHidden = true;
 
     Crop = crop;
@@ -95,6 +103,11 @@ internal class CropTooltipContainer : LayoutContainer
 
     Item cropOutput = ItemRegistry.Create(Crop.indexOfHarvest.Value);
     ParsedItemData dataOrErrorItem = ItemRegistry.GetDataOrErrorItem(cropOutput.QualifiedItemId);
-    _cropIcon.SetIcon(dataOrErrorItem.GetTexture(), dataOrErrorItem.GetSourceRect(), 50, PrimaryDimension.Height);
+    _cropIcon.SetIcon(
+      dataOrErrorItem.GetTexture(),
+      dataOrErrorItem.GetSourceRect(),
+      50,
+      PrimaryDimension.Height
+    );
   }
 }

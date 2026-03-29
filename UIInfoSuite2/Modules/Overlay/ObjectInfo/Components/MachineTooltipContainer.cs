@@ -16,12 +16,22 @@ namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;
 
 internal class MachineTooltipContainer : LayoutContainer
 {
-  private static readonly Lazy<ParsedItemData> BatteryItem = new(() => ItemRegistry.GetDataOrErrorItem("787"));
-  private readonly TooltipText _machineName = TooltipText.Bold("UIIS2::UnknownMachine", identifier: "MachineName");
-  private readonly TooltipText _timeRemaining = new("UIIS2::UnknownTime", 0.75f, identifier: "MachineTimeRemaining");
+  private static readonly Lazy<ParsedItemData> BatteryItem = new(() =>
+    ItemRegistry.GetDataOrErrorItem("787")
+  );
+  private readonly TooltipText _machineName = TooltipText.Bold(
+    "UIIS2::UnknownMachine",
+    identifier: "MachineName"
+  );
+  private readonly TooltipText _timeRemaining = new(
+    "UIIS2::UnknownTime",
+    0.75f,
+    identifier: "MachineTimeRemaining"
+  );
   private SObject? _machine;
 
-  public MachineTooltipContainer(SObject? machine = null) : base("MachineTooltip")
+  public MachineTooltipContainer(SObject? machine = null)
+    : base("MachineTooltip")
   {
     Direction = LayoutDirection.Column;
     ComponentSpacing = 0;
@@ -73,7 +83,6 @@ internal class MachineTooltipContainer : LayoutContainer
     {
       _machine.minutesUntilReady.fieldChangeEvent += OnMachineTimeUpdated;
     }
-
 
     UpdateMachineTime();
   }

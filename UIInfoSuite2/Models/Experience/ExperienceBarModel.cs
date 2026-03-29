@@ -20,10 +20,8 @@ internal class ExperienceBarModel : ProgressBar
   private int _skillType = Farmer.farmingSkill;
   private XpThreshold _xpThreshold = new(0, 0, 0);
 
-  public ExperienceBarModel(int maxBarWidth = 250) : base(
-    TextureHelper.SkillFillColors[Farmer.farmingSkill],
-    maxBarWidth
-  )
+  public ExperienceBarModel(int maxBarWidth = 250)
+    : base(TextureHelper.SkillFillColors[Farmer.farmingSkill], maxBarWidth)
   {
     _dialogBoxYOffset = DialogBoxHeight + 10;
     UpdatePosition();
@@ -46,7 +44,9 @@ internal class ExperienceBarModel : ProgressBar
 
   private Rectangle GetSkillTextureRect()
   {
-    return Tools.IsMasteryLevel() ? TextureHelper.MasteryIconRectangle : TextureHelper.SkillIconRectangles[_skillType];
+    return Tools.IsMasteryLevel()
+      ? TextureHelper.MasteryIconRectangle
+      : TextureHelper.SkillIconRectangles[_skillType];
   }
 
   private bool ShouldHide()

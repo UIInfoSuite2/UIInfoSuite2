@@ -9,14 +9,13 @@ using StardewValley.GameData.Buffs;
 using StardewValley.GameData.LocationContexts;
 using StardewValley.GameData.Locations;
 using StardewValley.Network;
-
 // ReSharper disable UnusedMember.Global
-
 
 #if IS_CLOUDY_SKIES
 using Leclair.Stardew.Common.Types;
 
 namespace Leclair.Stardew.CloudySkies;
+
 #else
 namespace UIInfoSuite2.Compatibility;
 
@@ -54,14 +53,13 @@ public interface IModAssetEditor<TModel> : IDictionary<string, TModel>
 }
 #endif
 
-
 [Flags]
 public enum LightingTweenMode
 {
   None = 0,
   Before = 1,
   After = 2,
-  Both = 3
+  Both = 3,
 }
 
 /// <summary>
@@ -150,7 +148,7 @@ public interface ICloudySkiesApi
   /// <param name="weatherId">A specific weather to invalidate the effect cache for.</param>
   void RegenerateEffects(string? weatherId = null);
 
-#region Custom Things
+  #region Custom Things
   delegate IWeatherLayer? WeatherLayerFactoryDelegate(ulong layerId, ICustomLayerData data);
 
   delegate IWeatherEffect? WeatherEffectFactoryDelegate(ulong layerId, ICustomEffectData data);
@@ -200,7 +198,7 @@ public interface ICloudySkiesApi
   /// <param name="type">The type name.</param>
   /// <returns>Whether or not the effect type was removed successfully.</returns>
   bool UnregisterEffectType(string type);
-#endregion
+  #endregion
 }
 
 /// <summary>
@@ -321,17 +319,17 @@ public interface IWeatherData
   /// </summary>
   string Id { get; set; }
 
-#region Custom Critters
+  #region Custom Critters
   public IList<ICritterSpawnData> Critters { get; }
-#endregion
+  #endregion
 
 
-#region Screen Tinting
+  #region Screen Tinting
   /// <summary>
   ///   A list of this weather type's screen tint data points.
   /// </summary>
   IList<IScreenTintData> Lighting { get; }
-#endregion
+  #endregion
 
   /// <summary>
   ///   A list of this weather type's effects.
@@ -343,14 +341,14 @@ public interface IWeatherData
   /// </summary>
   public IList<ILayerData> Layers { get; }
 
-#region Display
+  #region Display
   /// <summary>
   ///   A display name to show the player when this weather condition
   ///   should be referenced by name. This is a tokenizable string.
   /// </summary>
   string DisplayName { get; set; }
 
-#region Icon
+  #region Icon
   /// <summary>
   ///   The name of the texture containing this weather's icon.
   /// </summary>
@@ -361,9 +359,9 @@ public interface IWeatherData
   ///   weather icons are 12 by 8 pixels.
   /// </summary>
   Point IconSource { get; set; }
-#endregion
+  #endregion
 
-#region Television
+  #region Television
   /// <summary>
   ///   The name of the texture containing this weather's TV animation.
   /// </summary>
@@ -399,9 +397,9 @@ public interface IWeatherData
   ///   tokenizable strings. May be null.
   /// </summary>
   Dictionary<string, string>? ForecastByContext { get; }
-#endregion
+  #endregion
 
-#region Weather Totem
+  #region Weather Totem
   /// <summary>
   ///   An optional string to display to the player when this weather
   ///   condition is triggered using a custom weather totem. This is
@@ -439,10 +437,10 @@ public interface IWeatherData
   ///   Rain Totem uses <c>648, 1045, 52, 33</c>.
   /// </summary>
   Rectangle? TotemParticleSource { get; set; }
-#endregion
-#endregion
+  #endregion
+  #endregion
 
-#region Behavior - Music
+  #region Behavior - Music
   /// <summary>
   ///   If this is set to a non-null value, this weather condition will
   ///   override the playing music in the same way the base game's raining
@@ -472,9 +470,9 @@ public interface IWeatherData
   ///   of <see cref="MusicOverride" /> if there is a matching entry.
   /// </summary>
   List<LocationMusicData>? SoftMusicOverrides { get; set; }
-#endregion
+  #endregion
 
-#region Behavior - Vanilla Flags
+  #region Behavior - Vanilla Flags
   /// <summary>
   ///   Controls the value of <see cref="LocationWeather.IsRaining" />.
   /// </summary>
@@ -499,9 +497,9 @@ public interface IWeatherData
   ///   Controls the value of <see cref="LocationWeather.IsGreenRain" />.
   /// </summary>
   bool IsGreenRain { get; set; }
-#endregion
+  #endregion
 
-#region Behavior - Other
+  #region Behavior - Other
   /// <summary>
   ///   Whether or not crops and pet bowls should be watered at the start of
   ///   the day when this weather is active. If this is not set, the behavior
@@ -534,7 +532,7 @@ public interface IWeatherData
   ///   <see cref="SpawnCritters" /> must be enabled for cloud shadows to spawn.
   /// </summary>
   bool? SpawnClouds { get; set; }
-#endregion
+  #endregion
 }
 
 public interface ICritterSpawnData
@@ -558,7 +556,7 @@ public interface ICritterSpawnData
   /// </summary>
   float Chance { get; set; }
 
-#region Conditions
+  #region Conditions
   /// <summary>
   ///   A game state query for determining if this critter should spawn.
   /// </summary>
@@ -569,7 +567,7 @@ public interface ICritterSpawnData
   ///   will be used at any given time.
   /// </summary>
   string? Group { get; set; }
-#endregion
+  #endregion
 }
 
 public interface IScreenTintData
@@ -676,7 +674,7 @@ public interface IEffectData
   /// </summary>
   uint Rate { get; set; }
 
-#region Conditions
+  #region Conditions
   /// <summary>
   ///   A condition that must evaluate to true for this effect to
   ///   become active. If not set, this effect will always be active. This
@@ -699,7 +697,7 @@ public interface IEffectData
   ///   of setting this value, for performance reasons.
   /// </summary>
   public TargetMapType TargetMapType { get; set; }
-#endregion
+  #endregion
 }
 
 public interface ICustomEffectData : IEffectData
@@ -850,13 +848,13 @@ public interface ITriggerEffectData : IEffectData
 public enum TargetMapType
 {
   Outdoors = 1,
-  Indoors = 2
+  Indoors = 2,
 }
 
 public enum LayerDrawType
 {
   Normal,
-  Lighting
+  Lighting,
 }
 
 public interface ILayerData
@@ -873,11 +871,11 @@ public interface ILayerData
   /// </summary>
   string Type { get; }
 
-#region Shared Rendering
+  #region Shared Rendering
   public LayerDrawType Mode { get; set; }
-#endregion
+  #endregion
 
-#region Conditions
+  #region Conditions
   /// <summary>
   ///   A condition that must evaluate to true for this layer to be displayed.
   ///   If not set, the layer will always be displayed. This condition is
@@ -896,7 +894,7 @@ public interface ILayerData
   ///   The type(s) of maps that this layer should render on. Defaults to Outdoors.
   /// </summary>
   public TargetMapType TargetMapType { get; set; }
-#endregion
+  #endregion
 }
 
 public interface ICustomLayerData : ILayerData
@@ -1212,7 +1210,7 @@ public interface ILocationContextExtensionData
   /// </summary>
   Dictionary<string, bool> AllowWeatherTotem { get; set; }
 
-#region TV: Weather Channel
+  #region TV: Weather Channel
   /// <summary>
   ///   Whether or not this location context should be included in the
   ///   TV's Weather channel.
@@ -1232,7 +1230,7 @@ public interface ILocationContextExtensionData
   /// </summary>
   string? WeatherForecastPrefix { get; set; }
 
-#region Textures
+  #region Textures
   /// <summary>
   ///   Optional. An asset name for a texture that should be displayed
   ///   as the background of the weather channel when viewing the weather
@@ -1321,7 +1319,7 @@ public interface ILocationContextExtensionData
   ///   <see cref="WeatherChannelOverlayTexture" /> is not set.
   /// </summary>
   float WeatherChannelOverlayWeatherSpeed { get; set; }
-#endregion
-#endregion
+  #endregion
+  #endregion
 }
 // ReSharper restore UnusedMember.Global

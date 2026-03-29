@@ -18,8 +18,12 @@ namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;
 
 internal class BushContext
 {
-  private static readonly Lazy<string> TeaBushName = new(() => ItemRegistry.GetData("(O)251").DisplayName);
-  private static readonly Lazy<ParsedItemData> TeaLeafData = new(() => ItemRegistry.GetData("(O)815"));
+  private static readonly Lazy<string> TeaBushName = new(() =>
+    ItemRegistry.GetData("(O)251").DisplayName
+  );
+  private static readonly Lazy<ParsedItemData> TeaLeafData = new(() =>
+    ItemRegistry.GetData("(O)815")
+  );
 
   private readonly ICustomBushApi? _customBushApi;
   private readonly ICustomBushData? _customBushData;
@@ -35,8 +39,10 @@ internal class BushContext
     Bush = bush;
 
     var apiManager = ModEntry.GetSingleton<ApiManager>();
-    if (apiManager.GetApi(ModCompat.CustomBush, out _customBushApi) &&
-        _customBushApi.TryGetBush(bush, out _customBushData, out _customBushId))
+    if (
+      apiManager.GetApi(ModCompat.CustomBush, out _customBushApi)
+      && _customBushApi.TryGetBush(bush, out _customBushData, out _customBushId)
+    )
     {
       PopulateCustomBush();
     }
@@ -80,11 +86,15 @@ internal class BushContext
 
     if (IsReadyToday)
     {
-      DroppedItems.Add(new PossibleDroppedItem(ConditionFutureResult.Today(), TeaLeafData.Value, 1.0f));
+      DroppedItems.Add(
+        new PossibleDroppedItem(ConditionFutureResult.Today(), TeaLeafData.Value, 1.0f)
+      );
     }
     else if (Game1.dayOfMonth >= 21 && Game1.dayOfMonth < 28)
     {
-      DroppedItems.Add(new PossibleDroppedItem(ConditionFutureResult.Tomorrow(), TeaLeafData.Value, 1.0f));
+      DroppedItems.Add(
+        new PossibleDroppedItem(ConditionFutureResult.Tomorrow(), TeaLeafData.Value, 1.0f)
+      );
     }
   }
 
@@ -128,9 +138,16 @@ internal class BushTooltipContainer : LayoutContainer
     identifier: "BushTimeRemaining"
   );
 
-  private readonly TooltipIcon _bushIcon = new(Game1.mouseCursors, new Rectangle(322, 498, 12, 12), 40);
+  private readonly TooltipIcon _bushIcon = new(
+    Game1.mouseCursors,
+    new Rectangle(322, 498, 12, 12),
+    40
+  );
 
-  private readonly TooltipText _bushNameElement = TooltipText.Bold("UIIS2::UnknownBush", identifier: "BushName");
+  private readonly TooltipText _bushNameElement = TooltipText.Bold(
+    "UIIS2::UnknownBush",
+    identifier: "BushName"
+  );
 
   private readonly TooltipText _doesNotProduceElement = new(
     I18n.DoesNotProduceThisSeason(),
@@ -138,11 +155,15 @@ internal class BushTooltipContainer : LayoutContainer
     identifier: "BushDoesNotProduce"
   );
 
-
-  private readonly TooltipText _dropsText = new("UIIS2::UnknownDrops", identifier: "BushDrops", scale: 0.75f);
+  private readonly TooltipText _dropsText = new(
+    "UIIS2::UnknownDrops",
+    identifier: "BushDrops",
+    scale: 0.75f
+  );
   private BushContext? _bushContext;
 
-  public BushTooltipContainer() : base("BushTooltip")
+  public BushTooltipContainer()
+    : base("BushTooltip")
   {
     Direction = LayoutDirection.Row;
 
@@ -211,7 +232,10 @@ internal class BushTooltipContainer : LayoutContainer
     {
       if (!_bushContext.IsMature)
       {
-        SetTextElement(_bushDaysRemainingElement, $"{_bushContext.AgeToMature - Bush.getAge()} {I18n.DaysToMature()}");
+        SetTextElement(
+          _bushDaysRemainingElement,
+          $"{_bushContext.AgeToMature - Bush.getAge()} {I18n.DaysToMature()}"
+        );
       }
 
       if (!_bushContext.WillProduceThisSeason)
@@ -225,19 +249,32 @@ internal class BushTooltipContainer : LayoutContainer
     // Too early in the season to produce
     if (!_bushContext.InProductionPeriod)
     {
-      SetTextElement(_bushDaysRemainingElement, $"{_bushContext.DaysUntilProductionPeriod} {I18n.Days()}");
+      SetTextElement(
+        _bushDaysRemainingElement,
+        $"{_bushContext.DaysUntilProductionPeriod} {I18n.Days()}"
+      );
       return;
     }
 
     SetTextElement(
       _dropsText,
-      string.Join(", ", _bushContext.DroppedItems.Select(item => GetInfoStringForDrop(item, _bushContext.IsReadyToday)))
+      string.Join(
+        ", ",
+        _bushContext.DroppedItems.Select(item =>
+          GetInfoStringForDrop(item, _bushContext.IsReadyToday)
+        )
+      )
     );
   }
 
   private static string GetInfoStringForDrop(PossibleDroppedItem item, bool isReadyToday)
   {
-    (ConditionFutureResult futureHarvestDates, ParsedItemData? parsedItemData, float chance, string? _) = item;
+    (
+      ConditionFutureResult futureHarvestDates,
+      ParsedItemData? parsedItemData,
+      float chance,
+      string? _
+    ) = item;
 
     WorldDate? nextDayToProduce = futureHarvestDates.GetNextDate(isReadyToday);
     if (nextDayToProduce == null)

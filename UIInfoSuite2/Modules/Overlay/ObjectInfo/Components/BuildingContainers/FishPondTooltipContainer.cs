@@ -11,11 +11,20 @@ namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components.BuildingContainers;
 
 internal class FishPondTooltipContainer : LayoutContainer
 {
-  private readonly TooltipText _capacityText = new("UIIS2::UnknownContent", 0.75f, identifier: "BuildingInputs");
-  private readonly TooltipText _daysUntilReady = new("UIIS2::UnknownContent", 0.75f, identifier: "BuildingInputs");
+  private readonly TooltipText _capacityText = new(
+    "UIIS2::UnknownContent",
+    0.75f,
+    identifier: "BuildingInputs"
+  );
+  private readonly TooltipText _daysUntilReady = new(
+    "UIIS2::UnknownContent",
+    0.75f,
+    identifier: "BuildingInputs"
+  );
   private FishPond? _pond;
 
-  public FishPondTooltipContainer(FishPond? pond = null) : base("BuildingTooltip")
+  public FishPondTooltipContainer(FishPond? pond = null)
+    : base("BuildingTooltip")
   {
     Direction = LayoutDirection.Column;
     ComponentSpacing = 0;
@@ -109,7 +118,8 @@ internal class FishPondTooltipContainer : LayoutContainer
     int totalPondCapacity = GetMaxPopulation(Pond);
     int daysToSpawn = days == 0 ? spawnTime : spawnTime - days;
 
-    _daysUntilReady.IsHidden = count >= totalPondCapacity || (daysToSpawn <= 0 && count >= Pond.maxOccupants.Value);
+    _daysUntilReady.IsHidden =
+      count >= totalPondCapacity || (daysToSpawn <= 0 && count >= Pond.maxOccupants.Value);
     _daysUntilReady.Text = $"Next Spawn: {daysToSpawn} {I18n.Days()}";
   }
 

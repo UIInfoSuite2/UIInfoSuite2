@@ -37,10 +37,13 @@ internal class ExperienceModule(
   private const int XpVisibleTicks = 100;
   private static readonly XpThreshold EmptyThreshold = new(0, 0, 0);
 
-  private readonly PerScreen<ExperienceBarModel> _displayedExperienceBar = new(() => new ExperienceBarModel());
+  private readonly PerScreen<ExperienceBarModel> _displayedExperienceBar = new(() =>
+    new ExperienceBarModel()
+  );
 
-  private readonly PerScreen<FieldChange<NetInt, int>?[]> _experienceCallbacks =
-    new(() => new FieldChange<NetInt, int>[Game1.player.experiencePoints.Length]);
+  private readonly PerScreen<FieldChange<NetInt, int>?[]> _experienceCallbacks = new(() =>
+    new FieldChange<NetInt, int>[Game1.player.experiencePoints.Length]
+  );
 
   private readonly PerScreen<Item?> _previousItem = new();
 
@@ -146,7 +149,7 @@ internal class ExperienceModule(
       Pickaxe => (int)SkillType.Mining,
       MeleeWeapon weapon when weapon.Name != "Scythe" => (int)SkillType.Combat,
       _ when Game1.currentLocation is Farm && currentItem is not Axe => (int)SkillType.Farming,
-      _ => (int)SkillType.Foraging
+      _ => (int)SkillType.Foraging,
     };
   }
 
@@ -169,7 +172,7 @@ internal class ExperienceModule(
     );
   }
 
-#region NetField listeners
+  #region NetField listeners
   private void AddXpValueListeners()
   {
     for (var i = 0; i < Game1.player.experiencePoints.Length; i++)
@@ -211,9 +214,9 @@ internal class ExperienceModule(
 
     Array.Clear(_experienceCallbacks.Value);
   }
-#endregion
+  #endregion
 
-#region Static Helpers
+  #region Static Helpers
   private static XpThreshold GetMasteryThreshold()
   {
     int currentMasteryLevel = MasteryTrackerMenu.getCurrentMasteryLevel(); // 1
@@ -245,9 +248,9 @@ internal class ExperienceModule(
 
     return new XpThreshold(totalSkillXp, xpThisLevel, xpForNextLevel);
   }
-#endregion
+  #endregion
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -302,5 +305,5 @@ internal class ExperienceModule(
       setValue: value => Config.ShowLevelUpAnimation = value
     );
   }
-#endregion
+  #endregion
 }

@@ -80,7 +80,11 @@ public interface ITabContextMenuEvent
   /// <param name="label">The string to display.</param>
   /// <param name="onSelect">The action to perform when this entry is selected.</param>
   /// <param name="icon">An icon to display alongside this entry.</param>
-  ITabContextMenuEntry CreateEntry(string label, Action? onSelect, IBetterGameMenuApi.DrawDelegate? icon = null);
+  ITabContextMenuEntry CreateEntry(
+    string label,
+    Action? onSelect,
+    IBetterGameMenuApi.DrawDelegate? icon = null
+  );
 }
 
 /// <summary>
@@ -200,7 +204,7 @@ public enum PageReadyToCloseReason
   TabReloading = 3,
 
   /// <summary>The user tried to open a tab context menu.</summary>
-  TabContextMenu = 4
+  TabContextMenu = 4,
 }
 
 /// <summary>
@@ -254,7 +258,7 @@ public interface IPageOverlayCreationEvent
 /// </summary>
 public interface IPageOverlay : IDisposable
 {
-#region Life Cycle and Updates
+  #region Life Cycle and Updates
   /// <summary>
   ///   This is called whenever the overlayed page becomes the current page
   ///   of the menu. This is not called when the overlay is first created.
@@ -295,9 +299,9 @@ public interface IPageOverlay : IDisposable
   ///   assuming the overlayed page calls the base method. It may be called twice.
   /// </summary>
   void PopulateClickableComponents();
-#endregion
+  #endregion
 
-#region Input
+  #region Input
   /// <summary>
   ///   This is called before <see cref="IClickableMenu.receiveLeftClick(int, int, bool)" />
   /// </summary>
@@ -365,9 +369,9 @@ public interface IPageOverlay : IDisposable
   /// <param name="button">The button(s) that was held.</param>
   /// <param name="suppressEvent">Whether or not to allow the relevant method on <see cref="IClickableMenu" /> to run.</param>
   void GamePadButtonHeld(Buttons button, out bool suppressEvent);
-#endregion
+  #endregion
 
-#region Drawing
+  #region Drawing
   /// <summary>
   ///   This is called before <see cref="IClickableMenu.draw(SpriteBatch)" />
   /// </summary>
@@ -379,7 +383,7 @@ public interface IPageOverlay : IDisposable
   /// </summary>
   /// <param name="batch">The SpriteBatch to draw with.</param>
   void Draw(SpriteBatch batch);
-#endregion
+  #endregion
 }
 
 /// <summary>
@@ -446,7 +450,11 @@ public interface IBetterGameMenu
   ///   be created if one has not already been created.
   /// </param>
   /// <returns>Whether or not a page instance for that tab exists.</returns>
-  bool TryGetPage(string target, [NotNullWhen(true)] out IClickableMenu? page, bool forceCreation = false);
+  bool TryGetPage(
+    string target,
+    [NotNullWhen(true)] out IClickableMenu? page,
+    bool forceCreation = false
+  );
 
   /// <summary>
   ///   Attempt to change the currently active tab to the target tab.
@@ -485,7 +493,7 @@ public enum VanillaTabOrders
   Powers = 120,
   Collections = 140,
   Options = 160,
-  Exit = 200
+  Exit = 200,
 }
 
 public interface IBetterGameMenuApi
@@ -497,7 +505,7 @@ public interface IBetterGameMenuApi
   /// <param name="bounds">The region where the thing should be drawn.</param>
   delegate void DrawDelegate(SpriteBatch batch, Rectangle bounds);
 
-#region Helpers
+  #region Helpers
   /// <summary>
   ///   Create a draw delegate that draws the provided texture to the
   ///   screen. This supports basic animations if required.
@@ -515,9 +523,9 @@ public interface IBetterGameMenuApi
     int frameTime = 16,
     Vector2? offset = null
   );
-#endregion
+  #endregion
 
-#region Tab Registration
+  #region Tab Registration
   /// <summary>
   ///   Register a new tab with the system.
   /// </summary>
@@ -695,9 +703,9 @@ public interface IBetterGameMenuApi
   /// </summary>
   /// <param name="id">The id of the tab to un-register your implementation for.</param>
   void UnregisterImplementation(string id);
-#endregion
+  #endregion
 
-#region Menu Class Access
+  #region Menu Class Access
   /// <summary>
   ///   Return the Better Game Menu menu implementation's type, in case
   ///   you want to do spooky stuff to it, I guess.
@@ -754,7 +762,11 @@ public interface IBetterGameMenuApi
   ///   if one is set to make room for the game menu.
   /// </param>
   /// <returns>The menu that was opened, if one was.</returns>
-  IBetterGameMenu? TryOpenMenu(string? defaultTab = null, bool playSound = false, bool closeExistingMenu = false);
+  IBetterGameMenu? TryOpenMenu(
+    string? defaultTab = null,
+    bool playSound = false,
+    bool closeExistingMenu = false
+  );
 
   /// <summary>
   ///   Create a new Better Game Menu instance and return it.
@@ -774,9 +786,9 @@ public interface IBetterGameMenuApi
   /// </param>
   /// <param name="playSound">Whether or not a sound should play.</param>
   IClickableMenu CreateMenu(int startingTab, bool playSound = false);
-#endregion
+  #endregion
 
-#region Menu Events
+  #region Menu Events
   delegate void MenuCreatedDelegate(IClickableMenu menu);
 
   delegate void TabChangedDelegate(ITabChangedEvent evt);
@@ -816,7 +828,10 @@ public interface IBetterGameMenuApi
   ///   This event fires whenever the user opens a context menu for a menu tab
   ///   by right-clicking on it.
   /// </summary>
-  void OnTabContextMenu(TabContextMenuDelegate handler, EventPriority priority = EventPriority.Normal);
+  void OnTabContextMenu(
+    TabContextMenuDelegate handler,
+    EventPriority priority = EventPriority.Normal
+  );
 
   /// <summary>
   ///   Unregister a handler for the TabContextMenu event.
@@ -843,7 +858,10 @@ public interface IBetterGameMenuApi
   ///   happens the first time a page is ready to be displayed because it becomes
   ///   the current page, or when the current tab's page is recreated.
   /// </summary>
-  void OnPageOverlayCreation(PageOverlayCreationDelegate handler, EventPriority priority = EventPriority.Normal);
+  void OnPageOverlayCreation(
+    PageOverlayCreationDelegate handler,
+    EventPriority priority = EventPriority.Normal
+  );
 
   /// <summary>
   ///   Unregister a handler for the PageCreated event.
@@ -854,11 +872,14 @@ public interface IBetterGameMenuApi
   ///   This event fires whenever Better Game Menu checks if a page is ready to
   ///   close, either due to the game menu closing or due to the tab being changed.
   /// </summary>
-  void OnPageReadyToClose(PageReadyToCloseDelegate handler, EventPriority priority = EventPriority.Normal);
+  void OnPageReadyToClose(
+    PageReadyToCloseDelegate handler,
+    EventPriority priority = EventPriority.Normal
+  );
 
   /// <summary>
   ///   Unregister a handler for the PageReadyToClose event.
   /// </summary>
   void OffPageReadyToClose(PageReadyToCloseDelegate handler);
-#endregion
+  #endregion
 }

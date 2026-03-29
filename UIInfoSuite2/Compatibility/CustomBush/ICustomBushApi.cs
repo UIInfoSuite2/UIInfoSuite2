@@ -33,7 +33,11 @@ public interface ICustomBushApi : ICustomBushApiObsolete
   /// </param>
   /// <param name="id">When this method returns, contains the id of the custom bush, if found; otherwise, it contains null.</param>
   /// <returns><c>true</c> if the custom bush associated with the given bush is found.</returns>
-  bool TryGetBush(Bush bush, [NotNullWhen(true)] out ICustomBushData? customBush, [NotNullWhen(true)] out string? id);
+  bool TryGetBush(
+    Bush bush,
+    [NotNullWhen(true)] out ICustomBushData? customBush,
+    [NotNullWhen(true)] out string? id
+  );
 
   /// <summary>Tries to get the custom bush drop associated with the given bush id.</summary>
   /// <param name="id">The id of the bush.</param>

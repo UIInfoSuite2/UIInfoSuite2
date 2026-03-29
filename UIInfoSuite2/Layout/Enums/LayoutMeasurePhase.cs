@@ -2,6 +2,6 @@
 
 public enum LayoutMeasurePhase
 {
-  Initial,    // First pass - measure minimal content sizes
-  Constrained // Second pass - measure with constraints from parent/siblings
+  Initial, // First pass - measure minimal content sizes
+  Constrained, // Second pass - measure with constraints from parent/siblings
 }

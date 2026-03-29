@@ -22,8 +22,9 @@ public record BundleReward(string ItemType, string UnqualifiedId, int Count)
   {
     string[] pieces = ArgUtility.SplitBySpace(data);
 
-
-    return pieces.Length == 3 ? new BundleReward(pieces[0], pieces[1], Convert.ToInt32(pieces[2])) : null;
+    return pieces.Length == 3
+      ? new BundleReward(pieces[0], pieces[1], Convert.ToInt32(pieces[2]))
+      : null;
   }
 }
 
@@ -71,15 +72,15 @@ public record BundleData(
       return true;
     }
 
-    return RoomName == other.RoomName &&
-           BundleId == other.BundleId &&
-           InternalName == other.InternalName &&
-           Equals(Reward, other.Reward) &&
-           RequirementOptions.Equals(other.RequirementOptions) &&
-           BundleColorId == other.BundleColorId &&
-           BundleSlots == other.BundleSlots &&
-           Equals(TextureOverride, other.TextureOverride) &&
-           DisplayName == other.DisplayName;
+    return RoomName == other.RoomName
+      && BundleId == other.BundleId
+      && InternalName == other.InternalName
+      && Equals(Reward, other.Reward)
+      && RequirementOptions.Equals(other.RequirementOptions)
+      && BundleColorId == other.BundleColorId
+      && BundleSlots == other.BundleSlots
+      && Equals(TextureOverride, other.TextureOverride)
+      && DisplayName == other.DisplayName;
   }
 
   public override int GetHashCode()
@@ -97,7 +98,11 @@ public record BundleData(
     return hashCode.ToHashCode();
   }
 
-  public static bool FromDataString(string key, string data, [NotNullWhen(true)] out BundleData? bundleData)
+  public static bool FromDataString(
+    string key,
+    string data,
+    [NotNullWhen(true)] out BundleData? bundleData
+  )
   {
     bundleData = null;
     try
@@ -238,12 +243,22 @@ internal class BundleHelper
     _requiredBundleItems.Clear();
     foreach ((string key, List<List<int>> bundlesRequiringItem) in bundlesIngredientsInfo)
     {
-      _requiredBundleItems.GetOrCreate(key)
-        .AddRange(bundlesRequiringItem.Select(infoList => new BundleItem(infoList[0], key, infoList[1], infoList[2])));
+      _requiredBundleItems
+        .GetOrCreate(key)
+        .AddRange(
+          bundlesRequiringItem.Select(infoList => new BundleItem(
+            infoList[0],
+            key,
+            infoList[1],
+            infoList[2]
+          ))
+        );
     }
   }
 
-  private bool GetCommunityCenterRequiredItems([NotNullWhen(true)] out BundleIngredientsCache? bundlesIngredientsInfo)
+  private bool GetCommunityCenterRequiredItems(
+    [NotNullWhen(true)] out BundleIngredientsCache? bundlesIngredientsInfo
+  )
   {
     bundlesIngredientsInfo = null;
 
@@ -252,7 +267,10 @@ internal class BundleHelper
       var communityCenter = Game1.RequireLocation<CommunityCenter>("CommunityCenter");
       communityCenter.refreshBundlesIngredientsInfo();
       IReflectedField<BundleIngredientsCache> bundlesIngredientsInfoField =
-        _reflectionHelper.GetField<BundleIngredientsCache>(communityCenter, "bundlesIngredientsInfo");
+        _reflectionHelper.GetField<BundleIngredientsCache>(
+          communityCenter,
+          "bundlesIngredientsInfo"
+        );
       bundlesIngredientsInfo = bundlesIngredientsInfoField.GetValue();
       return true;
     }
@@ -269,7 +287,11 @@ internal class BundleHelper
     List<BundleRequiredItem> output = [];
     if (_requiredBundleItems.TryGetValue(item.QualifiedItemId, out List<BundleItem>? bundleItems))
     {
-      output = bundleItems.Select(bundleItem => new BundleRequiredItem(_bundleDataMap[bundleItem.BundleId], bundleItem))
+      output = bundleItems
+        .Select(bundleItem => new BundleRequiredItem(
+          _bundleDataMap[bundleItem.BundleId],
+          bundleItem
+        ))
         .ToList();
     }
 

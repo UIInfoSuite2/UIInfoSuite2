@@ -46,8 +46,14 @@ internal static class ShopMenu_Patches
     {
       harmony.Patch(
         AccessTools.DeclaredMethod(typeof(ShopMenu), nameof(ShopMenu.performHoverAction)),
-        transpiler: new HarmonyMethod(typeof(ShopMenu_Patches), nameof(Transpile_ShopMenu_performHoverAction)),
-        postfix: new HarmonyMethod(typeof(ShopMenu_Patches), nameof(Postfix_ShopMenu_performHoverAction))
+        transpiler: new HarmonyMethod(
+          typeof(ShopMenu_Patches),
+          nameof(Transpile_ShopMenu_performHoverAction)
+        ),
+        postfix: new HarmonyMethod(
+          typeof(ShopMenu_Patches),
+          nameof(Postfix_ShopMenu_performHoverAction)
+        )
       );
 
       harmony.Patch(
@@ -79,7 +85,9 @@ internal static class ShopMenu_Patches
         new CodeMatch(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(ShopMenu), "_isStorageShop")),
         new CodeMatch(OpCodes.Brfalse_S)
       )
-      .MatchEndForward(new CodeMatch(OpCodes.Stfld, AccessTools.DeclaredField(typeof(ShopMenu), "hoverPrice")))
+      .MatchEndForward(
+        new CodeMatch(OpCodes.Stfld, AccessTools.DeclaredField(typeof(ShopMenu), "hoverPrice"))
+      )
       .ThrowIfInvalid("");
 
     m.Advance(1)
@@ -117,7 +125,11 @@ internal static class ShopMenu_Patches
         new CodeMatch(OpCodes.Ldarg_1),
         new CodeMatch(
           OpCodes.Call,
-          AccessTools.DeclaredMethod(typeof(IClickableMenu), nameof(IClickableMenu.draw), [typeof(SpriteBatch)])
+          AccessTools.DeclaredMethod(
+            typeof(IClickableMenu),
+            nameof(IClickableMenu.draw),
+            [typeof(SpriteBatch)]
+          )
         )
       )
       .ThrowIfInvalid("");

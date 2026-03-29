@@ -24,17 +24,18 @@ public static class ObjectExtensions
       return "null";
     }
 
-    return $"Crop[" +
-           $"Type={(!string.IsNullOrEmpty(crop.netSeedIndex.Value) ? crop.netSeedIndex.Value : crop.whichForageCrop.Value)}, " +
-           $"Phase={crop.currentPhase.Value}/{crop.phaseDays.Count - 1}, " + // -1 because last phase is finalPhaseLength
-           $"DayOfPhase={crop.dayOfCurrentPhase.Value}, " +
-           $"Harvest={crop.indexOfHarvest.Value}, " +
-           $"FullyGrown={crop.fullyGrown.Value}, " +
-           $"Dead={crop.dead.Value}, " +
-           $"ForageCrop={crop.forageCrop.Value}" +
-           (crop.forageCrop.Value ? $", ForageType={crop.whichForageCrop.Value}" : "") +
-           (crop.programColored.Value ? $", Tint={crop.tintColor.Value}" : "") +
-           "]";
+    return $"Crop["
+      + $"Type={(!string.IsNullOrEmpty(crop.netSeedIndex.Value) ? crop.netSeedIndex.Value : crop.whichForageCrop.Value)}, "
+      + $"Phase={crop.currentPhase.Value}/{crop.phaseDays.Count - 1}, "
+      + // -1 because last phase is finalPhaseLength
+      $"DayOfPhase={crop.dayOfCurrentPhase.Value}, "
+      + $"Harvest={crop.indexOfHarvest.Value}, "
+      + $"FullyGrown={crop.fullyGrown.Value}, "
+      + $"Dead={crop.dead.Value}, "
+      + $"ForageCrop={crop.forageCrop.Value}"
+      + (crop.forageCrop.Value ? $", ForageType={crop.whichForageCrop.Value}" : "")
+      + (crop.programColored.Value ? $", Tint={crop.tintColor.Value}" : "")
+      + "]";
   }
 
   public static int OrZero(this int? nullable)
@@ -97,7 +98,7 @@ public static class ObjectExtensions
     return new Rectangle(vector.X, vector.Y, width, height);
   }
 
-#region Properties
+  #region Properties
   private const string SolarPanelId = "231";
 
   private static readonly Dictionary<string, int> NpcHeadShotSize = new()
@@ -135,7 +136,7 @@ public static class ObjectExtensions
     { "Vincent", 6 },
     { "Sandy", 7 },
     { "Clint", 10 },
-    { "Willy", 10 }
+    { "Willy", 10 },
   };
-#endregion
+  #endregion
 }

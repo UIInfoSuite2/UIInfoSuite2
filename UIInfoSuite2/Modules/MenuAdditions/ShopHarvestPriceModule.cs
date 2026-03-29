@@ -54,7 +54,14 @@ internal class ShopHarvestPriceModule(
 
     int xPosition = menu.xPositionOnScreen - 30;
     int yPosition = menu.yPositionOnScreen + 580;
-    IClickableMenu.drawTextureBox(Game1.spriteBatch, xPosition + 20, yPosition - 52, 264, 108, Color.White);
+    IClickableMenu.drawTextureBox(
+      Game1.spriteBatch,
+      xPosition + 20,
+      yPosition - 52,
+      264,
+      108,
+      Color.White
+    );
     // Title "Harvest Price"
     string textToRender = I18n.HarvestPrice();
     Game1.spriteBatch.DrawString(
@@ -109,7 +116,7 @@ internal class ShopHarvestPriceModule(
     );
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.MenuFeatures;
@@ -135,5 +142,5 @@ internal class ShopHarvestPriceModule(
       setValue: value => Config.ShowHarvestPricesInShop = value
     );
   }
-#endregion
+  #endregion
 }

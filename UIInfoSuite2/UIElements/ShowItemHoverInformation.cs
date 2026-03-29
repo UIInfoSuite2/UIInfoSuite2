@@ -19,7 +19,8 @@ namespace UIInfoSuite2.UIElements;
 
 internal class ShowItemHoverInformation : IDisposable
 {
-  private static readonly Lazy<ClickableTextureComponent> _shippingBottomIcon = new(() => new ClickableTextureComponent(
+  private static readonly Lazy<ClickableTextureComponent> _shippingBottomIcon = new(() =>
+    new ClickableTextureComponent(
       new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
       Game1.mouseCursors,
       new Rectangle(526, 218, 30, 22),
@@ -27,20 +28,17 @@ internal class ShowItemHoverInformation : IDisposable
     )
   );
 
-  private static readonly Lazy<ClickableTextureComponent> _bundleIcon = new(() => new ClickableTextureComponent(
-                                                                              new Rectangle(
-                                                                                0,
-                                                                                0,
-                                                                                Game1.tileSize,
-                                                                                Game1.tileSize
-                                                                              ),
-                                                                              Game1.mouseCursors,
-                                                                              new Rectangle(331, 374, 15, 14),
-                                                                              3f
-                                                                            )
+  private static readonly Lazy<ClickableTextureComponent> _bundleIcon = new(() =>
+    new ClickableTextureComponent(
+      new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
+      Game1.mouseCursors,
+      new Rectangle(331, 374, 15, 14),
+      3f
+    )
   );
 
-  private static readonly Lazy<ClickableTextureComponent> _shippingTopIcon = new(() => new ClickableTextureComponent(
+  private static readonly Lazy<ClickableTextureComponent> _shippingTopIcon = new(() =>
+    new ClickableTextureComponent(
       new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
       Game1.mouseCursors,
       new Rectangle(134, 236, 30, 15),
@@ -71,7 +69,12 @@ internal class ShowItemHoverInformation : IDisposable
         $"{GetType().Name}: Could not find Gunther in the game, creating a fake one for ourselves.",
         LogLevel.Warn
       );
-      gunther = new NPC { Name = "Gunther", Age = 0, Sprite = new AnimatedSprite("Characters\\Gunther") };
+      gunther = new NPC
+      {
+        Name = "Gunther",
+        Age = 0,
+        Sprite = new AnimatedSprite("Characters\\Gunther"),
+      };
     }
 
     _museumIcon = new ClickableTextureComponent(
@@ -144,9 +147,11 @@ internal class ShowItemHoverInformation : IDisposable
 
   private void DrawAdvancedTooltip(SpriteBatch spriteBatch)
   {
-    if (_hoverItem.Value != null &&
-        !(_hoverItem.Value is MeleeWeapon weapon && weapon.isScythe()) &&
-        _hoverItem.Value is not FishingRod)
+    if (
+      _hoverItem.Value != null
+      && !(_hoverItem.Value is MeleeWeapon weapon && weapon.isScythe())
+      && _hoverItem.Value is not FishingRod
+    )
     {
       var hoveredObject = _hoverItem.Value as Object;
 
@@ -162,12 +167,12 @@ internal class ShowItemHoverInformation : IDisposable
 
       bool notDonatedYet = _libraryMuseum.isItemSuitableForDonation(_hoverItem.Value);
 
-
-      bool notShippedYet = hoveredObject != null &&
-                           hoveredObject.countsForShippedCollection() &&
-                           !Game1.player.basicShipped.ContainsKey(hoveredObject.ItemId) &&
-                           hoveredObject.Type != "Fish" &&
-                           hoveredObject.Category != Object.skillBooksCategory;
+      bool notShippedYet =
+        hoveredObject != null
+        && hoveredObject.countsForShippedCollection()
+        && !Game1.player.basicShipped.ContainsKey(hoveredObject.ItemId)
+        && hoveredObject.Type != "Fish"
+        && hoveredObject.Category != Object.skillBooksCategory;
 
       string? requiredBundleName = null;
       Color? bundleColor = null;
@@ -185,7 +190,8 @@ internal class ShowItemHoverInformation : IDisposable
       }
 
       var drawPositionOffset = new Vector2();
-      int windowWidth, windowHeight;
+      int windowWidth,
+        windowHeight;
 
       var bundleHeaderWidth = 0;
       if (!string.IsNullOrEmpty(requiredBundleName))
@@ -200,7 +206,8 @@ internal class ShowItemHoverInformation : IDisposable
       var minTextWidth = (int)Game1.smallFont.MeasureString("000").X;
       // largestTextWidth = 12 + 4 + (icon.Width = 32) + 4 + max(textSize.X) + 8 + 16
       int largestTextWidth =
-        76 + Math.Max(minTextWidth, Math.Max(stackTextWidth, Math.Max(itemTextWidth, cropTextWidth)));
+        76
+        + Math.Max(minTextWidth, Math.Max(stackTextWidth, Math.Max(itemTextWidth, cropTextWidth)));
       windowWidth = Math.Max(bundleHeaderWidth, largestTextWidth);
 
       windowHeight = 20 + 16;
@@ -257,12 +264,14 @@ internal class ShowItemHoverInformation : IDisposable
       var iconCenterOffset = new Vector2(16, 20);
       var textOffset = new Vector2(32 + 4, (rowHeight - 18) / 2 - 6);
 
-      if (itemPrice > 0 ||
-          stackPrice > 0 ||
-          cropPrice > 0 ||
-          !string.IsNullOrEmpty(requiredBundleName) ||
-          notDonatedYet ||
-          notShippedYet)
+      if (
+        itemPrice > 0
+        || stackPrice > 0
+        || cropPrice > 0
+        || !string.IsNullOrEmpty(requiredBundleName)
+        || notDonatedYet
+        || notShippedYet
+      )
       {
         IClickableMenu.drawTextureBox(
           spriteBatch,
@@ -362,14 +371,24 @@ internal class ShowItemHoverInformation : IDisposable
       {
         // Draws a 30x42 bundle icon offset by (-7, -13) from the top-left corner of the window
         // and the 36px high banner with the bundle name
-        DrawBundleBanner(spriteBatch, requiredBundleName, windowPos + new Vector2(-7, -13), windowWidth, bundleColor);
+        DrawBundleBanner(
+          spriteBatch,
+          requiredBundleName,
+          windowPos + new Vector2(-7, -13),
+          windowWidth,
+          bundleColor
+        );
       }
 
       if (notShippedYet)
       {
         // Draws a 36x28 shipping bin offset by (-24, -6) from the top-right corner of the window
         var shippingBinDims = new Vector2(30, 24);
-        DrawShippingBin(spriteBatch, windowPos + new Vector2(windowWidth - 6, 8), shippingBinDims / 2);
+        DrawShippingBin(
+          spriteBatch,
+          windowPos + new Vector2(windowWidth - 6, 8),
+          shippingBinDims / 2
+        );
       }
     }
   }
@@ -399,7 +418,8 @@ internal class ShowItemHoverInformation : IDisposable
     int cellWidth = windowWidth / cellCount;
     for (var cell = 0; cell < cellCount; ++cell)
     {
-      float fadeAmount = 0.97f - (cell < solidCells ? 0 : 1.0f * (cell - solidCells) / (cellCount - solidCells));
+      float fadeAmount =
+        0.97f - (cell < solidCells ? 0 : 1.0f * (cell - solidCells) / (cellCount - solidCells));
       spriteBatch.Draw(
         Game1.staminaRect,
         new Rectangle(bundleBannerX + cell * cellWidth, bundleBannerY, cellWidth, 36),

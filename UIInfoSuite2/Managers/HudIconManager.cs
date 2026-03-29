@@ -15,7 +15,12 @@ namespace UIInfoSuite2.Managers;
 
 internal record HudIconRow(ClickableIcon[] Icons, int MaxRowHeight);
 
-internal class HudIconManager(IModRegistry registry, IModEvents modEvents, IMonitor logger, ConfigManager configManager)
+internal class HudIconManager(
+  IModRegistry registry,
+  IModEvents modEvents,
+  IMonitor logger,
+  ConfigManager configManager
+)
 {
   private readonly Dictionary<string, ClickableIcon> _icons = new();
 
@@ -104,7 +109,8 @@ internal class HudIconManager(IModRegistry registry, IModEvents modEvents, IMoni
     }
 
     logger.Log("Icon rows are no longer valid, recalculating...");
-    _iconRows = _icons.Values.Where(icon => icon.ShouldDraw())
+    _iconRows = _icons
+      .Values.Where(icon => icon.ShouldDraw())
       .OrderBy(icon => icon.RenderPriority)
       .Chunk(Config.HudIconsPerRow)
       .Select(row => new HudIconRow(row, row.Max(icon => icon.Dimensions.Height)))
@@ -112,7 +118,7 @@ internal class HudIconManager(IModRegistry registry, IModEvents modEvents, IMoni
     _iconRowsDirty = false;
   }
 
-#region Events
+  #region Events
   private void RenderIcons(object? sender, RenderingHudEventArgs e)
   {
     if (!UIElementUtils.IsRenderingNormally())
@@ -128,9 +134,8 @@ internal class HudIconManager(IModRegistry registry, IModEvents modEvents, IMoni
 
     UpdateIconRows();
     int heightOffset = (Game1.options.zoomButtons ? 290 : 260) + Config.HudIconsVerticalOffset;
-    bool shouldOffsetForQuestLog = IsQuestLogPermanent ||
-                                   Game1.player.questLog.Any() ||
-                                   Game1.player.team.specialOrders.Any();
+    bool shouldOffsetForQuestLog =
+      IsQuestLogPermanent || Game1.player.questLog.Any() || Game1.player.team.specialOrders.Any();
 
     // e.SpriteBatch.Draw(Game1.staminaRect, new Rectangle(xPosition, yPosition, 40, 40), Color.Red);
 
@@ -177,5 +182,5 @@ internal class HudIconManager(IModRegistry registry, IModEvents modEvents, IMoni
       clickableIcon.OnClick(sender, e);
     }
   }
-#endregion
+  #endregion
 }

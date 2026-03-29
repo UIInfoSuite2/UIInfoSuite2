@@ -23,7 +23,8 @@ internal class DailyWeatherModule : HudIconModule
     IMonitor logger,
     ConfigManager configManager,
     HudIconManager iconManager
-  ) : base(modEvents, logger, configManager, iconManager) { }
+  )
+    : base(modEvents, logger, configManager, iconManager) { }
 
   public override bool ShouldEnable()
   {
@@ -59,7 +60,7 @@ internal class DailyWeatherModule : HudIconModule
     _islandWeatherIcon.Value.DoWeatherCheck();
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -75,7 +76,10 @@ internal class DailyWeatherModule : HudIconModule
     return I18n.Gmcm_Group_Weather();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -92,5 +96,5 @@ internal class DailyWeatherModule : HudIconModule
       setValue: value => Config.ShowIslandWeather = value
     );
   }
-#endregion
+  #endregion
 }

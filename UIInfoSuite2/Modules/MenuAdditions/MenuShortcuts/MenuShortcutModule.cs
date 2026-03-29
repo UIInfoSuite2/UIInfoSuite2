@@ -25,7 +25,9 @@ internal class MenuShortcutModule(
   public const int PaddingAroundElements = 30;
   public const int SpaceAfterMenuBottom = 10;
 
-  private readonly LayoutContainer _container = LayoutContainer.Row("MenuShortcuts").WithSpacing(PaddingAroundElements);
+  private readonly LayoutContainer _container = LayoutContainer
+    .Row("MenuShortcuts")
+    .WithSpacing(PaddingAroundElements);
 
   private readonly List<MenuShortcutElement> _menuShortcuts = new();
 
@@ -42,7 +44,10 @@ internal class MenuShortcutModule(
     }
     else
     {
-      Logger.Log("BetterGameMenu not detected, falling back to rendering menu content step.", LogLevel.Warn);
+      Logger.Log(
+        "BetterGameMenu not detected, falling back to rendering menu content step.",
+        LogLevel.Warn
+      );
       eventsManager.OnRenderingMenuContentStep += OnRenderingMenu;
     }
   }
@@ -132,7 +137,8 @@ internal class MenuShortcutModule(
   /// <summary>
   ///   Delegate class for when we have BetterGameMenu installed, we need a way to render our content.
   /// </summary>
-  private class BetterGameMenuShortcutOverlay(MenuShortcutModule module, IClickableMenu menu) : IDisposable
+  private class BetterGameMenuShortcutOverlay(MenuShortcutModule module, IClickableMenu menu)
+    : IDisposable
   {
     public void Dispose() { }
 

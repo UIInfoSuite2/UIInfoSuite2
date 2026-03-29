@@ -29,7 +29,12 @@ internal class WorldObjectRange
   ///   Represents an object in the game world with a defined range of influence or effect,
   ///   allowing for tracking and manipulation of its properties.
   /// </summary>
-  public WorldObjectRange(string? itemId, string overlayType, Vector2 centerTile, GridPatternOptions gridPatternOptions)
+  public WorldObjectRange(
+    string? itemId,
+    string overlayType,
+    Vector2 centerTile,
+    GridPatternOptions gridPatternOptions
+  )
   {
     _itemId = itemId;
     Type = overlayType;
@@ -85,7 +90,11 @@ internal class WorldObjectRange
   /// <param name="centerTile">The central tile from which the range is calculated.</param>
   /// <param name="gridPatternOptions">Options defining the pattern, shape, and configuration of the range grid.</param>
   /// <returns>A <see cref="WorldObjectRange" /> instance representing the range of the provided object in the game world.</returns>
-  public static WorldObjectRange FromItem(Object tileObject, Vector2 centerTile, GridPatternOptions gridPatternOptions)
+  public static WorldObjectRange FromItem(
+    Object tileObject,
+    Vector2 centerTile,
+    GridPatternOptions gridPatternOptions
+  )
   {
     return FromItem(tileObject, tileObject.ItemId, centerTile, gridPatternOptions);
   }
@@ -112,7 +121,11 @@ internal class WorldObjectRange
     return DataCache.Get(GetDataCacheKey(tileObject.ItemId, centerTile));
   }
 
-  public static bool FromCache(Object tileObject, Vector2 centerTile, [NotNullWhen(true)] out WorldObjectRange? range)
+  public static bool FromCache(
+    Object tileObject,
+    Vector2 centerTile,
+    [NotNullWhen(true)] out WorldObjectRange? range
+  )
   {
     return DataCache.TryGet(GetDataCacheKey(tileObject.ItemId, centerTile), out range);
   }
@@ -125,7 +138,11 @@ internal class WorldObjectRange
   /// <param name="centerTile">The tile location to use as the center of the sprinkler's range.</param>
   /// <param name="isHeldItem">Indicates whether the sprinkler is currently a held item, requiring tile adjustments.</param>
   /// <returns>A <see cref="WorldObjectRange" /> representing the sprinkler's area of effect.</returns>
-  public static WorldObjectRange FromSprinkler(Object selectedObject, Vector2 centerTile, bool isHeldItem)
+  public static WorldObjectRange FromSprinkler(
+    Object selectedObject,
+    Vector2 centerTile,
+    bool isHeldItem
+  )
   {
     if (FromCache(selectedObject, centerTile, out WorldObjectRange? range))
     {
@@ -136,10 +153,17 @@ internal class WorldObjectRange
     IEnumerable<Vector2> sprinklerTiles = selectedObject.GetSprinklerTiles();
     if (isHeldItem)
     {
-      sprinklerTiles = sprinklerTiles.Select(tile => tile - selectedObject.TileLocation + centerTile);
+      sprinklerTiles = sprinklerTiles.Select(tile =>
+        tile - selectedObject.TileLocation + centerTile
+      );
     }
 
-    return new WorldObjectRange(selectedObject.ItemId, OverlayType.Sprinkler, centerTile, sprinklerTiles.ToHashSet());
+    return new WorldObjectRange(
+      selectedObject.ItemId,
+      OverlayType.Sprinkler,
+      centerTile,
+      sprinklerTiles.ToHashSet()
+    );
   }
 
   public static WorldObjectRange FromTreasureTotem(Object selectedObject, Vector2 centerTile)

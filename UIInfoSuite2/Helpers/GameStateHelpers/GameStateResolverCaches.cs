@@ -16,7 +16,8 @@ internal sealed class GameStateResolverCaches
   private readonly Dictionary<string, ConditionFutureResult> _futureResultsCache = new();
   private readonly IMonitor _logger;
   private readonly Dictionary<string, ParsedGameStateQueryWrapper> _queryWrapperCache = new();
-  private readonly Dictionary<string, List<ParsedGameStateQueryWrapper>> _queryWrapperListCache = new();
+  private readonly Dictionary<string, List<ParsedGameStateQueryWrapper>> _queryWrapperListCache =
+    new();
   private readonly Dictionary<string, string> _readableRequirementsCache = new();
 
   public GameStateResolverCaches(IMonitor monitor)
@@ -29,13 +30,20 @@ internal sealed class GameStateResolverCaches
     _futureResultsCache.Clear();
   }
 
-  public ConditionResolver GetFutureResolver(GameStateQuery.ParsedGameStateQuery parsedGameStateQuery)
+  public ConditionResolver GetFutureResolver(
+    GameStateQuery.ParsedGameStateQuery parsedGameStateQuery
+  )
   {
-    string queryKey = parsedGameStateQuery.Query.Length == 0 ? "qk_unknown" : parsedGameStateQuery.Query[0].ToLower();
+    string queryKey =
+      parsedGameStateQuery.Query.Length == 0
+        ? "qk_unknown"
+        : parsedGameStateQuery.Query[0].ToLower();
 
-    if (parsedGameStateQuery.Query.Length == 0 ||
-        parsedGameStateQuery.Resolver == null ||
-        !string.IsNullOrEmpty(parsedGameStateQuery.Error))
+    if (
+      parsedGameStateQuery.Query.Length == 0
+      || parsedGameStateQuery.Resolver == null
+      || !string.IsNullOrEmpty(parsedGameStateQuery.Error)
+    )
     {
       if (_conditionResolverCache.TryGetValue(queryKey, out ConditionResolver? errorResolver))
       {
@@ -43,7 +51,10 @@ internal sealed class GameStateResolverCaches
       }
 
       errorResolver = DefaultConditionResolvers.UnsupportedConditionResolver(queryKey);
-      _logger.LogOnce($"Cached error resolver for unsupported query {queryKey}, please report", LogLevel.Error);
+      _logger.LogOnce(
+        $"Cached error resolver for unsupported query {queryKey}, please report",
+        LogLevel.Error
+      );
       _conditionResolverCache[queryKey] = errorResolver;
 
       return errorResolver;
@@ -56,18 +67,21 @@ internal sealed class GameStateResolverCaches
       return cachedResolver;
     }
 
-
     {
-      FieldInfo? field = AccessTools.GetDeclaredFields(typeof(DefaultConditionResolvers))
+      FieldInfo? field = AccessTools
+        .GetDeclaredFields(typeof(DefaultConditionResolvers))
         .FirstOrDefault(f => f.Name.Equals(methodName) && f.FieldType == typeof(ConditionResolver));
 
-      cachedResolver = field?.GetValue(null) as ConditionResolver ??
-                       DefaultConditionResolvers.UnsupportedConditionResolver(methodName);
-
+      cachedResolver =
+        field?.GetValue(null) as ConditionResolver
+        ?? DefaultConditionResolvers.UnsupportedConditionResolver(methodName);
 
       string resolverIsErrorStr = cachedResolver.CanResolveToDate ? "" : "error ";
       string resolverIsSupportedStr = cachedResolver.CanResolveToDate ? "" : "unsupported ";
-      _logger.LogOnce($"Cached {resolverIsErrorStr}resolver for {resolverIsSupportedStr}{queryKey}", LogLevel.Error);
+      _logger.LogOnce(
+        $"Cached {resolverIsErrorStr}resolver for {resolverIsSupportedStr}{queryKey}",
+        LogLevel.Error
+      );
       _conditionResolverCache[methodName] = cachedResolver;
     }
 
@@ -87,7 +101,10 @@ internal sealed class GameStateResolverCaches
     return true;
   }
 
-  public bool TryGetFutureResult(string queryStringKey, [NotNullWhen(true)] out ConditionFutureResult? result)
+  public bool TryGetFutureResult(
+    string queryStringKey,
+    [NotNullWhen(true)] out ConditionFutureResult? result
+  )
   {
     if (!_futureResultsCache.TryGetValue(queryStringKey, out ConditionFutureResult? cachedResult))
     {
@@ -112,7 +129,9 @@ internal sealed class GameStateResolverCaches
     _readableRequirementsCache[queryStr] = requirementsStr;
   }
 
-  public ParsedGameStateQueryWrapper GetParsedQueryWrapper(GameStateQuery.ParsedGameStateQuery parsedGameStateQuery)
+  public ParsedGameStateQueryWrapper GetParsedQueryWrapper(
+    GameStateQuery.ParsedGameStateQuery parsedGameStateQuery
+  )
   {
     string query = string.Join(' ', parsedGameStateQuery.Query);
     if (_queryWrapperCache.TryGetValue(query, out ParsedGameStateQueryWrapper? cachedResolver))
@@ -133,13 +152,20 @@ internal sealed class GameStateResolverCaches
 
   public List<ParsedGameStateQueryWrapper> GetParsedQueryWrappers(string queryString)
   {
-    if (_queryWrapperListCache.TryGetValue(queryString, out List<ParsedGameStateQueryWrapper>? cachedResolvers))
+    if (
+      _queryWrapperListCache.TryGetValue(
+        queryString,
+        out List<ParsedGameStateQueryWrapper>? cachedResolvers
+      )
+    )
     {
       return cachedResolvers;
     }
 
     var conditionResolvers = new List<ParsedGameStateQueryWrapper>();
-    GameStateQuery.ParsedGameStateQuery[] parsedGameStateQueries = GameStateQuery.Parse(queryString);
+    GameStateQuery.ParsedGameStateQuery[] parsedGameStateQueries = GameStateQuery.Parse(
+      queryString
+    );
     if (parsedGameStateQueries.Length == 0)
     {
       return conditionResolvers;

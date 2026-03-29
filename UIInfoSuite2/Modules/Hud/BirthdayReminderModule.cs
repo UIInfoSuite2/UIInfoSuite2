@@ -31,7 +31,8 @@ internal class BirthdayReminderModule(
   protected override void SetupIcons()
   {
     _birthdayCharacters.Value.Clear();
-    IEnumerable<NPC> characters = Game1.locations.SelectMany(loc => loc.characters)
+    IEnumerable<NPC> characters = Game1
+      .locations.SelectMany(loc => loc.characters)
       .Where(character => character.isBirthday());
 
     foreach (NPC character in characters)
@@ -48,8 +49,11 @@ internal class BirthdayReminderModule(
       }
 
       // Skip characters with full friendship if the config is set to
-      if (Config.HideBirthdayIfFullFriendship &&
-          friendship.Points >= Utility.GetMaximumHeartsForCharacter(character) * NPC.friendshipPointsPerHeartLevel)
+      if (
+        Config.HideBirthdayIfFullFriendship
+        && friendship.Points
+          >= Utility.GetMaximumHeartsForCharacter(character) * NPC.friendshipPointsPerHeartLevel
+      )
       {
         continue;
       }
@@ -57,7 +61,7 @@ internal class BirthdayReminderModule(
       // Set up character headshot icon
       var icon = new NpcBirthdayIcon(character)
       {
-        HoverText = string.Format(I18n.NpcBirthday(), character.displayName)
+        HoverText = string.Format(I18n.NpcBirthday(), character.displayName),
       };
       _birthdayCharacters.Value.Add(icon);
       IconManager.AddIcon($"{BirthdayIconPrefix}{character.Name}", icon);
@@ -82,16 +86,17 @@ internal class BirthdayReminderModule(
     base.OnDisable();
   }
 
-
   private void OnUpdateTicked(object? sender, OneSecondUpdateTickedEventArgs e)
   {
-    foreach (NpcBirthdayIcon npcBirthdayIcon in _birthdayCharacters.Value.Where(icon => icon.ShouldDraw()))
+    foreach (
+      NpcBirthdayIcon npcBirthdayIcon in _birthdayCharacters.Value.Where(icon => icon.ShouldDraw())
+    )
     {
       npcBirthdayIcon.UpdateGiftCheck();
     }
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -107,7 +112,10 @@ internal class BirthdayReminderModule(
     return I18n.Gmcm_Group_Birthday();
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -138,5 +146,5 @@ internal class BirthdayReminderModule(
       setValue: value => Config.ShowBirthdayForUnmet = value
     );
   }
-#endregion
+  #endregion
 }

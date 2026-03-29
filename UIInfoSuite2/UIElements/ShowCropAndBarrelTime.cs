@@ -26,32 +26,38 @@ using Object = StardewValley.Object;
 
 namespace UIInfoSuite2.UIElements;
 
-internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, ConfigManager configManager)
-  : BaseModule(modEvents, logger, configManager)
+internal class ShowCropAndBarrelTime(
+  IModEvents modEvents,
+  IMonitor logger,
+  ConfigManager configManager
+) : BaseModule(modEvents, logger, configManager)
 {
   private const int MAX_TREE_GROWTH_STAGE = 5;
 
   private static readonly List<Func<Building?, List<string>, bool>> BuildingDetailRenderers = new()
   {
-    DetailRenderers.BuildingOutput
+    DetailRenderers.BuildingOutput,
   };
 
   private static readonly List<Func<Object?, List<string>, bool>> MachineDetailRenderers = new()
   {
-    DetailRenderers.MachineTime
+    DetailRenderers.MachineTime,
   };
 
-  private static readonly List<Func<TerrainFeature?, List<string>, bool>> TerrainDetailRenderers = new()
-  {
-    DetailRenderers.CropRender, DetailRenderers.TreeRender, DetailRenderers.FruitTreeRender, DetailRenderers.TeaBush
-  };
+  private static readonly List<Func<TerrainFeature?, List<string>, bool>> TerrainDetailRenderers =
+    new()
+    {
+      DetailRenderers.CropRender,
+      DetailRenderers.TreeRender,
+      DetailRenderers.FruitTreeRender,
+      DetailRenderers.TeaBush,
+    };
 
   private readonly PerScreen<TerrainFeature?> _currentTerrain = new();
   private readonly PerScreen<Object?> _currentTile = new();
   private readonly PerScreen<Building?> _currentTileBuilding = new();
 
   private MouseTooltipDom? _newTooltip;
-
 
   public override bool ShouldEnable()
   {
@@ -86,12 +92,14 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
     _currentTile.Value = null;
     _currentTerrain.Value = null;
 
-    Vector2 gamepadTile = Game1.player.CurrentTool != null
-      ? Utility.snapToInt(Game1.player.GetToolLocation() / Game1.tileSize)
-      : Utility.snapToInt(Game1.player.GetGrabTile());
+    Vector2 gamepadTile =
+      Game1.player.CurrentTool != null
+        ? Utility.snapToInt(Game1.player.GetToolLocation() / Game1.tileSize)
+        : Utility.snapToInt(Game1.player.GetGrabTile());
     Vector2 mouseTile = Game1.currentCursorTile;
 
-    Vector2 tile = Game1.options.gamepadControls && Game1.timerUntilMouseFade <= 0 ? gamepadTile : mouseTile;
+    Vector2 tile =
+      Game1.options.gamepadControls && Game1.timerUntilMouseFade <= 0 ? gamepadTile : mouseTile;
 
     if (Game1.currentLocation == null)
     {
@@ -108,7 +116,9 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
       _currentTile.Value = currentObject;
     }
 
-    if (Game1.currentLocation.terrainFeatures?.TryGetValue(tile, out TerrainFeature? terrain) ?? false)
+    if (
+      Game1.currentLocation.terrainFeatures?.TryGetValue(tile, out TerrainFeature? terrain) ?? false
+    )
     {
       _currentTerrain.Value = terrain;
     }
@@ -163,15 +173,22 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
 
     if (currentTileBuilding is not null)
     {
-      foreach (Func<Building?, List<string>, bool> buildingDetailRenderer in BuildingDetailRenderers)
+      foreach (
+        Func<Building?, List<string>, bool> buildingDetailRenderer in BuildingDetailRenderers
+      )
       {
         if (!buildingDetailRenderer(currentTileBuilding, lines))
         {
           continue;
         }
 
-        Vector2 buildingTile = new(currentTileBuilding.tileX.Value, currentTileBuilding.tileY.Value);
-        tile = Utility.ModifyCoordinatesForUIScale(Game1.GlobalToLocal(buildingTile * Game1.tileSize));
+        Vector2 buildingTile = new(
+          currentTileBuilding.tileX.Value,
+          currentTileBuilding.tileY.Value
+        );
+        tile = Utility.ModifyCoordinatesForUIScale(
+          Game1.GlobalToLocal(buildingTile * Game1.tileSize)
+        );
       }
     }
 
@@ -182,7 +199,9 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
         if (machineDetailRenderer(currentTile, lines))
         {
           tile = Utility.ModifyCoordinatesForUIScale(
-            Game1.GlobalToLocal(new Vector2(currentTile.TileLocation.X, currentTile.TileLocation.Y) * Game1.tileSize)
+            Game1.GlobalToLocal(
+              new Vector2(currentTile.TileLocation.X, currentTile.TileLocation.Y) * Game1.tileSize
+            )
           );
         }
       }
@@ -190,11 +209,15 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
 
     if (terrain is not null)
     {
-      foreach (Func<TerrainFeature, List<string>, bool> terrainDetailRenderer in TerrainDetailRenderers)
+      foreach (
+        Func<TerrainFeature, List<string>, bool> terrainDetailRenderer in TerrainDetailRenderers
+      )
       {
         if (terrainDetailRenderer(terrain, lines))
         {
-          tile = Utility.ModifyCoordinatesForUIScale(Game1.GlobalToLocal(terrain.Tile * Game1.tileSize));
+          tile = Utility.ModifyCoordinatesForUIScale(
+            Game1.GlobalToLocal(terrain.Tile * Game1.tileSize)
+          );
         }
       }
     }
@@ -242,14 +265,14 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
       fertilizerNames[name] = count + 1;
     }
 
-    IEnumerable<string> formattedNames = fertilizerNames.OrderBy(kv => kv.Value)
+    IEnumerable<string> formattedNames = fertilizerNames
+      .OrderBy(kv => kv.Value)
       .ThenBy(kv => kv.Key)
       .Select(kv =>
-        {
-          string quantityStr = kv.Value == 1 ? "" : $" x{kv.Value}";
-          return $"{kv.Key}{quantityStr}";
-        }
-      );
+      {
+        string quantityStr = kv.Value == 1 ? "" : $" x{kv.Value}";
+        return $"{kv.Key}{quantityStr}";
+      });
     return string.Join(",\n", formattedNames);
   }
 
@@ -295,7 +318,12 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
   {
     private static string GetInfoStringForDrop(PossibleDroppedItem item, bool isReadyToday)
     {
-      (ConditionFutureResult futureHarvestDates, ParsedItemData? parsedItemData, float chance, string? _) = item;
+      (
+        ConditionFutureResult futureHarvestDates,
+        ParsedItemData? parsedItemData,
+        float chance,
+        string? _
+      ) = item;
 
       WorldDate? nextDayToProduce = futureHarvestDates.GetNextDate(isReadyToday);
       if (nextDayToProduce == null)
@@ -371,11 +399,13 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
 
     public static bool MachineTime(Object? tileObject, List<string> entries)
     {
-      if (tileObject == null ||
-          !tileObject.bigCraftable.Value ||
-          tileObject.MinutesUntilReady <= 0 ||
-          tileObject.heldObject.Value == null ||
-          tileObject.Name == "Heater")
+      if (
+        tileObject == null
+        || !tileObject.bigCraftable.Value
+        || tileObject.MinutesUntilReady <= 0
+        || tileObject.heldObject.Value == null
+        || tileObject.Name == "Heater"
+      )
       {
         return false;
       }
@@ -383,7 +413,9 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
       entries.Add(tileObject.heldObject.Value.DisplayName);
       if (tileObject is Cask cask)
       {
-        entries.Add($"{(int)(cask.daysToMature.Value / cask.agingRate.Value)} {I18n.DaysToMature()}");
+        entries.Add(
+          $"{(int)(cask.daysToMature.Value / cask.agingRate.Value)} {I18n.DaysToMature()}"
+        );
         return true;
       }
 
@@ -466,7 +498,8 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
           daysLeft -= hoeDirt.crop.dayOfCurrentPhase.Value;
         }
 
-        ModEntry.GetSingleton<ShowCropAndBarrelTime>()._newTooltip!.CropTooltipContainer.Crop = hoeDirt.crop;
+        ModEntry.GetSingleton<ShowCropAndBarrelTime>()._newTooltip!.CropTooltipContainer.Crop =
+          hoeDirt.crop;
 
         string cropName = ModEntry.GetSingleton<DropsHelper>().GetCropHarvestName(crop);
         string daysLeftStr = daysLeft <= 0 ? I18n.ReadyToHarvest() : $"{daysLeft} {I18n.Days()}";
@@ -556,17 +589,31 @@ internal class ShowCropAndBarrelTime(IModEvents modEvents, IMonitor logger, Conf
 
       if (bush.tileSheetOffset.Value == 1)
       {
-        droppedItems.Add(new PossibleDroppedItem(ConditionFutureResult.Today(), ItemRegistry.GetData("(O)815"), 1.0f));
+        droppedItems.Add(
+          new PossibleDroppedItem(
+            ConditionFutureResult.Today(),
+            ItemRegistry.GetData("(O)815"),
+            1.0f
+          )
+        );
         isReadyToday = true;
       }
       else if (Game1.dayOfMonth >= 21 && Game1.dayOfMonth < 28)
       {
         droppedItems.Add(
-          new PossibleDroppedItem(ConditionFutureResult.Tomorrow(), ItemRegistry.GetData("(O)815"), 1.0f)
+          new PossibleDroppedItem(
+            ConditionFutureResult.Tomorrow(),
+            ItemRegistry.GetData("(O)815"),
+            1.0f
+          )
         );
       }
 
-      if (ModEntry.GetSingleton<ApiManager>().GetApi(ModCompat.CustomBush, out ICustomBushApi? customBushApi))
+      if (
+        ModEntry
+          .GetSingleton<ApiManager>()
+          .GetApi(ModCompat.CustomBush, out ICustomBushApi? customBushApi)
+      )
       {
         if (customBushApi.TryGetBush(bush, out ICustomBushData? customBushData, out string? id))
         {

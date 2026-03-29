@@ -15,7 +15,10 @@ public class ConfigurableDebugOptions(ConfigManager configManager) : BaseConfigu
     return ConfigSectionNames.EmptySection;
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,

@@ -76,8 +76,9 @@ internal class WeeklyRecipeModule(
     }
 
     var recipes = Game1.content.Load<Dictionary<string, string>>(@"Data\TV\CookingChannel");
-    IEnumerable<string[]> parseableRecipes =
-      recipes.Select(next => next.Value.Split('/')).Where(values => values.Length > 1);
+    IEnumerable<string[]> parseableRecipes = recipes
+      .Select(next => next.Value.Split('/'))
+      .Where(values => values.Length > 1);
     foreach (string[] values in parseableRecipes)
     {
       _recipesByDescription[values[1]] = values[0];
@@ -112,7 +113,7 @@ internal class WeeklyRecipeModule(
     }
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public override string GetConfigPage()
   {
     return ConfigPageNames.HudIcons;
@@ -128,7 +129,10 @@ internal class WeeklyRecipeModule(
     return Game1.content.LoadString("Strings\\StringsFromCSFiles:TV.cs.13114");
   }
 
-  public override void AddConfigOptions(IGenericModConfigMenuApi modConfigMenuApi, IManifest manifest)
+  public override void AddConfigOptions(
+    IGenericModConfigMenuApi modConfigMenuApi,
+    IManifest manifest
+  )
   {
     modConfigMenuApi.AddBoolOption(
       manifest,
@@ -138,5 +142,5 @@ internal class WeeklyRecipeModule(
       setValue: value => Config.ShowQueenOfSauceIcon = value
     );
   }
-#endregion
+  #endregion
 }

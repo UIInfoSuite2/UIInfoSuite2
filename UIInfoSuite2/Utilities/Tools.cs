@@ -43,12 +43,18 @@ public static class Tools
 
   public static SObject? GetHarvest(Item item)
   {
-    if (item is not SObject { Category: SObject.SeedsCategory } seedsObject || seedsObject.ItemId == Crop.mixedSeedsId)
+    if (
+      item is not SObject { Category: SObject.SeedsCategory } seedsObject
+      || seedsObject.ItemId == Crop.mixedSeedsId
+    )
     {
       return null;
     }
 
-    if (seedsObject.IsFruitTreeSapling() && FruitTree.TryGetData(item.ItemId, out FruitTreeData? fruitTreeData))
+    if (
+      seedsObject.IsFruitTreeSapling()
+      && FruitTree.TryGetData(item.ItemId, out FruitTreeData? fruitTreeData)
+    )
     {
       // TODO support multiple items returned
       return ItemRegistry.Create<SObject>(fruitTreeData.Fruit[0].ItemId);
@@ -71,8 +77,15 @@ public static class Tools
   {
     if (!Game1.options.hardwareCursor)
     {
-      int mouseCursorToRender = Game1.options.gamepadControls ? Game1.mouseCursor + 44 : Game1.mouseCursor;
-      Rectangle what = Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, mouseCursorToRender, 16, 16);
+      int mouseCursorToRender = Game1.options.gamepadControls
+        ? Game1.mouseCursor + 44
+        : Game1.mouseCursor;
+      Rectangle what = Game1.getSourceRectForStandardTileSheet(
+        Game1.mouseCursors,
+        mouseCursorToRender,
+        16,
+        16
+      );
 
       Game1.spriteBatch.Draw(
         Game1.mouseCursors,
@@ -98,7 +111,9 @@ public static class Tools
     }
 
     var apiManager = ModEntry.GetSingleton<ApiManager>();
-    return apiManager.GetApi(ModCompat.BetterGameMenu, out IBetterGameMenuApi? bgm) ? bgm.GetCurrentPage(menu) : null;
+    return apiManager.GetApi(ModCompat.BetterGameMenu, out IBetterGameMenuApi? bgm)
+      ? bgm.GetCurrentPage(menu)
+      : null;
   }
 
   public static bool IsGameMenuOpen()
@@ -109,8 +124,8 @@ public static class Tools
     }
 
     var apiManager = ModEntry.GetSingleton<ApiManager>();
-    return apiManager.GetApi(ModCompat.BetterGameMenu, out IBetterGameMenuApi? bgm) &&
-           bgm.IsMenu(Game1.activeClickableMenu);
+    return apiManager.GetApi(ModCompat.BetterGameMenu, out IBetterGameMenuApi? bgm)
+      && bgm.IsMenu(Game1.activeClickableMenu);
   }
 
   public static Item? GetHoveredItem()
@@ -120,7 +135,10 @@ public static class Tools
 
     if (Game1.activeClickableMenu == null && Game1.onScreenMenus != null)
     {
-      hoverItem = Game1.onScreenMenus.OfType<Toolbar>().Select(tb => tb.hoverItem).FirstOrDefault(hi => hi is not null);
+      hoverItem = Game1
+        .onScreenMenus.OfType<Toolbar>()
+        .Select(tb => tb.hoverItem)
+        .FirstOrDefault(hi => hi is not null);
     }
 
     switch (page)
@@ -145,7 +163,12 @@ public static class Tools
     return hoverItem;
   }
 
-  public static void GetSubTexture(Color[] output, Color[] originalColors, Rectangle sourceBounds, Rectangle clipArea)
+  public static void GetSubTexture(
+    Color[] output,
+    Color[] originalColors,
+    Rectangle sourceBounds,
+    Rectangle clipArea
+  )
   {
     if (output.Length < clipArea.Width * clipArea.Height)
     {
@@ -171,7 +194,10 @@ public static class Tools
     bool overlay = false
   )
   {
-    if (sourceColors.Length > destColors.Length || destBounds.Width * destBounds.Height > destColors.Length)
+    if (
+      sourceColors.Length > destColors.Length
+      || destBounds.Width * destBounds.Height > destColors.Length
+    )
     {
       return;
     }
@@ -205,10 +231,12 @@ public static class Tools
   )
   {
     // Ensure the source rectangle is within the bounds of the source texture
-    if (sourceRectangle.X < 0 ||
-        sourceRectangle.Y < 0 ||
-        sourceRectangle.X + sourceRectangle.Width > sourceTexture.Width ||
-        sourceRectangle.Y + sourceRectangle.Height > sourceTexture.Height)
+    if (
+      sourceRectangle.X < 0
+      || sourceRectangle.Y < 0
+      || sourceRectangle.X + sourceRectangle.Width > sourceTexture.Width
+      || sourceRectangle.Y + sourceRectangle.Height > sourceTexture.Height
+    )
     {
       throw new ArgumentOutOfRangeException(
         nameof(sourceRectangle),
@@ -217,10 +245,12 @@ public static class Tools
     }
 
     // Ensure the destination rectangle is within the bounds of the destination texture
-    if (destinationPosition.X < 0 ||
-        destinationPosition.Y < 0 ||
-        destinationPosition.X + sourceRectangle.Width > destinationTexture.Width ||
-        destinationPosition.Y + sourceRectangle.Height > destinationTexture.Height)
+    if (
+      destinationPosition.X < 0
+      || destinationPosition.Y < 0
+      || destinationPosition.X + sourceRectangle.Width > destinationTexture.Width
+      || destinationPosition.Y + sourceRectangle.Height > destinationTexture.Height
+    )
     {
       throw new ArgumentOutOfRangeException(
         nameof(destinationPosition),
@@ -241,7 +271,8 @@ public static class Tools
     {
       for (var x = 0; x < sourceRectangle.Width; x++)
       {
-        int destIndex = (destinationPosition.Y + y) * destinationTexture.Width + destinationPosition.X + x;
+        int destIndex =
+          (destinationPosition.Y + y) * destinationTexture.Width + destinationPosition.X + x;
         int sourceIndex = y * sourceRectangle.Width + x;
 
         Color sourcePixel = sourceData[sourceIndex];
@@ -260,7 +291,9 @@ public static class Tools
     destinationTexture.SetData(destinationData);
   }
 
-  public static IEnumerable<int> GetDaysFromCondition(GameStateQuery.ParsedGameStateQuery parsedGameStateQuery)
+  public static IEnumerable<int> GetDaysFromCondition(
+    GameStateQuery.ParsedGameStateQuery parsedGameStateQuery
+  )
   {
     HashSet<int> days = new();
     if (parsedGameStateQuery.Query.Length < 2)
@@ -300,7 +333,9 @@ public static class Tools
       }
     }
 
-    return parsedGameStateQuery.Negated ? Enumerable.Range(1, 28).Where(x => !days.Contains(x)).ToHashSet() : days;
+    return parsedGameStateQuery.Negated
+      ? Enumerable.Range(1, 28).Where(x => !days.Contains(x)).ToHashSet()
+      : days;
   }
 
   public static int? GetNextDayFromCondition(string? condition, bool includeToday = true)
@@ -360,7 +395,9 @@ public static class Tools
 
   public static string GetLocalizedSeasonName(Season season)
   {
-    string seasonLocalName = Game1.content.LoadString("Strings\\StringsFromCSFiles:" + Utility.getSeasonKey(season));
+    string seasonLocalName = Game1.content.LoadString(
+      "Strings\\StringsFromCSFiles:" + Utility.getSeasonKey(season)
+    );
     return Capitalize(seasonLocalName);
   }
 
@@ -399,9 +436,22 @@ public static class Tools
     return (x, y);
   }
 
-  public static void DrawBoxOutline(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int lineWidth)
+  public static void DrawBoxOutline(
+    SpriteBatch spriteBatch,
+    Rectangle rectangle,
+    Color color,
+    int lineWidth
+  )
   {
-    DrawBoxOutline(spriteBatch, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color, lineWidth);
+    DrawBoxOutline(
+      spriteBatch,
+      rectangle.X,
+      rectangle.Y,
+      rectangle.Width,
+      rectangle.Height,
+      color,
+      lineWidth
+    );
   }
 
   public static void DrawBoxOutline(
@@ -417,7 +467,6 @@ public static class Tools
   {
     int x2 = x + width - lineWidth;
     int y2 = y + height - lineWidth;
-
 
     spriteBatch.Draw(Game1.staminaRect, new Rectangle(x, y, lineWidth, height), color);
     spriteBatch.Draw(Game1.staminaRect, new Rectangle(x, y, width, lineWidth), color);

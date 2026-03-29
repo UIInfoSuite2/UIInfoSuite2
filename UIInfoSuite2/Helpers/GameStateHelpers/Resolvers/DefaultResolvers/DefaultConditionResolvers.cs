@@ -8,7 +8,8 @@ internal static partial class DefaultConditionResolvers
   {
     return new ConditionResolver(
       conditionKey,
-      (joinedQueryString, _) => I18n.GSQ_Requirements_Unsupported().Format(joinedQueryString, conditionKey),
+      (joinedQueryString, _) =>
+        I18n.GSQ_Requirements_Unsupported().Format(joinedQueryString, conditionKey),
       true
     );
   }

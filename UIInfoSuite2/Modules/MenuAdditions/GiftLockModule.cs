@@ -15,7 +15,9 @@ namespace UIInfoSuite2.Modules.MenuAdditions;
 
 // ReSharper disable once ClassNeverInstantiated.Global Instantiated by SimpleInjector
 public class GiftLockModule(IModEvents modEvents, IMonitor logger, ConfigManager configManager)
-  : BaseModule(modEvents, logger, configManager), IConfigurable, IPatchable
+  : BaseModule(modEvents, logger, configManager),
+    IConfigurable,
+    IPatchable
 {
   public void Patch(Harmony harmony)
   {
@@ -64,7 +66,7 @@ public class GiftLockModule(IModEvents modEvents, IMonitor logger, ConfigManager
     }
   }
 
-#region Configuration Setup
+  #region Configuration Setup
   public string GetConfigPage()
   {
     return ConfigPageNames.MenuFeatures;
@@ -90,5 +92,5 @@ public class GiftLockModule(IModEvents modEvents, IMonitor logger, ConfigManager
       setValue: value => Config.ShowLockAfterNpcGift = value
     );
   }
-#endregion
+  #endregion
 }
