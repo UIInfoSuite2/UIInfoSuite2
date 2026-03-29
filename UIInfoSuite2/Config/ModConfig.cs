@@ -1,5 +1,6 @@
 ﻿using StardewModdingAPI;
 using StardewModdingAPI.Utilities;
+using UIInfoSuite2.Models.Enums;
 
 namespace UIInfoSuite2.Config;
 
@@ -98,7 +99,12 @@ public sealed class ModConfig
   public bool DisplaySlayerQuestsShortcut { get; set; } = true;
   #endregion
 
-  #region Tooltips Config
+  #region Overlays Config
+  // Machine processing
+  public VisibilityMode ObjectContentsVisibility { get; set; } = VisibilityMode.AlwaysOn;
+  public KeybindList ObjectContentsKeybind { get; set; } = KeybindList.ForSingle(SButton.F10);
+  public bool ShowFishPondResidents { get; set; } = false;
+
   // Crops & Machines
   public bool ShowCropTooltip { get; set; } = true;
   public bool ShowMachineTooltip { get; set; } = true;

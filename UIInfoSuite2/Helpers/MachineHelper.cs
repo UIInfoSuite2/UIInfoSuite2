@@ -26,6 +26,22 @@ public static class MachineHelper
     return machine.IsWorking() && isValidMachineType;
   }
 
+  public static ParsedItemData? GetItemBeingProcessed(SObject machine)
+  {
+    // Prefer the input item (preservedParentSheetIndex) over the output (heldObject).
+    // For Wine/Juice/Jelly/Pickles, this shows the original fruit/vegetable instead of the output.
+    // For machines without a preserved parent (Furnace, etc.), fall back to the output item.
+    SObject heldObject = machine.heldObject.Value;
+    string? preservedId = heldObject.preservedParentSheetIndex.Value;
+
+    if (string.IsNullOrEmpty(preservedId))
+    {
+      return ItemRegistry.GetData(heldObject.QualifiedItemId);
+    }
+
+    return ItemRegistry.GetData("(O)" + preservedId) ?? ItemRegistry.GetData(preservedId);
+  }
+
   // Welcome to the fun section: Stuff I stole from Pathoschild
   // https://github.com/Pathoschild/StardewMods
 

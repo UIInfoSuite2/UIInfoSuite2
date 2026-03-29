@@ -143,6 +143,7 @@ internal class ModEntry : Mod
     Register<ShopHarvestPriceModule>();
     Register<SocialPageFilterModule>();
     Register<AnimalInteractModule>();
+    Register<ObjectContentsModule>();
     Register<ObjectEffectRangeModule>();
     Register<ObjectInfoModule>();
     Register<ExperienceModule>();
