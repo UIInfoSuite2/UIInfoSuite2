@@ -4,12 +4,28 @@ using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Extensions;
 using StardewValley.GameData.Buildings;
+using StardewValley.ItemTypeDefinitions;
 using StardewValley.Objects;
+using UIInfoSuite2.Extensions;
 
 namespace UIInfoSuite2.Helpers;
 
+using SObject = Object;
+
 public static class MachineHelper
 {
+  public static bool IsTrackableMachine(SObject? machine)
+  {
+    if (machine == null)
+    {
+      return false;
+    }
+
+    bool isValidMachineType = machine.Name != "Heater";
+
+    return machine.IsWorking() && isValidMachineType;
+  }
+
   // Welcome to the fun section: Stuff I stole from Pathoschild
   // https://github.com/Pathoschild/StardewMods
 
