@@ -68,6 +68,11 @@ internal class BuffTimerModule(
 
   private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
   {
+    if (!e.IsMultipleOf(10))
+    {
+      return;
+    }
+
     if (!Context.IsWorldReady)
     {
       _previousBuffIds.Value.Clear();
