@@ -148,6 +148,7 @@ internal class ModEntry : Mod
     Register<ObjectInfoModule>();
     Register<ExperienceModule>();
     Register<BuffTimerModule>();
+    Register<QuestCountModule>();
 
     _container.Verify();
 
@@ -248,15 +249,10 @@ internal class ModEntry : Mod
 
   private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
   {
-    _container
-      .GetInstance<ApiManager>()
-      .TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.5.0", true);
-    _container
-      .GetInstance<ApiManager>()
-      .TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "1.0.1");
-    _container
-      .GetInstance<ApiManager>()
-      .TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
+    var apiManager = _container.GetInstance<ApiManager>();
+    apiManager.TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.5.0", true);
+    apiManager.TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "1.0.1");
+    apiManager.TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
   }
 
   #region Module Setup
