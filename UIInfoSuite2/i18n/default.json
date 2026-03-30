@@ -132,6 +132,7 @@
   "gmcm.group.xpBar": "Experience Bar",
   "gmcm.group.buffTimers": "Buff Timers",
   "gmcm.group.merchant": "Merchants",
+  "gmcm.group.quest-count": "Quest Count",
   "gmcm.group.birthday": "Birthday Reminder",
   "gmcm.group.seasonalForage": "Seasonal Forage",
   "gmcm.group.otherIcons": "Other Icons",
@@ -207,6 +208,9 @@
   // Queen of Sauce
   "gmcm.modules.icons.recipes.enable": "Show Queen of Sauce icon",
   "gmcm.modules.icons.recipes.enable.tooltip": "Toggle whether the Queen of Sauce icon is shown when you can learn a new recipe",
+  // Queen of Sauce
+  "gmcm.modules.icons.journal-quest-count.enable": "Journal Quest Count",
+  "gmcm.modules.icons.journal-quest-count.enable.tooltip": "Show the quest count by the journal icon",
   // Tool upgrade
   "gmcm.modules.icons.tool.enable": "Show Blacksmith upgrade icon",
   "gmcm.modules.icons.tool.enable.tooltip": "Toggle whether a tool icon is shown when you're upgrading at the blacksmith",
