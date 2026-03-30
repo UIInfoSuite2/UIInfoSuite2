@@ -27,6 +27,18 @@ internal abstract class TooltipExtensionContainer : LayoutContainer
     }
   }
 
+  public override void ResetDirty()
+  {
+    bool wasDirty = IsDirty;
+    base.ResetDirty();
+    if (wasDirty)
+    {
+      TooltipExtensionManager.TotalHeightNeedsCalc = true;
+      TooltipExtensionManager.TitleBoxHeightNeedsCalc = true;
+      TooltipExtensionManager.WidthNeedsCalc = true;
+    }
+  }
+
   protected abstract void OnItemChange(Item? item);
 }
 
@@ -58,6 +70,13 @@ internal class TooltipExtensionManager
     ContainerPatchPoint,
     List<TooltipExtensionContainer>
   > Containers = new();
+
+  internal static bool TotalHeightNeedsCalc;
+  internal static bool TitleBoxHeightNeedsCalc;
+  internal static bool WidthNeedsCalc;
+  private static int _totalExtraHeight;
+  private static int _titleBoxExtraHeight;
+  private static int _maxWidth;
 
   /// <summary>
   ///   Helper field for what item we're hovering over in our inventory while in a ShopMenu.
@@ -111,7 +130,7 @@ internal class TooltipExtensionManager
     }
   }
 
-  public static IEnumerable<TooltipExtensionContainer> GetContainers(
+  private static IEnumerable<TooltipExtensionContainer> GetContainers(
     ContainerPatchPoint point,
     bool includeHidden = false
   )
@@ -153,12 +172,25 @@ internal class TooltipExtensionManager
   {
     if (boxHeightOverride == -1)
     {
-      startingHeight += SumHeight(AllPoints);
+      if (TotalHeightNeedsCalc)
+      {
+        ModEntry.DebugLog("TooltipExtensions: Recalculating total height");
+        _totalExtraHeight = SumHeight(AllPoints);
+        TotalHeightNeedsCalc = false;
+      }
+      startingHeight += _totalExtraHeight;
     }
 
     if (boxWidthOverride == -1)
     {
-      num1 = Math.Max(num1, MaxWidth(AllPoints) + 30);
+      if (WidthNeedsCalc)
+      {
+        ModEntry.DebugLog("TooltipExtensions: Recalculating max width");
+        _maxWidth = MaxWidth(AllPoints);
+        WidthNeedsCalc = false;
+      }
+
+      num1 = Math.Max(num1, _maxWidth + 30);
     }
   }
 
@@ -167,7 +199,13 @@ internal class TooltipExtensionManager
   /// • the divider Rectangle y-offset  (y1 + titleBoxHeight)
   public static int AdjustTitleBoxHeight(int h)
   {
-    return h + SumHeight(TitleBoxPoints);
+    if (TitleBoxHeightNeedsCalc)
+    {
+      ModEntry.DebugLog("TooltipExtensions: Recalculating title box extra height");
+      _titleBoxExtraHeight = SumHeight(TitleBoxPoints);
+      TitleBoxHeightNeedsCalc = false;
+    }
+    return h + _titleBoxExtraHeight;
   }
 
   /// Draw-time entry point called at each patch point.
