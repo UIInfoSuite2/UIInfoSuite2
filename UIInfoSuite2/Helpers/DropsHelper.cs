@@ -57,20 +57,34 @@ internal class DropsHelper
     return Tools.GetLastDayFromCondition(condition);
   }
 
-  public string GetCropHarvestName(Crop crop)
+  public static string? GetCropHarvestItemId(Crop crop)
   {
+    if (crop.forageCrop.Value)
+    {
+      return crop.whichForageCrop.Value switch
+      {
+        "1" => "399", // Spring Onion
+        "2" => "829", // Ginger
+        _ => crop.whichForageCrop.Value,
+      };
+    }
+
     if (crop.indexOfHarvest.Value is null)
     {
-      return "Unknown Crop";
+      return null;
     }
 
-    // If you look at Crop.cs in the decompiled sources, it seems that there's a special case for spring onions - that's what the =="1" is about.
-    string itemId = crop.isWildSeedCrop() ? crop.whichForageCrop.Value : crop.indexOfHarvest.Value;
-    if (crop.whichForageCrop.Value == "1")
-    {
-      itemId = "399";
-    }
+    return crop.isWildSeedCrop() ? crop.whichForageCrop.Value : crop.indexOfHarvest.Value;
+  }
 
+  public string GetCropHarvestName(Crop crop)
+  {
+    string? itemId = GetCropHarvestItemId(crop);
+    return itemId is null ? "Unknown Crop" : GetOrCacheCropName(itemId);
+  }
+
+  private string GetOrCacheCropName(string itemId)
+  {
     if (_cropNamesCache.TryGetValue(itemId, out string? harvestName))
     {
       return harvestName;

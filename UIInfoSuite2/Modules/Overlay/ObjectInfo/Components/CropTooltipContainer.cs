@@ -101,7 +101,13 @@ internal class CropTooltipContainer : LayoutContainer
     _cropNameElement.Text = cropName;
     _cropDaysRemainingElement.Text = daysLeftStr;
 
-    Item cropOutput = ItemRegistry.Create(Crop.indexOfHarvest.Value);
+    string? itemId = DropsHelper.GetCropHarvestItemId(Crop);
+    if (itemId is null)
+    {
+      return;
+    }
+
+    Item cropOutput = ItemRegistry.Create(itemId);
     ParsedItemData dataOrErrorItem = ItemRegistry.GetDataOrErrorItem(cropOutput.QualifiedItemId);
     _cropIcon.SetIcon(
       dataOrErrorItem.GetTexture(),
