@@ -55,6 +55,7 @@ public sealed class ModConfig
 
   // Queen of Sauce
   public bool ShowQueenOfSauceIcon { get; set; } = true;
+  public bool ShowRecipeItemAsIcon { get; set; } = true;
 
   // Quest Count
   public bool ShowQuestCount { get; set; } = true;

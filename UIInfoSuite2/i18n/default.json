@@ -208,7 +208,9 @@
   // Queen of Sauce
   "gmcm.modules.icons.recipes.enable": "Show Queen of Sauce icon",
   "gmcm.modules.icons.recipes.enable.tooltip": "Toggle whether the Queen of Sauce icon is shown when you can learn a new recipe",
-  // Queen of Sauce
+  "gmcm.modules.icons.recipes.showItemIcon": "Show recipe item as icon",
+  "gmcm.modules.icons.recipes.showItemIcon.tooltip": "Show the recipe as the main icon with a small TV overlay instead of the default Queen of Sauce icon",
+  // Quest Count
   "gmcm.modules.icons.journal-quest-count.enable": "Journal Quest Count",
   "gmcm.modules.icons.journal-quest-count.enable.tooltip": "Show the quest count by the journal icon",
   // Tool upgrade
