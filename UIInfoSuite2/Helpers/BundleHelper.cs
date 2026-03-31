@@ -265,6 +265,15 @@ internal class BundleHelper
     try
     {
       var communityCenter = Game1.RequireLocation<CommunityCenter>("CommunityCenter");
+
+      if (
+        Game1.MasterPlayer.mailReceived.Contains("JojaMember")
+        || communityCenter.areAllAreasComplete()
+      )
+      {
+        return false;
+      }
+
       communityCenter.refreshBundlesIngredientsInfo();
       IReflectedField<BundleIngredientsCache> bundlesIngredientsInfoField =
         _reflectionHelper.GetField<BundleIngredientsCache>(
