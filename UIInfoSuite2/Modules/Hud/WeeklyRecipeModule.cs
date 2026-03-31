@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
@@ -140,6 +140,13 @@ internal class WeeklyRecipeModule(
       tooltip: I18n.Gmcm_Modules_Icons_Recipes_Enable_Tooltip,
       getValue: () => Config.ShowQueenOfSauceIcon,
       setValue: value => Config.ShowQueenOfSauceIcon = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Recipes_ShowItemIcon,
+      tooltip: I18n.Gmcm_Modules_Icons_Recipes_ShowItemIcon_Tooltip,
+      getValue: () => Config.ShowRecipeItemAsIcon,
+      setValue: value => Config.ShowRecipeItemAsIcon = value
     );
   }
   #endregion

@@ -1,12 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI.Utilities;
 using StardewValley;
+using StardewValley.ItemTypeDefinitions;
 
 namespace UIInfoSuite2.Models.Icons;
 
 internal class QueenOfSauceIcon()
   : ClickableIcon(Game1.mouseCursors, new Rectangle(609, 361, 28, 28), 40)
 {
+  private static readonly Rectangle _tvSourceRect = new(609, 361, 28, 28);
+
   private readonly PerScreen<bool> _knowsRecipe = new(() => true);
   private CraftingRecipe? _recipe;
 
@@ -54,5 +58,44 @@ internal class QueenOfSauceIcon()
       && Recipe is not null
       && !KnowsRecipe;
     return base._ShouldDraw() && recipeAvailable;
+  }
+
+  public override void Draw(SpriteBatch batch)
+  {
+    if (!ShouldDraw() || Recipe is null)
+    {
+      return;
+    }
+
+    if (!Config.ShowRecipeItemAsIcon)
+    {
+      Icon.draw(batch);
+      return;
+    }
+
+    ParsedItemData itemData = Recipe.GetItemData(useFirst: true);
+    batch.Draw(
+      itemData.GetTexture(),
+      new Vector2(IconPosition.X, IconPosition.Y),
+      itemData.GetSourceRect(),
+      Color.White,
+      0f,
+      Vector2.Zero,
+      2.5f,
+      SpriteEffects.None,
+      1f
+    );
+
+    batch.Draw(
+      Game1.mouseCursors,
+      new Vector2(IconPosition.X + 18, IconPosition.Y + 18),
+      _tvSourceRect,
+      Color.White,
+      0f,
+      Vector2.Zero,
+      0.8f,
+      SpriteEffects.None,
+      1f
+    );
   }
 }
