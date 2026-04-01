@@ -102,21 +102,21 @@ internal class ModEntry : Mod
     _container.RegisterInstance(new Harmony(Helper.ModContent.ModID));
 
     // Set up UI Info Suite Helpers
-    _container.RegisterSingleton<GameStateResolverCaches>();
-    _container.RegisterSingleton<GameStateHelper>();
-    _container.RegisterSingleton<BundleHelper>();
-    _container.RegisterSingleton<DropsHelper>();
-    _container.RegisterSingleton<SoundHelper>();
-    _container.RegisterSingleton<WorldHelper>();
-    _container.RegisterSingleton<SpaceCoreHelper>();
-    _container.RegisterSingleton<TvHelper>();
+    Register<GameStateResolverCaches>();
+    Register<GameStateHelper>();
+    Register<BundleHelper>();
+    Register<DropsHelper>();
+    Register<SoundHelper>();
+    Register<WorldHelper>();
+    Register<SpaceCoreHelper>();
+    Register<TvHelper>();
 
     // Set up Managers
-    _container.RegisterSingleton<ApiManager>();
-    _container.RegisterSingleton<EventsManager>();
-    _container.RegisterSingleton<ConfigManager>();
-    _container.RegisterSingleton<HudIconManager>();
-    _container.RegisterSingleton<FloatingTextManager>();
+    Register<ApiManager>();
+    Register<EventsManager>();
+    Register<ConfigManager>();
+    Register<HudIconManager>();
+    Register<FloatingTextManager>();
 
     // Set up empty registry sets
     foreach (Type bucketType in BucketTypes)
