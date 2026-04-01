@@ -1,14 +1,13 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Netcode;
 using StardewModdingAPI;
 using StardewModdingAPI.Enums;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
-using StardewValley.Menus;
 using StardewValley.Tools;
 using UIInfoSuite2.Compatibility;
+using UIInfoSuite2.Compatibility.SpaceCore;
 using UIInfoSuite2.Config;
 using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Interfaces;
@@ -17,11 +16,8 @@ using UIInfoSuite2.Models.Events;
 using UIInfoSuite2.Models.Experience;
 using UIInfoSuite2.Modules.Base;
 using UIInfoSuite2.UIElements;
-using UIInfoSuite2.Utilities;
 
 namespace UIInfoSuite2.Modules.Hud;
-
-internal record XpThreshold(int TotalXp, int LevelXp, int NextLevelXp);
 
 // ReSharper disable once ClassNeverInstantiated.Global Instantiated by SimpleInjector
 internal class ExperienceModule(
@@ -30,19 +26,24 @@ internal class ExperienceModule(
   ConfigManager configManager,
   SoundHelper soundHelper,
   FloatingTextManager floatingTextManager,
-  EventsManager eventsManager
+  EventsManager eventsManager,
+  ApiManager apiManager,
+  SpaceCoreHelper spaceCoreHelper
 ) : BaseModule(modEvents, logger, configManager), IConfigurable
 {
   private const string FloatingTextKey = "ExperienceGain";
   private const int XpVisibleTicks = 100;
-  private static readonly XpThreshold EmptyThreshold = new(0, 0, 0);
+  private static readonly SkillWrapperBase MasterySkill = new MasterySkillWrapper();
 
   private readonly PerScreen<ExperienceBarModel> _displayedExperienceBar = new(() =>
     new ExperienceBarModel()
   );
 
-  private readonly PerScreen<FieldChange<NetInt, int>?[]> _experienceCallbacks = new(() =>
-    new FieldChange<NetInt, int>[Game1.player.experiencePoints.Length]
+  private readonly PerScreen<Dictionary<int, VanillaSkillWrapper>> _baseSkills = new(() =>
+    new Dictionary<int, VanillaSkillWrapper>()
+  );
+  private readonly PerScreen<Dictionary<string, SpaceCoreSkillWrapper>> _spaceCoreSkills = new(() =>
+    new Dictionary<string, SpaceCoreSkillWrapper>()
   );
 
   private readonly PerScreen<Item?> _previousItem = new();
@@ -57,6 +58,7 @@ internal class ExperienceModule(
     ModEvents.Display.RenderingHud += OnRenderingHud;
     ModEvents.GameLoop.UpdateTicked += OnUpdateTicked_HandleTimers;
     ModEvents.GameLoop.UpdateTicked += OnUpdateTicked_CheckTools;
+    ModEvents.GameLoop.UpdateTicked += OnUpdateTicked_CheckSkillLevels;
     ModEvents.Player.LevelChanged += OnLevelChanged;
     eventsManager.OnMasteryXpGain += OnMasteryXpChange;
 
@@ -70,6 +72,7 @@ internal class ExperienceModule(
     ModEvents.Display.RenderingHud -= OnRenderingHud;
     ModEvents.GameLoop.UpdateTicked -= OnUpdateTicked_HandleTimers;
     ModEvents.GameLoop.UpdateTicked -= OnUpdateTicked_CheckTools;
+    ModEvents.GameLoop.UpdateTicked -= OnUpdateTicked_CheckSkillLevels;
     ModEvents.Player.LevelChanged -= OnLevelChanged;
     eventsManager.OnMasteryXpGain -= OnMasteryXpChange;
 
@@ -79,39 +82,26 @@ internal class ExperienceModule(
     }
   }
 
+  /*********
+   ** Event Handlers
+   *********/
+
   private void OnMasteryXpChange(object? sender, MasteryXpGainArgs args)
   {
-    UpdateExperienceBar(args.SkillType, args.OldXp);
-  }
-
-  private void ShowExperienceBar(int skillIndex)
-  {
-    XpThreshold threshold = GetXpThreshold(skillIndex);
-    _displayedExperienceBar.Value.SetTrackedSkill(skillIndex, threshold);
-  }
-
-  private void UpdateExperienceBar(int skillIndex, int prevXp)
-  {
-    XpThreshold threshold = GetXpThreshold(skillIndex);
-    int experienceGain = threshold.TotalXp - prevXp;
-
-    if (threshold.NextLevelXp > 0 && experienceGain > 0)
-    {
-      AddFloatingXpText(experienceGain);
-    }
-
-    _displayedExperienceBar.Value.SetTrackedSkill(skillIndex, threshold);
+    UpdateTrackedSkill(MasterySkill);
   }
 
   private void OnLevelChanged(object? sender, LevelChangedEventArgs e)
   {
-    if (!Config.ShowLevelUpAnimation || !e.IsLocalPlayer)
+    if (
+      !e.IsLocalPlayer
+      || !_baseSkills.Value.TryGetValue((int)e.Skill, out VanillaSkillWrapper? skill)
+    )
     {
       return;
     }
 
-    floatingTextManager.Add(new LevelUpMessage(TextureHelper.SkillIconRectangles[(int)e.Skill]));
-    soundHelper.Play(Sounds.LevelUp);
+    ShowLevelUpMessage(skill);
   }
 
   private void OnUpdateTicked_CheckTools(object? sender, UpdateTickedEventArgs e)
@@ -123,7 +113,41 @@ internal class ExperienceModule(
     }
 
     _previousItem.Value = currentItem;
-    ShowExperienceBar(GetSkillIndexFromTool(currentItem));
+    int skillIndex = GetSkillIndexFromTool(currentItem);
+    if (_baseSkills.Value.TryGetValue(skillIndex, out VanillaSkillWrapper? skill))
+    {
+      UpdateTrackedSkill(skill, true);
+    }
+  }
+
+  private void OnUpdateTicked_CheckSkillLevels(object? sender, UpdateTickedEventArgs e)
+  {
+    foreach ((int key, VanillaSkillWrapper value) in _baseSkills.Value)
+    {
+      if (value.IsMaxLevel || value.GetLiveXpGained() <= 0)
+      {
+        continue;
+      }
+
+      UpdateTrackedSkill(value);
+      ModEntry.DebugLog($"Stardew skill {key} updated");
+    }
+
+    foreach ((string key, SpaceCoreSkillWrapper value) in _spaceCoreSkills.Value)
+    {
+      if (value.IsMaxLevel || value.GetLiveXpGained() <= 0)
+      {
+        continue;
+      }
+
+      UpdateTrackedSkill(value);
+
+      if (value.HasLevelledUp)
+      {
+        ShowLevelUpMessage(value);
+      }
+      ModEntry.DebugLog($"SpaceCore skill {key} updated");
+    }
   }
 
   private void OnUpdateTicked_HandleTimers(object? sender, UpdateTickedEventArgs e)
@@ -139,6 +163,38 @@ internal class ExperienceModule(
     }
 
     _displayedExperienceBar.Value.Draw(e.SpriteBatch);
+  }
+
+  /*********
+   ** Helper Functions
+   *********/
+
+  private void UpdateTrackedSkill(SkillWrapperBase skill, bool forceShow = false)
+  {
+    if (!skill.UpdateExperience() && !forceShow)
+    {
+      return;
+    }
+
+    XpThreshold threshold = skill.GetThresholdData();
+    int expGained = skill.ExpSinceLastUpdate;
+
+    if (threshold.NextLevelXp > 0 && expGained > 0)
+    {
+      AddFloatingXpText(expGained);
+    }
+    _displayedExperienceBar.Value.SetTrackedSkill(skill);
+  }
+
+  private void ShowLevelUpMessage(SkillWrapperBase skill)
+  {
+    if (!Config.ShowLevelUpAnimation)
+    {
+      return;
+    }
+
+    floatingTextManager.Add(new LevelUpMessage(skill));
+    soundHelper.Play(Sounds.LevelUp);
   }
 
   private static int GetSkillIndexFromTool(Item? currentItem)
@@ -177,76 +233,36 @@ internal class ExperienceModule(
   {
     for (var i = 0; i < Game1.player.experiencePoints.Length; i++)
     {
-      int skillIndex = i;
-      FieldChange<NetInt, int>? oldCallback = _experienceCallbacks.Value[i];
-      FieldChange<NetInt, int> newCallback = (_, prev, _) =>
-      {
-        // These callbacks won't work when we're in mastery range since they still provide an accurate count of xp
-        // for that specific skill, but not the overall mastery count.
-        if (Tools.IsMasteryLevel())
-        {
-          return;
-        }
+      var newWrapper = new VanillaSkillWrapper(i);
+      newWrapper.UpdateExperience();
+      _baseSkills.Value[i] = newWrapper;
+    }
 
-        UpdateExperienceBar(skillIndex, prev);
-      };
+    // Spacecore listeners
 
-      if (oldCallback != null)
+    string[] allSkills = spaceCoreHelper.GetSkillIds();
+    foreach (string skillId in allSkills)
+    {
+      if (_spaceCoreSkills.Value.ContainsKey(skillId))
       {
-        Game1.player.experiencePoints.Fields[i].fieldChangeVisibleEvent -= oldCallback;
+        continue;
       }
-
-      _experienceCallbacks.Value[i] = newCallback;
-      Game1.player.experiencePoints.Fields[i].fieldChangeVisibleEvent += newCallback;
+      SpaceCoreSkill? skillInstance = spaceCoreHelper.GetSkill(skillId);
+      if (skillInstance is null)
+      {
+        continue;
+      }
+      var newWrapper = new SpaceCoreSkillWrapper(skillInstance);
+      newWrapper.UpdateExperience();
+      _spaceCoreSkills.Value[skillId] = newWrapper;
+      ModEntry.DebugLog($"SpaceCore skill {skillId} added");
     }
   }
 
   private void RemoveXpValueListeners()
   {
-    for (var i = 0; i < Game1.player.experiencePoints.Length; i++)
-    {
-      FieldChange<NetInt, int>? oldCallback = _experienceCallbacks.Value[i];
-      if (oldCallback != null)
-      {
-        Game1.player.experiencePoints.Fields[i].fieldChangeVisibleEvent -= oldCallback;
-      }
-    }
-
-    Array.Clear(_experienceCallbacks.Value);
-  }
-  #endregion
-
-  #region Static Helpers
-  private static XpThreshold GetMasteryThreshold()
-  {
-    int currentMasteryLevel = MasteryTrackerMenu.getCurrentMasteryLevel(); // 1
-    var totalMasteryXp = (int)Game1.stats.Get("MasteryExp"); // 15,000
-    int xpToReachCurLevel = MasteryTrackerMenu.getMasteryExpNeededForLevel(currentMasteryLevel); // 10,000
-    int xpThisLevel = totalMasteryXp - xpToReachCurLevel; // 15,000 - 10,000 = 5,000
-    int xpForNextLevel = MasteryTrackerMenu.getMasteryExpNeededForLevel(currentMasteryLevel + 1); // 25,000
-    return new XpThreshold(totalMasteryXp, xpThisLevel, xpForNextLevel - xpToReachCurLevel);
-  }
-
-  private static XpThreshold GetXpThreshold(int skillType)
-  {
-    // Player is on mastery track
-    if (Tools.IsMasteryLevel())
-    {
-      return GetMasteryThreshold();
-    }
-
-    int skillLevel = Game1.player.GetUnmodifiedSkillLevel(skillType);
-    int totalSkillXp = Game1.player.experiencePoints[skillType];
-    int xpToGetToLevel = skillLevel == 0 ? 0 : Farmer.getBaseExperienceForLevel(skillLevel);
-    if (skillLevel == 10 || xpToGetToLevel == -1)
-    {
-      return EmptyThreshold;
-    }
-
-    int xpThisLevel = totalSkillXp - xpToGetToLevel;
-    int xpForNextLevel = Farmer.getBaseExperienceForLevel(skillLevel + 1) - xpToGetToLevel;
-
-    return new XpThreshold(totalSkillXp, xpThisLevel, xpForNextLevel);
+    _baseSkills.Value.Clear();
+    _spaceCoreSkills.Value.Clear();
   }
   #endregion
 
