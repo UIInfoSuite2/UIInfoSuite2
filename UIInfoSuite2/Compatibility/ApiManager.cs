@@ -14,6 +14,7 @@ public static class ModCompat
   public const string DeluxeJournal = "MolsonCAD.DeluxeJournal";
   public const string Gmcm = "spacechase0.GenericModConfigMenu";
   public const string RidgesideVillage = "Rafseazz.RidgesideVillage";
+  public const string SpaceCore = "spacechase0.SpaceCore";
 }
 
 public class ApiManager(IMonitor logger)

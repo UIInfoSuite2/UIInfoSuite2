@@ -12,6 +12,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Compatibility.CustomBush;
+using UIInfoSuite2.Compatibility.SpaceCore;
 using UIInfoSuite2.Config;
 using UIInfoSuite2.Config.Configurable;
 using UIInfoSuite2.Helpers;
@@ -253,6 +254,7 @@ internal class ModEntry : Mod
     apiManager.TryRegisterApi<ICustomBushApi>(Helper, ModCompat.CustomBush, "1.5.0", true);
     apiManager.TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "1.0.1");
     apiManager.TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
+    apiManager.TryRegisterApi<ISpaceCoreApi>(Helper, ModCompat.SpaceCore, "1.28.4");
   }
 
   #region Module Setup
