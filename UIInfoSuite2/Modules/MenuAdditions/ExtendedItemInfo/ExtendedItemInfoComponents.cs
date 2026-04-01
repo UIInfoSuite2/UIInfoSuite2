@@ -19,7 +19,6 @@ using SObject = StardewValley.Object;
 
 internal class ShippingBinIconElement : LayoutElement
 {
-  private static readonly Lazy<Texture2D> Texture = new(() => Game1.mouseCursors);
   private static readonly Rectangle BottomSourceRect = new(526, 218, 30, 22);
   private static readonly Rectangle TopSourceRect = new(134, 236, 30, 15);
   private readonly Dimensions _dimensions;
@@ -50,7 +49,7 @@ internal class ShippingBinIconElement : LayoutElement
   {
     Vector2 position = new(positionX, positionY);
     spriteBatch.Draw(
-      Texture.Value,
+      Game1.mouseCursors,
       position,
       BottomSourceRect,
       Color.White,
@@ -61,7 +60,7 @@ internal class ShippingBinIconElement : LayoutElement
       0.86f
     );
     spriteBatch.Draw(
-      Texture.Value,
+      Game1.mouseCursors,
       position,
       TopSourceRect,
       Color.White,
