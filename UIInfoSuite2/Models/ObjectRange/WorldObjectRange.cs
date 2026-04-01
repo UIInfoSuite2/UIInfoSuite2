@@ -107,13 +107,8 @@ internal class WorldObjectRange
   )
   {
     WorldObjectRange? item = FromCache(tileObject, centerTile);
-    if (item != null)
-    {
-      ModEntry.Instance.Monitor.Log($"Using Cached Object {item._itemId} at {item.CenterTile}");
-      return item;
-    }
-
-    return new WorldObjectRange(tileObject.ItemId, overlayType, centerTile, gridPatternOptions);
+    return item
+      ?? new WorldObjectRange(tileObject.ItemId, overlayType, centerTile, gridPatternOptions);
   }
 
   public static WorldObjectRange? FromCache(Object tileObject, Vector2 centerTile)
@@ -146,7 +141,6 @@ internal class WorldObjectRange
   {
     if (FromCache(selectedObject, centerTile, out WorldObjectRange? range))
     {
-      ModEntry.Instance.Monitor.Log($"Using Cached Object {range._itemId} at {range.CenterTile}");
       return range;
     }
 
@@ -170,7 +164,6 @@ internal class WorldObjectRange
   {
     if (FromCache(selectedObject, centerTile, out WorldObjectRange? range))
     {
-      ModEntry.Instance.Monitor.Log($"Using Cached Object {range._itemId} at {range.CenterTile}");
       return range;
     }
 
