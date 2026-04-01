@@ -256,6 +256,7 @@ internal class ModEntry : Mod
     apiManager.TryRegisterApi<IBetterGameMenuApi>(Helper, ModCompat.BetterGameMenu, "1.0.1");
     apiManager.TryRegisterApi<ICloudySkiesApi>(Helper, ModCompat.CloudySkies, "1.9.0");
     apiManager.TryRegisterApi<ISpaceCoreApi>(Helper, ModCompat.SpaceCore, "1.28.4");
+    apiManager.TryRegisterApi<IVanillaPlusProfessions>(Helper, ModCompat.Vpp, "1.1.0");
   }
 
   #region Module Setup
