@@ -109,6 +109,7 @@ internal class ModEntry : Mod
     _container.RegisterSingleton<SoundHelper>();
     _container.RegisterSingleton<WorldHelper>();
     _container.RegisterSingleton<SpaceCoreHelper>();
+    _container.RegisterSingleton<TvHelper>();
 
     // Set up Managers
     _container.RegisterSingleton<ApiManager>();
