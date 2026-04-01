@@ -5,7 +5,6 @@ using StardewValley;
 using UIInfoSuite2.Config;
 using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Modules.Hud;
-using UIInfoSuite2.Utilities;
 
 namespace UIInfoSuite2.Models.Experience;
 
@@ -17,7 +16,7 @@ internal class ExperienceBarModel : ProgressBar
   private readonly int _dialogBoxYOffset;
   private int _aliveTicks = MaxAliveTicks;
   private int _curSkillLevel = 1;
-  private int _skillType = Farmer.farmingSkill;
+  private SkillWrapperBase _skillType = new VanillaSkillWrapper(Farmer.farmingSkill);
   private XpThreshold _xpThreshold = new(0, 0, 0);
 
   public ExperienceBarModel(int maxBarWidth = 250)
@@ -29,24 +28,17 @@ internal class ExperienceBarModel : ProgressBar
 
   private ModConfig Config => _configManager.Value.Config;
 
-  public void SetTrackedSkill(int skillType, XpThreshold xpThreshold)
+  public void SetTrackedSkill(SkillWrapperBase skillWrapper)
   {
     _aliveTicks = MaxAliveTicks;
-    _skillType = skillType;
-    _curSkillLevel = Game1.player.GetUnmodifiedSkillLevel(_skillType);
-    FillColor = TextureHelper.SkillFillColors[skillType];
-    _xpThreshold = xpThreshold;
+    _skillType = skillWrapper;
+    _curSkillLevel = skillWrapper.GetUnmodifiedSkillLevel();
+    FillColor = skillWrapper.GetColor();
+    _xpThreshold = skillWrapper.GetThresholdData();
     if (_xpThreshold.NextLevelXp != 0)
     {
       Progress = _xpThreshold.LevelXp / (float)_xpThreshold.NextLevelXp;
     }
-  }
-
-  private Rectangle GetSkillTextureRect()
-  {
-    return Tools.IsMasteryLevel()
-      ? TextureHelper.MasteryIconRectangle
-      : TextureHelper.SkillIconRectangles[_skillType];
   }
 
   private bool ShouldHide()
@@ -87,15 +79,14 @@ internal class ExperienceBarModel : ProgressBar
       float skillTextOffset = Game1.dialogueFont.MeasureString(levelText).X;
       Game1.drawWithBorder(levelText, Color.Black * 0.6f, Color.Black, drawPos);
 
-      float skillIconScale = Tools.IsMasteryLevel() ? 3.625f : 2.9f;
       Game1.spriteBatch.Draw(
-        Game1.mouseCursors,
+        _skillType.GetTexture(),
         new Vector2(drawPos.X + skillTextOffset + 10, drawPos.Y + 7),
-        GetSkillTextureRect(),
+        _skillType.GetTextureRect(),
         Color.White,
         0,
         Vector2.Zero,
-        skillIconScale,
+        _skillType.GetIconScale(),
         SpriteEffects.None,
         0.85f
       );

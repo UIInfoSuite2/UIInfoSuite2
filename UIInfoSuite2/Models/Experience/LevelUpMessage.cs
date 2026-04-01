@@ -5,7 +5,7 @@ using UIInfoSuite2.Managers;
 
 namespace UIInfoSuite2.Models.Experience;
 
-internal class LevelUpMessage(Rectangle skillRectangle)
+internal class LevelUpMessage(SkillWrapperBase skill)
   : FloatingText(I18n.LevelUp(), 120, new Vector2(0, 0), id: "LevelUpMessage", zIndex: 100)
 {
   private static readonly Vector2 IconOffset = new(-74, -130);
@@ -15,9 +15,9 @@ internal class LevelUpMessage(Rectangle skillRectangle)
     Vector2 iconPosition = Game1.player.getLocalPosition(Game1.viewport) + IconOffset;
 
     spriteBatch.Draw(
-      Game1.mouseCursors,
+      skill.GetTexture(),
       Utility.ModifyCoordinatesForUIScale(iconPosition),
-      skillRectangle,
+      skill.GetTextureRect(),
       Color.White,
       0,
       Vector2.Zero,
