@@ -5,6 +5,7 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
+using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Managers;
 using UIInfoSuite2.Models.Icons;
 using UIInfoSuite2.Modules.Base;
@@ -93,6 +94,10 @@ internal class DailyLuckModule(
     };
     luckIcon.AutoDrawDelegate = spriteBatch =>
     {
+      if (Config.RequireTvForLuckIcon && !TvHelper.HasWatchedFortune.Value)
+      {
+        return;
+      }
       luckIcon.Draw(spriteBatch, _color.Value, 1f);
     };
 
@@ -144,13 +149,19 @@ internal class DailyLuckModule(
       getValue: () => Config.ShowLuckIcon,
       setValue: value => Config.ShowLuckIcon = value
     );
-
     modConfigMenuApi.AddBoolOption(
       manifest,
       name: I18n.Gmcm_Modules_Icons_Luck_Exact,
       tooltip: I18n.Gmcm_Modules_Icons_Luck_Exact_Tooltip,
       getValue: () => Config.ShowExactLuckValue,
       setValue: value => Config.ShowExactLuckValue = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Tv_RequireWatched,
+      tooltip: I18n.Gmcm_Modules_Icons_Tv_RequireWatched_Tooltip,
+      getValue: () => Config.RequireTvForLuckIcon,
+      setValue: value => Config.RequireTvForLuckIcon = value
     );
   }
   #endregion
