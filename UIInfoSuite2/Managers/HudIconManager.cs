@@ -7,6 +7,7 @@ using StardewValley;
 using StardewValley.Extensions;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
+using UIInfoSuite2.Interfaces;
 using UIInfoSuite2.Models.Icons;
 using UIInfoSuite2.UIElements;
 using UIInfoSuite2.Utilities;
@@ -20,7 +21,7 @@ internal class HudIconManager(
   IModEvents modEvents,
   IMonitor logger,
   ConfigManager configManager
-)
+) : IGameEventHolder
 {
   private readonly Dictionary<string, ClickableIcon> _icons = new();
 
@@ -30,7 +31,7 @@ internal class HudIconManager(
   public bool IsQuestLogPermanent { get; set; } = registry.IsLoaded(ModCompat.DeluxeJournal);
   private ModConfig Config => configManager.Config;
 
-  public void RegisterEvents()
+  public void RegisterGameEvents()
   {
     modEvents.Display.RenderingHud += RenderIcons;
     modEvents.Display.RenderedHud += RenderHoverText;

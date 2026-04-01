@@ -45,6 +45,7 @@ internal class ModEntry : Mod
     typeof(HudIconModule),
     typeof(IPatchable),
     typeof(IConfigurable),
+    typeof(IGameEventHolder),
   ];
 
   private readonly Container _container = new();
@@ -154,6 +155,11 @@ internal class ModEntry : Mod
 
     _container.Verify();
 
+    foreach (IGameEventHolder eventHolder in GetContainerCollection<IGameEventHolder>())
+    {
+      eventHolder.RegisterEarlyEvents();
+    }
+
     helper.Events.GameLoop.GameLaunched += OnGameLaunched;
     helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
     helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
@@ -189,6 +195,11 @@ internal class ModEntry : Mod
     if (Game1.gameMode == Game1.titleScreenGameMode)
     {
       return;
+    }
+
+    foreach (IGameEventHolder eventHolder in GetContainerCollection<IGameEventHolder>())
+    {
+      eventHolder.OnConfigChanged();
     }
 
     // Recalculate the icon rows if necessary
@@ -237,8 +248,10 @@ internal class ModEntry : Mod
       return;
     }
 
-    _container.GetInstance<HudIconManager>().RegisterEvents();
-    _container.GetInstance<FloatingTextManager>().RegisterEvents();
+    foreach (IGameEventHolder eventHolder in GetContainerCollection<IGameEventHolder>())
+    {
+      eventHolder.RegisterGameEvents();
+    }
 
     foreach (BaseModule module in GetAllModules())
     {
