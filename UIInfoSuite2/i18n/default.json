@@ -173,6 +173,9 @@
   "gmcm.modules.xpbar.gain.tooltip": "Show experience gain numbers over your character's head",
   "gmcm.modules.xpbar.levelup": "Play Level Up Animation",
   "gmcm.modules.xpbar.levelup.tooltip": "Show an animation and play a sound when levelling up",
+  // Option for all TV icons
+  "gmcm.modules.icons.tv.require-watched": "Require TV to be watched",
+  "gmcm.modules.icons.tv.require-watched.tooltip": "Require the TV to be watched before showing the icon",
   // Luck
   "gmcm.modules.icons.luck.enable": "Show luck icon",
   "gmcm.modules.icons.luck.enable.tooltip": "Toggle whether the daily luck is shown in your icon bar",

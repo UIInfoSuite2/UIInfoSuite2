@@ -33,10 +33,12 @@ public sealed class ModConfig
   // Luck
   public bool ShowLuckIcon { get; set; } = true;
   public bool ShowExactLuckValue { get; set; }
+  public bool RequireTvForLuckIcon { get; set; }
 
   // Weather
   public bool ShowWeatherIcon { get; set; } = true;
   public bool ShowIslandWeather { get; set; } = true;
+  public bool RequireTvForWeatherIcon { get; set; }
 
   // Merchant
   public bool ShowMerchantIcons { get; set; } = true;

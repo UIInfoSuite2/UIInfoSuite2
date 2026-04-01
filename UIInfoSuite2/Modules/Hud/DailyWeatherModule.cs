@@ -95,6 +95,13 @@ internal class DailyWeatherModule : HudIconModule
       getValue: () => Config.ShowIslandWeather,
       setValue: value => Config.ShowIslandWeather = value
     );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Tv_RequireWatched,
+      tooltip: I18n.Gmcm_Modules_Icons_Tv_RequireWatched_Tooltip,
+      getValue: () => Config.RequireTvForWeatherIcon,
+      setValue: value => Config.RequireTvForWeatherIcon = value
+    );
   }
   #endregion
 }
