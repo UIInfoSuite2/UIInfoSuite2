@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
@@ -7,6 +8,7 @@ using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
 using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Managers;
+using UIInfoSuite2.Models.Enums;
 using UIInfoSuite2.Models.Icons;
 using UIInfoSuite2.Modules.Base;
 
@@ -18,90 +20,23 @@ internal class DailyLuckModule(
   IMonitor logger,
   ConfigManager configManager,
   HudIconManager iconManager
-) : SingleHudIconModule(modEvents, logger, configManager, iconManager)
+) : SingleHudIconModule<LuckIcon>(modEvents, logger, configManager, iconManager)
 {
-  private static readonly Color Luck1Color = new(87, 255, 106, 255);
-  private static readonly Color Luck2Color = new(148, 255, 210, 255);
-  private static readonly Color Luck3Color = new(246, 255, 145, 255);
-  private static readonly Color Luck4Color = new(255, 255, 255, 255);
-  private static readonly Color Luck5Color = new(255, 155, 155, 255);
-  private static readonly Color Luck6Color = new(165, 165, 165, 204);
-  private readonly PerScreen<Color> _color = new(() => new Color(Color.White.ToVector4()));
-
   protected override string IconKey => "Luck";
 
-  private void CalculateLuck(UpdateTickedEventArgs e)
+  private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
   {
-    if (!e.IsMultipleOf(30)) // half second
+    if (!e.IsMultipleOf(30))
     {
       return;
     }
 
-    switch (Game1.player.DailyLuck)
-    {
-      // Spirits are very happy (FeelingLucky)
-      case > 0.07:
-        Icon.HoverText = I18n.LuckStatus1();
-        _color.Value = Luck1Color;
-        break;
-      // Spirits are in good humor (LuckyButNotTooLucky)
-      case <= 0.07 and > 0.02:
-        Icon.HoverText = I18n.LuckStatus2();
-        _color.Value = Luck2Color;
-
-        break;
-      // The spirits feel neutral
-      case var l and >= -0.02 and <= 0.02 when l != 0:
-        Icon.HoverText = I18n.LuckStatus3();
-        _color.Value = Luck3Color;
-
-        break;
-      // The spirits feel absolutely neutral
-      case 0:
-        Icon.HoverText = I18n.LuckStatus4();
-        _color.Value = Luck4Color;
-        break;
-      // The spirits are somewhat annoyed (NotFeelingLuckyAtAll)
-      case < -0.02 and >= -0.07:
-        Icon.HoverText = I18n.LuckStatus5();
-        _color.Value = Luck5Color;
-
-        break;
-      // The spirits are very displeased (MaybeStayHome)
-      case < -0.07:
-        Icon.HoverText = I18n.LuckStatus6();
-        _color.Value = Luck6Color;
-        break;
-    }
-
-    // Rewrite the text, but keep the color
-    if (Config.ShowExactLuckValue)
-    {
-      Icon.HoverText = string.Format(I18n.DailyLuckValue(), Game1.player.DailyLuck.ToString("N3"));
-    }
+    Icon.Update();
   }
 
-  private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
+  protected override LuckIcon GenerateNewIcon()
   {
-    CalculateLuck(e);
-  }
-
-  protected override ClickableIcon GenerateNewIcon()
-  {
-    var luckIcon = new ClickableIcon(Game1.mouseCursors, new Rectangle(50, 428, 10, 10), 40)
-    {
-      RenderPriority = -1,
-    };
-    luckIcon.AutoDrawDelegate = spriteBatch =>
-    {
-      if (Config.RequireTvForLuckIcon && !TvHelper.HasWatchedFortune.Value)
-      {
-        return;
-      }
-      luckIcon.Draw(spriteBatch, _color.Value, 1f);
-    };
-
-    return luckIcon;
+    return new LuckIcon();
   }
 
   public override bool ShouldEnable()
@@ -113,12 +48,19 @@ internal class DailyLuckModule(
   {
     base.OnEnable();
     ModEvents.GameLoop.UpdateTicked += OnUpdateTicked;
+    Icon.Update(true);
   }
 
   public override void OnDisable()
   {
     ModEvents.GameLoop.UpdateTicked -= OnUpdateTicked;
     base.OnDisable();
+  }
+
+  public override void OnConfigChange()
+  {
+    base.OnConfigChange();
+    Icon.SetType(Config.LuckIconType);
   }
 
   #region Configuration Setup
@@ -162,6 +104,14 @@ internal class DailyLuckModule(
       tooltip: I18n.Gmcm_Modules_Icons_Tv_RequireWatched_Tooltip,
       getValue: () => Config.RequireTvForLuckIcon,
       setValue: value => Config.RequireTvForLuckIcon = value
+    );
+    modConfigMenuApi.AddTextOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Luck_IconType,
+      tooltip: I18n.Gmcm_Modules_Icons_Luck_IconType_Tooltip,
+      getValue: () => Config.LuckIconType.ToModConfigString(),
+      setValue: value => Config.LuckIconType = LuckIconTypeExtensions.FromModConfigString(value),
+      allowedValues: LuckIconTypeExtensions.StringToType.Keys.ToArray()
     );
   }
   #endregion
