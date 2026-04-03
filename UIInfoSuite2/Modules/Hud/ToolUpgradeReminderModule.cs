@@ -34,32 +34,31 @@ internal class ToolUpgradeReminderModule(
   {
     base.OnEnable();
     Game1.player.toolBeingUpgraded.fieldChangeEvent += OnFieldUpdateTool;
+    Game1.player.daysLeftForToolUpgrade.fieldChangeEvent += OnDaysUpdate;
     ModEvents.GameLoop.DayStarted += OnEventUpdateTool;
   }
 
   public override void OnDisable()
   {
     Game1.player.toolBeingUpgraded.fieldChangeEvent -= OnFieldUpdateTool;
+    Game1.player.daysLeftForToolUpgrade.fieldChangeEvent -= OnDaysUpdate;
     ModEvents.GameLoop.DayStarted -= OnEventUpdateTool;
     base.OnDisable();
   }
 
   private void OnFieldUpdateTool(NetRef<Tool> netRef, Tool oldTool, Tool newTool)
   {
-    UpdateToolInfo();
+    Icon.UpdateTool();
+  }
+
+  private void OnDaysUpdate(NetInt _, int __, int newDays)
+  {
+    Icon.UpdateHoverText();
   }
 
   private void OnEventUpdateTool(object? sender, EventArgs e)
   {
-    UpdateToolInfo();
-  }
-
-  private void UpdateToolInfo()
-  {
-    if (Icon.Tool != Game1.player.toolBeingUpgraded.Value)
-    {
-      Icon.UpdateTool();
-    }
+    Icon.UpdateTool();
   }
 
   #region Configuration Setup
