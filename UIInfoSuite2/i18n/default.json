@@ -146,12 +146,17 @@
   "gmcm.group.menuShortcuts": "Menu Shortcuts",
   "gmcm.group.menuKeybinds": "Menu Shortcuts",
   "gmcm.group.rangeKeybinds": "Range Display Shortcuts",
-  // Enums
+  // ========== Enums ==========
+  // Visibility Modes
   "gmcm.enum.visibility-mode.always": "Always Shown",
   "gmcm.enum.visibility-mode.key-toggle": "Toggle with Key",
   "gmcm.enum.visibility-mode.key-hold": "Hold Key",
   "gmcm.enum.visibility-mode.off": "Never",
-  // HUD Overlays
+  // Luck Icon Type
+  "gmcm.enum.luck-icon-type.classic": "Classic (Dice)",
+  "gmcm.enum.luck-icon-type.clover": "Clover",
+  "gmcm.enum.luck-icon-type.tv": "Fortune Teller",
+  // ========== HUD Overlays ==========
   "gmcm.section.overlays.title": "HUD Overlays",
   "gmcm.section.overlays.title.tooltip": "Control HUD Overlays and icons displayed on your screen.",
   "gmcm.modules.icon_container.icon_per_row": "HUD Icons per row",
@@ -181,6 +186,8 @@
   "gmcm.modules.icons.luck.enable.tooltip": "Toggle whether the daily luck is shown in your icon bar",
   "gmcm.modules.icons.luck.exact": "Show exact luck value",
   "gmcm.modules.icons.luck.exact.tooltip": "Whether the luck tooltip will display the TV info, or the exact numerical value",
+  "gmcm.modules.icons.luck.icon-type": "Luck Icon Type",
+  "gmcm.modules.icons.luck.icon-type.tooltip": "Show a different representation of daily luck",
   // Weather
   "gmcm.modules.icons.weather.enable": "Show weather icon",
   "gmcm.modules.icons.weather.enable.tooltip": "Toggle if the weather for tomorrow is shown in your icon bar",

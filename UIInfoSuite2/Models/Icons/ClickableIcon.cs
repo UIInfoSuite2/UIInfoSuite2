@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -25,9 +27,11 @@ internal class ClickableIcon
   private readonly PerScreen<ClickableTextureComponent> _icon;
   private readonly PerScreen<bool> _lastShouldDraw = new(() => false);
   protected readonly PerScreen<Texture2D> BaseTexture;
+  protected readonly PerScreen<Color> _color = new(() => Color.White);
 
   protected readonly ConfigManager ConfigManager = ModEntry.GetSingleton<ConfigManager>();
   protected readonly PerScreen<AspectLockedDimensions> ScalingDimensions;
+  protected readonly IMonitor Logger;
 
   public ClickableIcon(
     ParsedItemData itemData,
@@ -65,6 +69,7 @@ internal class ClickableIcon
     ClickHandlerAction = clickHandlerAction;
     HoverFont = hoverFont ?? Game1.dialogueFont;
     AutoDrawDelegate = Draw;
+    Logger = ModEntry.GetSingleton<IMonitor>();
   }
 
   protected ModConfig Config => ConfigManager.Config;
@@ -89,6 +94,12 @@ internal class ClickableIcon
       _hasRenderingChanged.Value = true;
       ScalingDimensions.Value.SourceDimensions = value;
     }
+  }
+
+  public Color Color
+  {
+    get => _color.Value;
+    set => _color.Value = value;
   }
 
   public Action<SpriteBatch> AutoDrawDelegate { get; set; }
@@ -126,6 +137,16 @@ internal class ClickableIcon
   protected void ResetTextureComponent()
   {
     _icon.Value = GenerateTextureComponent();
+  }
+
+  protected static Lazy<Texture2D> LazyLoadModTexture(params string[] pathStrings)
+  {
+    return new Lazy<Texture2D>(() =>
+    {
+      var helper = ModEntry.GetSingleton<IModHelper>();
+      string path = pathStrings.Aggregate(helper.DirectoryPath, Path.Combine);
+      return Texture2D.FromFile(Game1.graphics.GraphicsDevice, path);
+    });
   }
 
   public void MarkDirty()
@@ -174,31 +195,17 @@ internal class ClickableIcon
     Icon.baseScale = Dimensions.ScaleFactor;
   }
 
-  public virtual void Draw(SpriteBatch batch)
+  public virtual void Draw(SpriteBatch b)
   {
     if (!ShouldDraw())
     {
       return;
     }
 
-    Icon.draw(batch);
-  }
+    // Assume default depth from stardew valley source
+    float depth = 0.86f + IconPosition.Y / 20000.0f;
 
-  public virtual void Draw(
-    SpriteBatch b,
-    Color c,
-    float layerDepth,
-    int frameOffset = 0,
-    int xOffset = 0,
-    int yOffset = 0
-  )
-  {
-    if (!ShouldDraw())
-    {
-      return;
-    }
-
-    Icon.draw(b, c, layerDepth, frameOffset, xOffset, yOffset);
+    Icon.draw(b, Color, depth, 0, 0, 0);
   }
 
   public virtual void DrawHoverText(SpriteBatch batch)
