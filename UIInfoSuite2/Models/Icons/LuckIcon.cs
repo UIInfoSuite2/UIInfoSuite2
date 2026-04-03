@@ -3,14 +3,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI.Utilities;
 using StardewValley;
+using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Models.Enums;
 
 namespace UIInfoSuite2.Models.Icons;
 
 internal class LuckIcon : ClickableIcon
 {
-  const int CloverFrameSize = 26;
-  const int TvFrameSize = 20;
+  private const int CloverFrameSize = 26;
+  private const int TvFrameSize = 20;
   private static readonly Color Luck1Color = new(87, 255, 106, 255);
   private static readonly Color Luck2Color = new(148, 255, 210, 255);
   private static readonly Color Luck3Color = new(246, 255, 145, 255);
@@ -18,6 +19,7 @@ internal class LuckIcon : ClickableIcon
   private static readonly Color Luck5Color = new(255, 155, 155, 255);
   private static readonly Color Luck6Color = new(165, 165, 165, 204);
   private static readonly Rectangle DiceSourceBounds = new(50, 428, 10, 10);
+
   private static readonly Lazy<LuckInfo[]> LuckInfoTable = new(() =>
     [
       new LuckInfo(0, 0, Luck6Color, I18n.LuckStatus6()),
@@ -31,8 +33,12 @@ internal class LuckIcon : ClickableIcon
     ]
   );
 
-  private static readonly Lazy<Texture2D> tvTexture = LazyLoadModTexture("assets", "tv_group.png");
-  private static readonly Lazy<Texture2D> cloverTexture = LazyLoadModTexture(
+  private static readonly Lazy<Texture2D> tvTexture = TextureHelper.LazyLoadModTexture(
+    "assets",
+    "tv_group.png"
+  );
+
+  private static readonly Lazy<Texture2D> cloverTexture = TextureHelper.LazyLoadModTexture(
     "assets",
     "clover_group.png"
   );
@@ -44,6 +50,11 @@ internal class LuckIcon : ClickableIcon
   {
     SetType(Config.LuckIconType);
   }
+
+  public LuckIconType LuckIconType { get; private set; } = LuckIconType.Clover;
+
+  public LuckInfo CurLuckInfo => _luckInfo.Value;
+  public int LuckLevel => _luckInfo.Value.LuckLevel;
 
   private static LuckInfo GetLuckInfo()
   {
@@ -83,11 +94,6 @@ internal class LuckIcon : ClickableIcon
       ? luckInfoList[7] // Shrine extreme good
       : luckInfoList[6]; // Very good luck
   }
-
-  public LuckIconType LuckIconType { get; private set; } = LuckIconType.Clover;
-
-  public LuckInfo CurLuckInfo => _luckInfo.Value;
-  public int LuckLevel => _luckInfo.Value.LuckLevel;
 
   public void Update(bool force = false)
   {

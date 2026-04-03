@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -17,6 +15,8 @@ namespace UIInfoSuite2.Models.Icons;
 
 internal class ClickableIcon
 {
+  protected readonly PerScreen<Color> _color = new(() => Color.White);
+
   /// <summary>
   ///   If the icon has decided it shouldn't be rendered, or some other event that might
   ///   invalidate caching
@@ -27,11 +27,10 @@ internal class ClickableIcon
   private readonly PerScreen<ClickableTextureComponent> _icon;
   private readonly PerScreen<bool> _lastShouldDraw = new(() => false);
   protected readonly PerScreen<Texture2D> BaseTexture;
-  protected readonly PerScreen<Color> _color = new(() => Color.White);
 
   protected readonly ConfigManager ConfigManager = ModEntry.GetSingleton<ConfigManager>();
-  protected readonly PerScreen<AspectLockedDimensions> ScalingDimensions;
   protected readonly IMonitor Logger;
+  protected readonly PerScreen<AspectLockedDimensions> ScalingDimensions;
 
   public ClickableIcon(
     ParsedItemData itemData,
@@ -139,16 +138,6 @@ internal class ClickableIcon
     _icon.Value = GenerateTextureComponent();
   }
 
-  protected static Lazy<Texture2D> LazyLoadModTexture(params string[] pathStrings)
-  {
-    return new Lazy<Texture2D>(() =>
-    {
-      var helper = ModEntry.GetSingleton<IModHelper>();
-      string path = pathStrings.Aggregate(helper.DirectoryPath, Path.Combine);
-      return Texture2D.FromFile(Game1.graphics.GraphicsDevice, path);
-    });
-  }
-
   public void MarkDirty()
   {
     _hasRenderingChanged.Value = true;
@@ -205,7 +194,7 @@ internal class ClickableIcon
     // Assume default depth from stardew valley source
     float depth = 0.86f + IconPosition.Y / 20000.0f;
 
-    Icon.draw(b, Color, depth, 0, 0, 0);
+    Icon.draw(b, Color, depth);
   }
 
   public virtual void DrawHoverText(SpriteBatch batch)
