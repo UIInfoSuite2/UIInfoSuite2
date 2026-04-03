@@ -34,6 +34,7 @@ public sealed class ModConfig
   public bool ShowLuckIcon { get; set; } = true;
   public bool ShowExactLuckValue { get; set; }
   public bool RequireTvForLuckIcon { get; set; }
+  public LuckIconType LuckIconType { get; set; } = LuckIconType.Clover;
 
   // Weather
   public bool ShowWeatherIcon { get; set; } = true;
