@@ -27,7 +27,7 @@ internal abstract class SkillWrapperBase
   public bool UpdateExperience()
   {
     int totalSkillXp = GetTotalExperience();
-    if (totalSkillXp == _xpThreshold.TotalXp)
+    if (totalSkillXp == _xpThreshold.TotalXp && _xpThreshold.Equals(_lastXpThreshold))
     {
       return false;
     }

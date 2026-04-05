@@ -15,6 +15,8 @@ namespace UIInfoSuite2.Models.Icons;
 
 internal class ClickableIcon
 {
+  protected readonly PerScreen<Color> _color = new(() => Color.White);
+
   /// <summary>
   ///   If the icon has decided it shouldn't be rendered, or some other event that might
   ///   invalidate caching
@@ -27,6 +29,7 @@ internal class ClickableIcon
   protected readonly PerScreen<Texture2D> BaseTexture;
 
   protected readonly ConfigManager ConfigManager = ModEntry.GetSingleton<ConfigManager>();
+  protected readonly IMonitor Logger;
   protected readonly PerScreen<AspectLockedDimensions> ScalingDimensions;
 
   public ClickableIcon(
@@ -65,6 +68,7 @@ internal class ClickableIcon
     ClickHandlerAction = clickHandlerAction;
     HoverFont = hoverFont ?? Game1.dialogueFont;
     AutoDrawDelegate = Draw;
+    Logger = ModEntry.GetSingleton<IMonitor>();
   }
 
   protected ModConfig Config => ConfigManager.Config;
@@ -89,6 +93,12 @@ internal class ClickableIcon
       _hasRenderingChanged.Value = true;
       ScalingDimensions.Value.SourceDimensions = value;
     }
+  }
+
+  public Color Color
+  {
+    get => _color.Value;
+    set => _color.Value = value;
   }
 
   public Action<SpriteBatch> AutoDrawDelegate { get; set; }
@@ -174,31 +184,17 @@ internal class ClickableIcon
     Icon.baseScale = Dimensions.ScaleFactor;
   }
 
-  public virtual void Draw(SpriteBatch batch)
+  public virtual void Draw(SpriteBatch b)
   {
     if (!ShouldDraw())
     {
       return;
     }
 
-    Icon.draw(batch);
-  }
+    // Assume default depth from stardew valley source
+    float depth = 0.86f + IconPosition.Y / 20000.0f;
 
-  public virtual void Draw(
-    SpriteBatch b,
-    Color c,
-    float layerDepth,
-    int frameOffset = 0,
-    int xOffset = 0,
-    int yOffset = 0
-  )
-  {
-    if (!ShouldDraw())
-    {
-      return;
-    }
-
-    Icon.draw(b, c, layerDepth, frameOffset, xOffset, yOffset);
+    Icon.draw(b, Color, depth);
   }
 
   public virtual void DrawHoverText(SpriteBatch batch)

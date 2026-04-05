@@ -45,6 +45,7 @@ internal class ModEntry : Mod
     typeof(HudIconModule),
     typeof(IPatchable),
     typeof(IConfigurable),
+    typeof(IGameEventHolder),
   ];
 
   private readonly Container _container = new();
@@ -101,20 +102,21 @@ internal class ModEntry : Mod
     _container.RegisterInstance(new Harmony(Helper.ModContent.ModID));
 
     // Set up UI Info Suite Helpers
-    _container.RegisterSingleton<GameStateResolverCaches>();
-    _container.RegisterSingleton<GameStateHelper>();
-    _container.RegisterSingleton<BundleHelper>();
-    _container.RegisterSingleton<DropsHelper>();
-    _container.RegisterSingleton<SoundHelper>();
-    _container.RegisterSingleton<WorldHelper>();
-    _container.RegisterSingleton<SpaceCoreHelper>();
+    Register<GameStateResolverCaches>();
+    Register<GameStateHelper>();
+    Register<BundleHelper>();
+    Register<DropsHelper>();
+    Register<SoundHelper>();
+    Register<WorldHelper>();
+    Register<SpaceCoreHelper>();
+    Register<TvHelper>();
 
     // Set up Managers
-    _container.RegisterSingleton<ApiManager>();
-    _container.RegisterSingleton<EventsManager>();
-    _container.RegisterSingleton<ConfigManager>();
-    _container.RegisterSingleton<HudIconManager>();
-    _container.RegisterSingleton<FloatingTextManager>();
+    Register<ApiManager>();
+    Register<EventsManager>();
+    Register<ConfigManager>();
+    Register<HudIconManager>();
+    Register<FloatingTextManager>();
 
     // Set up empty registry sets
     foreach (Type bucketType in BucketTypes)
@@ -151,8 +153,14 @@ internal class ModEntry : Mod
     Register<ExperienceModule>();
     Register<BuffTimerModule>();
     Register<QuestCountModule>();
+    Register<FishSonarModule>();
 
     _container.Verify();
+
+    foreach (IGameEventHolder eventHolder in GetContainerCollection<IGameEventHolder>())
+    {
+      eventHolder.RegisterEarlyEvents();
+    }
 
     helper.Events.GameLoop.GameLaunched += OnGameLaunched;
     helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
@@ -189,6 +197,11 @@ internal class ModEntry : Mod
     if (Game1.gameMode == Game1.titleScreenGameMode)
     {
       return;
+    }
+
+    foreach (IGameEventHolder eventHolder in GetContainerCollection<IGameEventHolder>())
+    {
+      eventHolder.OnConfigChanged();
     }
 
     // Recalculate the icon rows if necessary
@@ -237,8 +250,10 @@ internal class ModEntry : Mod
       return;
     }
 
-    _container.GetInstance<HudIconManager>().RegisterEvents();
-    _container.GetInstance<FloatingTextManager>().RegisterEvents();
+    foreach (IGameEventHolder eventHolder in GetContainerCollection<IGameEventHolder>())
+    {
+      eventHolder.RegisterGameEvents();
+    }
 
     foreach (BaseModule module in GetAllModules())
     {

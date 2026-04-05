@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StardewModdingAPI;
 using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.ItemTypeDefinitions;
@@ -31,8 +32,24 @@ internal class ToolIcon : ClickableIcon
     }
 
     ParsedItemData itemData = ItemRegistry.GetDataOrErrorItem(Tool.QualifiedItemId);
+    if (itemData.IsErrorItem)
+    {
+      Logger.LogOnce(
+        $"ToolIcon: Tool {Tool.QualifiedItemId} did not return valid item data for some reason, was the mod removed?",
+        LogLevel.Alert
+      );
+    }
     BaseTexture.Value = itemData.GetTexture();
     SetSourceBounds(itemData.GetSourceRect());
+    UpdateHoverText();
+  }
+
+  public void UpdateHoverText()
+  {
+    if (Tool is null)
+    {
+      return;
+    }
 
     if (Game1.player.daysLeftForToolUpgrade.Value > 0)
     {

@@ -6,6 +6,7 @@ using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
 using UIInfoSuite2.Config;
+using UIInfoSuite2.Interfaces;
 
 namespace UIInfoSuite2.Managers;
 
@@ -68,7 +69,7 @@ internal class FloatingTextManager(
   IModEvents modEvents,
   IMonitor logger,
   ConfigManager configManager
-)
+) : IGameEventHolder
 {
   private readonly PerScreen<List<FloatingText>> _textCache = new(() => []);
 
@@ -88,7 +89,7 @@ internal class FloatingTextManager(
   }
 
   #region Events
-  public void RegisterEvents()
+  public void RegisterGameEvents()
   {
     modEvents.Display.RenderingHud += TickAndRenderText;
     modEvents.GameLoop.SaveLoaded += OnSaveLoaded;

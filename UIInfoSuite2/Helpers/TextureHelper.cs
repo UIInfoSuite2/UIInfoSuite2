@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StardewModdingAPI;
 using StardewValley;
 
 namespace UIInfoSuite2.Helpers;
@@ -31,6 +35,16 @@ internal static class TextureHelper
 
   public static readonly Rectangle OutlinedTextureBox = new(0, 256, 60, 60);
 
+  public static Lazy<Texture2D> LazyLoadModTexture(params string[] pathStrings)
+  {
+    return new Lazy<Texture2D>(() =>
+    {
+      var helper = ModEntry.GetSingleton<IModHelper>();
+      string path = pathStrings.Aggregate(helper.DirectoryPath, Path.Combine);
+      return Texture2D.FromFile(Game1.graphics.GraphicsDevice, path);
+    });
+  }
+
   public static void DrawOutlinedSprite(
     SpriteBatch spriteBatch,
     Texture2D texture,
@@ -48,7 +62,7 @@ internal static class TextureHelper
   {
     Vector2 resolvedOrigin = origin ?? Vector2.Zero;
     Color resolvedColor = color ?? Color.White * 0.9f;
-    Color resolvedOutlineColor = outlineColor ?? (Color.Black * 0.5f);
+    Color resolvedOutlineColor = outlineColor ?? Color.Black * 0.5f;
 
     float outlineScale = scale + outlineSize / sourceRectangle.Width;
     var outlineOffset = new Vector2(outlineSize / 2f, outlineSize / 2f);

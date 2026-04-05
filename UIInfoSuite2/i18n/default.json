@@ -136,6 +136,7 @@
   "gmcm.group.birthday": "Birthday Reminder",
   "gmcm.group.seasonalForage": "Seasonal Forage",
   "gmcm.group.otherIcons": "Other Icons",
+  "gmcm.group.fishing-sonar": "Fishing Minigame Sonar",
   "gmcm.group.animalTooltips": "Animal Tooltips",
   "gmcm.group.object-contents-icons": "Object Contents Icons",
   "gmcm.group.objectTooltips": "Object Tooltips",
@@ -146,12 +147,17 @@
   "gmcm.group.menuShortcuts": "Menu Shortcuts",
   "gmcm.group.menuKeybinds": "Menu Shortcuts",
   "gmcm.group.rangeKeybinds": "Range Display Shortcuts",
-  // Enums
+  // ========== Enums ==========
+  // Visibility Modes
   "gmcm.enum.visibility-mode.always": "Always Shown",
   "gmcm.enum.visibility-mode.key-toggle": "Toggle with Key",
   "gmcm.enum.visibility-mode.key-hold": "Hold Key",
   "gmcm.enum.visibility-mode.off": "Never",
-  // HUD Overlays
+  // Luck Icon Type
+  "gmcm.enum.luck-icon-type.classic": "Classic (Dice)",
+  "gmcm.enum.luck-icon-type.clover": "Clover",
+  "gmcm.enum.luck-icon-type.tv": "Fortune Teller",
+  // ========== HUD Overlays ==========
   "gmcm.section.overlays.title": "HUD Overlays",
   "gmcm.section.overlays.title.tooltip": "Control HUD Overlays and icons displayed on your screen.",
   "gmcm.modules.icon_container.icon_per_row": "HUD Icons per row",
@@ -173,11 +179,16 @@
   "gmcm.modules.xpbar.gain.tooltip": "Show experience gain numbers over your character's head",
   "gmcm.modules.xpbar.levelup": "Play Level Up Animation",
   "gmcm.modules.xpbar.levelup.tooltip": "Show an animation and play a sound when levelling up",
+  // Option for all TV icons
+  "gmcm.modules.icons.tv.require-watched": "Require TV to be watched",
+  "gmcm.modules.icons.tv.require-watched.tooltip": "Require the TV to be watched before showing the icon",
   // Luck
   "gmcm.modules.icons.luck.enable": "Show luck icon",
   "gmcm.modules.icons.luck.enable.tooltip": "Toggle whether the daily luck is shown in your icon bar",
   "gmcm.modules.icons.luck.exact": "Show exact luck value",
   "gmcm.modules.icons.luck.exact.tooltip": "Whether the luck tooltip will display the TV info, or the exact numerical value",
+  "gmcm.modules.icons.luck.icon-type": "Luck Icon Type",
+  "gmcm.modules.icons.luck.icon-type.tooltip": "Show a different representation of daily luck",
   // Weather
   "gmcm.modules.icons.weather.enable": "Show weather icon",
   "gmcm.modules.icons.weather.enable.tooltip": "Toggle if the weather for tomorrow is shown in your icon bar",
@@ -226,6 +237,8 @@
   "gmcm.modules.icons.forage.hazelnut.enable.tooltip": "Toggle whether an icon is shown when hazelnuts are available (mid fall)",
   "gmcm.modules.icons.forage.beach.enable": "Show beach forage icon",
   "gmcm.modules.icons.forage.beach.enable.tooltip": "Toggle whether an icon is shown when extra beach forage is available (mid summer)",
+  "gmcm.modules.icons.forage.pot-of-gold.enable": "Show Pot of Gold icon",
+  "gmcm.modules.icons.forage.pot-of-gold.enable.tooltip": "Toggle whether an icon is shown when a pot of gold is under the rainbow",
   // Artifact Spots
   "gmcm.modules.icons.artifacts.enable": "Show artifact spot count",
   "gmcm.modules.icons.artifacts.enable.tooltip": "Lists the number of uncollected artifact spots around the map",
@@ -239,6 +252,11 @@
   // HUD Tooltips
   "gmcm.section.tooltips.title": "HUD Tooltips",
   "gmcm.section.tooltips.title.tooltip": "Control HUD Tooltips and other Quality-of-Life features in your world",
+  // Fishing Icons
+  "gmcm.modules.tooltips.fish-sonar.enable": "Show Fish Sonar",
+  "gmcm.modules.tooltips.fish-sonar.enable.tooltip": "Show the fish you're catching, similar to the Sonar Bobber",
+  "gmcm.modules.tooltips.fish-sonar.show-quality": "Show Fish Quality",
+  "gmcm.modules.tooltips.fish-sonar.show-quality.tooltip": "Show the live quality of the fish you're catching",
   // Animals
   "gmcm.modules.tooltips.animals.enable": "Show animal interact icon",
   "gmcm.modules.tooltips.animals.enable.tooltip": "Toggle whether an icon is shown above an animal you haven't pet",
