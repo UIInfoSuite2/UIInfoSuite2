@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Extensions;
 using UIInfoSuite2.Compatibility;
@@ -23,9 +24,11 @@ internal class HudIconManager(
   ConfigManager configManager
 ) : IGameEventHolder
 {
-  private readonly Dictionary<string, ClickableIcon> _icons = new();
+  private readonly PerScreen<Dictionary<string, ClickableIcon>> _icons = new(() =>
+    new Dictionary<string, ClickableIcon>()
+  );
 
-  private List<HudIconRow> _iconRows = [];
+  private PerScreen<List<HudIconRow>> _iconRows = new(() => []);
   private bool _iconRowsDirty = true;
 
   public bool IsQuestLogPermanent { get; set; } = registry.IsLoaded(ModCompat.DeluxeJournal);
@@ -47,23 +50,23 @@ internal class HudIconManager(
 
   public void AddIcon(string key, ClickableIcon icon)
   {
-    _icons.Add(key, icon);
+    _icons.Value.Add(key, icon);
     _iconRowsDirty = true;
   }
 
   public bool HasIcon(string key)
   {
-    return _icons.ContainsKey(key);
+    return _icons.Value.ContainsKey(key);
   }
 
   public ClickableIcon? GetIcon(string key)
   {
-    return _icons.GetValueOrDefault(key);
+    return _icons.Value.GetValueOrDefault(key);
   }
 
   public ClickableIcon GetIconUnsafe(string key)
   {
-    return _icons[key];
+    return _icons.Value[key];
   }
 
   public ClickableIcon? RemoveIcon(string key)
@@ -74,14 +77,14 @@ internal class HudIconManager(
       return null;
     }
 
-    _icons.Remove(key);
+    _icons.Value.Remove(key);
     _iconRowsDirty = true;
     return icon;
   }
 
   public int RemoveIconWhere(Func<KeyValuePair<string, ClickableIcon>, bool> match)
   {
-    int removed = _icons.RemoveWhere(match);
+    int removed = _icons.Value.RemoveWhere(match);
     _iconRowsDirty = true;
     return removed;
   }
@@ -93,7 +96,7 @@ internal class HudIconManager(
 
   private void UpdateIconRows()
   {
-    foreach ((string key, ClickableIcon icon) in _icons)
+    foreach ((string key, ClickableIcon icon) in _icons.Value)
     {
       if (!icon.HasRenderingChanged())
       {
@@ -110,8 +113,8 @@ internal class HudIconManager(
     }
 
     logger.Log("Icon rows are no longer valid, recalculating...");
-    _iconRows = _icons
-      .Values.Where(icon => icon.ShouldDraw())
+    _iconRows.Value = _icons
+      .Value.Values.Where(icon => icon.ShouldDraw())
       .OrderBy(icon => icon.RenderPriority)
       .Chunk(Config.HudIconsPerRow)
       .Select(row => new HudIconRow(row, row.Max(icon => icon.Dimensions.Height)))
@@ -140,7 +143,7 @@ internal class HudIconManager(
 
     // e.SpriteBatch.Draw(Game1.staminaRect, new Rectangle(xPosition, yPosition, 40, 40), Color.Red);
 
-    foreach (HudIconRow row in _iconRows)
+    foreach (HudIconRow row in _iconRows.Value)
     {
       int xPosition = Tools.GetWidthInPlayArea() - (70 + Config.HudIconsHorizontalOffset);
       var idx = 0;
@@ -170,7 +173,7 @@ internal class HudIconManager(
 
   private void RenderHoverText(object? sender, RenderedHudEventArgs e)
   {
-    foreach (ClickableIcon clickableIcon in _icons.Values)
+    foreach (ClickableIcon clickableIcon in _icons.Value.Values)
     {
       clickableIcon.DrawHoverText(e.SpriteBatch);
     }
@@ -178,7 +181,7 @@ internal class HudIconManager(
 
   private void HandleButtonPress(object? sender, ButtonPressedEventArgs e)
   {
-    foreach (ClickableIcon clickableIcon in _icons.Values)
+    foreach (ClickableIcon clickableIcon in _icons.Value.Values)
     {
       clickableIcon.OnClick(sender, e);
     }
