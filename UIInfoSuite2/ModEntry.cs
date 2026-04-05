@@ -153,6 +153,7 @@ internal class ModEntry : Mod
     Register<ExperienceModule>();
     Register<BuffTimerModule>();
     Register<QuestCountModule>();
+    Register<FishSonarModule>();
 
     _container.Verify();
 
