@@ -1,5 +1,6 @@
 ﻿using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
 using UIInfoSuite2.Managers;
@@ -14,18 +15,49 @@ internal class SeasonalForageDisplayModule(
   IMonitor logger,
   ConfigManager configManager,
   HudIconManager iconManager
-) : SingleHudIconModule<ForageIcon>(modEvents, logger, configManager, iconManager)
+) : HudIconModule(modEvents, logger, configManager, iconManager)
 {
-  protected override string IconKey => "ForageIcon";
+  private static readonly string IconKey = "ForageIcon";
+
+  private readonly PerScreen<ForageIcon> _forageIcon = new(() => new ForageIcon());
+  private readonly PerScreen<PotOfGoldIcon> _potOfGoldIcon = new(() => new PotOfGoldIcon());
 
   public override bool ShouldEnable()
   {
     return Config.ShowSeasonalForageIcon;
   }
 
-  protected override ForageIcon GenerateNewIcon()
+  protected override void SetupIcons()
   {
-    return new ForageIcon();
+    IconManager.AddIcon($"{IconKey}-Forage", _forageIcon.Value);
+    IconManager.AddIcon($"{IconKey}-PotOfGold", _potOfGoldIcon.Value);
+  }
+
+  protected override void RemoveIcons()
+  {
+    RemoveIconsWhere(IconKey, 2);
+  }
+
+  public override void OnEnable()
+  {
+    base.OnEnable();
+    ModEvents.GameLoop.UpdateTicked += OnUpdateTicked;
+  }
+
+  public override void OnDisable()
+  {
+    base.OnDisable();
+    ModEvents.GameLoop.UpdateTicked -= OnUpdateTicked;
+  }
+
+  private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
+  {
+    if (!e.IsMultipleOf(10))
+    {
+      return;
+    }
+
+    _potOfGoldIcon.Value.Update();
   }
 
   #region Configuration Setup

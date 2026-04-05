@@ -237,6 +237,8 @@
   "gmcm.modules.icons.forage.hazelnut.enable.tooltip": "Toggle whether an icon is shown when hazelnuts are available (mid fall)",
   "gmcm.modules.icons.forage.beach.enable": "Show beach forage icon",
   "gmcm.modules.icons.forage.beach.enable.tooltip": "Toggle whether an icon is shown when extra beach forage is available (mid summer)",
+  "gmcm.modules.icons.forage.pot-of-gold.enable": "Show Pot of Gold icon",
+  "gmcm.modules.icons.forage.pot-of-gold.enable.tooltip": "Toggle whether an icon is shown when a pot of gold is under the rainbow",
   // Artifact Spots
   "gmcm.modules.icons.artifacts.enable": "Show artifact spot count",
   "gmcm.modules.icons.artifacts.enable.tooltip": "Lists the number of uncollected artifact spots around the map",
