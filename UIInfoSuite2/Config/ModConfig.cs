@@ -109,8 +109,9 @@ public sealed class ModConfig
   public KeybindList ObjectContentsKeybind { get; set; } = KeybindList.ForSingle(SButton.F10);
   public bool ShowFishPondResidents { get; set; } = false;
 
-  // Crops & Machines
+  // Crops, Trees & Machines
   public bool ShowCropTooltip { get; set; } = true;
+  public bool ShowTreeTooltip { get; set; } = true;
   public bool ShowMachineTooltip { get; set; } = true;
 
   // Item Range
