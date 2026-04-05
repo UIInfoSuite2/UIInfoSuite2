@@ -4,7 +4,6 @@ using StardewValley;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.TerrainFeatures;
 using UIInfoSuite2.Helpers;
-using UIInfoSuite2.Helpers.GameStateHelpers;
 using UIInfoSuite2.Layout;
 using UIInfoSuite2.Models.Tooltip.Base;
 
@@ -12,16 +11,16 @@ namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;
 
 internal class FruitTreeTooltipContainer : LayoutContainer
 {
-  private readonly TooltipText _cropDaysRemainingElement = new(
+  private readonly TooltipText _daysRemainingElement = new(
     "UIIS2::UnknownTime",
     0.75f,
     identifier: "TreeGrowTimeRemaining"
   );
 
-  private readonly TooltipText _cropDropsElement = new(
+  private readonly TooltipText _harvestElement = new(
     "UIIS2::UnknownDrops",
     0.75f,
-    identifier: "TreeDrops"
+    identifier: "TreeHarvestInfo"
   );
 
   private readonly TooltipIcon _cropIcon = new(
@@ -30,7 +29,7 @@ internal class FruitTreeTooltipContainer : LayoutContainer
     40
   );
 
-  private readonly TooltipText _cropNameElement = TooltipText.Bold(
+  private readonly TooltipText _nameElement = TooltipText.Bold(
     "UIIS2::UnknownTree",
     identifier: "FruitTreeName"
   );
@@ -43,10 +42,7 @@ internal class FruitTreeTooltipContainer : LayoutContainer
     _dropsHelper = ModEntry.GetSingleton<DropsHelper>();
 
     ComponentSpacing = 10;
-    AddChildren(
-      Column(null, _cropNameElement, _cropDaysRemainingElement, _cropDropsElement),
-      _cropIcon
-    );
+    AddChildren(Column(null, _nameElement, _daysRemainingElement, _harvestElement), _cropIcon);
     IsHidden = true;
 
     FruitTree = fruitTree;
@@ -81,45 +77,52 @@ internal class FruitTreeTooltipContainer : LayoutContainer
     IsHidden = false;
 
     FruitTreeInfo treeInfo = _dropsHelper.GetFruitTreeInfo(FruitTree);
-    _cropNameElement.Text = treeInfo.TreeName;
-    UpdateFruitTreeDays();
-    _cropDropsElement.Text = string.Join(
-      "\n",
-      treeInfo.Items.Select(item => GetInfoStringForDrop(item, true))
-    );
+    _nameElement.Text = treeInfo.TreeName;
+    UpdateIcon();
+    UpdateDaysToMature();
+    UpdateHarvestInfo();
   }
 
-  private void UpdateFruitTreeDays()
+  private void UpdateIcon()
   {
-    if (FruitTree == null || FruitTree.daysUntilMature.Value <= 0)
+    if (FruitTree is null)
     {
-      _cropDaysRemainingElement.IsHidden = true;
       return;
     }
 
-    _cropDaysRemainingElement.IsHidden = false;
-    _cropDaysRemainingElement.Text = $"{FruitTree.daysUntilMature.Value} {I18n.DaysToMature()}";
+    ParsedItemData? itemData = ItemRegistry.GetData(FruitTree.treeId.Value);
+    if (itemData != null)
+    {
+      _cropIcon.SetIcon(itemData.GetTexture(), itemData.GetSourceRect(), 40);
+    }
   }
 
-  private static string GetInfoStringForDrop(PossibleDroppedItem item, bool isReadyToday)
+  private void UpdateDaysToMature()
   {
-    (
-      ConditionFutureResult futureHarvestDates,
-      ParsedItemData? parsedItemData,
-      float chance,
-      string? _
-    ) = item;
-
-    WorldDate? nextDayToProduce = futureHarvestDates.GetNextDate(isReadyToday);
-    if (nextDayToProduce == null)
+    if (FruitTree == null || FruitTree.daysUntilMature.Value <= 0)
     {
-      return $"Unknown {I18n.Days()}";
+      _daysRemainingElement.IsHidden = true;
+      return;
     }
 
-    string chanceStr = 1.0f.Equals(chance) ? "" : $" ({chance * 100:2F}%)";
-    int daysUntilReady = nextDayToProduce.DayOfMonth - Game1.dayOfMonth;
-    return daysUntilReady <= 0 || isReadyToday
-      ? $"{parsedItemData.DisplayName}: {I18n.ReadyToHarvest()}"
-      : $"{parsedItemData.DisplayName}: {daysUntilReady} {I18n.Days()}{chanceStr}";
+    _daysRemainingElement.IsHidden = false;
+    _daysRemainingElement.Text = $"{FruitTree.daysUntilMature.Value} {I18n.DaysToMature()}";
+  }
+
+  private void UpdateHarvestInfo()
+  {
+    if (FruitTree == null || FruitTree.fruit.Count == 0)
+    {
+      _harvestElement.IsHidden = true;
+      return;
+    }
+
+    _harvestElement.IsHidden = false;
+
+    var grouped = FruitTree
+      .fruit.GroupBy(item => item.DisplayName)
+      .Select(g => g.Count() > 1 ? $"{g.Key} x{g.Count()}" : g.Key);
+
+    _harvestElement.Text = $"{I18n.ReadyToHarvest()}\n{string.Join("\n", grouped)}";
   }
 }
