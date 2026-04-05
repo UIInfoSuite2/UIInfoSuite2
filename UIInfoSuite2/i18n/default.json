@@ -136,6 +136,7 @@
   "gmcm.group.birthday": "Birthday Reminder",
   "gmcm.group.seasonalForage": "Seasonal Forage",
   "gmcm.group.otherIcons": "Other Icons",
+  "gmcm.group.fishing-sonar": "Fishing Minigame Sonar",
   "gmcm.group.animalTooltips": "Animal Tooltips",
   "gmcm.group.object-contents-icons": "Object Contents Icons",
   "gmcm.group.objectTooltips": "Object Tooltips",
@@ -249,6 +250,11 @@
   // HUD Tooltips
   "gmcm.section.tooltips.title": "HUD Tooltips",
   "gmcm.section.tooltips.title.tooltip": "Control HUD Tooltips and other Quality-of-Life features in your world",
+  // Fishing Icons
+  "gmcm.modules.tooltips.fish-sonar.enable": "Show Fish Sonar",
+  "gmcm.modules.tooltips.fish-sonar.enable.tooltip": "Show the fish you're catching, similar to the Sonar Bobber",
+  "gmcm.modules.tooltips.fish-sonar.show-quality": "Show Fish Quality",
+  "gmcm.modules.tooltips.fish-sonar.show-quality.tooltip": "Show the live quality of the fish you're catching",
   // Animals
   "gmcm.modules.tooltips.animals.enable": "Show animal interact icon",
   "gmcm.modules.tooltips.animals.enable.tooltip": "Toggle whether an icon is shown above an animal you haven't pet",

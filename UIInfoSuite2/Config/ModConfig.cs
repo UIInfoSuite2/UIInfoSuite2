@@ -107,6 +107,10 @@ public sealed class ModConfig
   #endregion
 
   #region Overlays Config
+  // Fishing
+  public bool ShowFishSonar { get; set; } = true;
+  public bool ShowFishQuality { get; set; } = true;
+
   // Machine processing
   public VisibilityMode ObjectContentsVisibility { get; set; } = VisibilityMode.AlwaysOn;
   public KeybindList ObjectContentsKeybind { get; set; } = KeybindList.ForSingle(SButton.F10);
