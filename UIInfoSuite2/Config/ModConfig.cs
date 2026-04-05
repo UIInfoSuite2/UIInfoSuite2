@@ -73,6 +73,7 @@ public sealed class ModConfig
   public bool ShowSeasonalForageIcon { get; set; } = true;
   public bool ShowSeasonalForageBeachIcon { get; set; }
   public bool ShowSeasonalBerryHazelnutIcon { get; set; }
+  public bool ShowPotOfGoldIcon { get; set; } = true;
 
   // Animal Hands
   public bool ShowAnimalsNeedPets { get; set; } = true;
