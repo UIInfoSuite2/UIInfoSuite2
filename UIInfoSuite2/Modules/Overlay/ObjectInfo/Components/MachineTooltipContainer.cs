@@ -125,7 +125,7 @@ internal class MachineTooltipContainer : LayoutContainer
   {
     if (machine is Cask cask)
     {
-      return $"{(int)(cask.daysToMature.Value / cask.agingRate.Value)} {I18n.DaysToMature()}";
+      return $"{(int)Math.Ceiling(cask.daysToMature.Value / cask.agingRate.Value)} {I18n.DaysToMature()}";
     }
 
     if (machine.IsSolarPanel() && machine.IsWorking())

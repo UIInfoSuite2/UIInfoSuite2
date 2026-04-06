@@ -55,7 +55,7 @@ internal class MerchantReminderModule(
 
   protected override void RemoveIcons()
   {
-    RemoveIconsWhere(_iconPrefix, 2);
+    RemoveIconsWhere(_iconPrefix, 3);
   }
 
   public override void OnEnable()
