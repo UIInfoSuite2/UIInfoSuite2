@@ -12,7 +12,7 @@ using UIInfoSuite2.Compatibility.CustomBush;
 using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Helpers.GameStateHelpers;
 using UIInfoSuite2.Layout;
-using UIInfoSuite2.Models.Tooltip.Base;
+using UIInfoSuite2.Models.Tooltip;
 
 namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;
 
