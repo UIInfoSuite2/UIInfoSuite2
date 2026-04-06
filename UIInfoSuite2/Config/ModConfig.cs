@@ -33,10 +33,13 @@ public sealed class ModConfig
   // Luck
   public bool ShowLuckIcon { get; set; } = true;
   public bool ShowExactLuckValue { get; set; }
+  public bool RequireTvForLuckIcon { get; set; }
+  public LuckIconType LuckIconType { get; set; } = LuckIconType.Clover;
 
   // Weather
   public bool ShowWeatherIcon { get; set; } = true;
   public bool ShowIslandWeather { get; set; } = true;
+  public bool RequireTvForWeatherIcon { get; set; }
 
   // Merchant
   public bool ShowMerchantIcons { get; set; } = true;
@@ -70,6 +73,7 @@ public sealed class ModConfig
   public bool ShowSeasonalForageIcon { get; set; } = true;
   public bool ShowSeasonalForageBeachIcon { get; set; }
   public bool ShowSeasonalBerryHazelnutIcon { get; set; }
+  public bool ShowPotOfGoldIcon { get; set; } = true;
 
   // Animal Hands
   public bool ShowAnimalsNeedPets { get; set; } = true;
@@ -104,6 +108,10 @@ public sealed class ModConfig
   #endregion
 
   #region Overlays Config
+  // Fishing
+  public bool ShowFishSonar { get; set; } = true;
+  public bool ShowFishQuality { get; set; } = true;
+
   // Machine processing
   public VisibilityMode ObjectContentsVisibility { get; set; } = VisibilityMode.AlwaysOn;
   public KeybindList ObjectContentsKeybind { get; set; } = KeybindList.ForSingle(SButton.F10);

@@ -33,7 +33,7 @@ internal class ExperienceModule(
 {
   private const string FloatingTextKey = "ExperienceGain";
   private const int XpVisibleTicks = 100;
-  private static readonly SkillWrapperBase MasterySkill = new MasterySkillWrapper();
+  private readonly PerScreen<SkillWrapperBase> MasterySkill = new(() => new MasterySkillWrapper());
 
   private readonly PerScreen<ExperienceBarModel> _displayedExperienceBar = new(() =>
     new ExperienceBarModel()
@@ -88,7 +88,7 @@ internal class ExperienceModule(
 
   private void OnMasteryXpChange(object? sender, MasteryXpGainArgs args)
   {
-    UpdateTrackedSkill(MasterySkill);
+    UpdateTrackedSkill(MasterySkill.Value);
   }
 
   private void OnLevelChanged(object? sender, LevelChangedEventArgs e)

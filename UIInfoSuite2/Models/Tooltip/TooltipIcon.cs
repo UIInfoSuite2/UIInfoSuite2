@@ -6,7 +6,7 @@ using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Layout;
 using UIInfoSuite2.Layout.Measurement;
 
-namespace UIInfoSuite2.Models.Tooltip.Base;
+namespace UIInfoSuite2.Models.Tooltip;
 
 internal class TooltipIcon : LayoutElement
 {

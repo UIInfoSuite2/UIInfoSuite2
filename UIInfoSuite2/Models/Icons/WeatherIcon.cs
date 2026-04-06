@@ -7,6 +7,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Extensions;
 using UIInfoSuite2.Compatibility;
+using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Utilities;
 
 namespace UIInfoSuite2.Models.Icons;
@@ -139,7 +140,7 @@ internal class WeatherIcon(bool isIslandWeather)
       }
     }
 
-    BaseTexture.Value = GenerateCustomWeatherTexture(
+    BaseTexture = GenerateCustomWeatherTexture(
       ModEntry.Instance.Helper,
       tex,
       new Rectangle(pos, new Point(13, 13)),
@@ -176,6 +177,11 @@ internal class WeatherIcon(bool isIslandWeather)
     }
 
     if (isIslandWeather && !Config.ShowIslandWeather)
+    {
+      return false;
+    }
+
+    if (Config.RequireTvForWeatherIcon && !TvHelper.HasWatchedWeather.Value)
     {
       return false;
     }

@@ -1,5 +1,6 @@
 ﻿using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using UIInfoSuite2.Config;
 using UIInfoSuite2.Managers;
 using UIInfoSuite2.Models.Icons;
@@ -21,20 +22,20 @@ internal abstract class SingleHudIconModule<T>(
 ) : HudIconModule(modEvents, logger, configManager, iconManager)
   where T : ClickableIcon
 {
-  private T? _icon;
+  private readonly PerScreen<T?> _icon = new(() => null);
 
   protected T Icon
   {
     get
     {
-      if (_icon == null)
+      if (_icon.Value == null)
       {
         SetupIcons();
       }
 
-      return _icon!;
+      return _icon.Value!;
     }
-    set => _icon = value;
+    set => _icon.Value = value;
   }
 
   protected abstract string IconKey { get; }
@@ -44,8 +45,8 @@ internal abstract class SingleHudIconModule<T>(
   protected override void SetupIcons()
   {
     RemoveIcons();
-    _icon = GenerateNewIcon();
-    IconManager.AddIcon(IconKey, _icon);
+    _icon.Value = GenerateNewIcon();
+    IconManager.AddIcon(IconKey, _icon.Value);
   }
 
   protected override void RemoveIcons()

@@ -4,7 +4,7 @@ using StardewValley.GameData.WildTrees;
 using StardewValley.TerrainFeatures;
 using StardewValley.TokenizableStrings;
 using UIInfoSuite2.Layout;
-using UIInfoSuite2.Models.Tooltip.Base;
+using UIInfoSuite2.Models.Tooltip;
 
 namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;
 

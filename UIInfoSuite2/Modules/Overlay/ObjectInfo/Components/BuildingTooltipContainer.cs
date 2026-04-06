@@ -2,7 +2,7 @@
 using StardewValley.TokenizableStrings;
 using UIInfoSuite2.Layout;
 using UIInfoSuite2.Layout.Measurement;
-using UIInfoSuite2.Models.Tooltip.Base;
+using UIInfoSuite2.Models.Tooltip;
 using UIInfoSuite2.Modules.Overlay.ObjectInfo.Components.BuildingContainers;
 
 namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;

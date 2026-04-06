@@ -1,6 +1,7 @@
 ﻿using System;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using UIInfoSuite2.Compatibility;
 using UIInfoSuite2.Config;
 using UIInfoSuite2.Managers;
@@ -14,9 +15,8 @@ internal class DailyWeatherModule : HudIconModule
 {
   private const string WeatherIconPrefix = "WeatherIcon-";
 
-  // Lazy init because the weather icon init uses textures that aren't loaded yet
-  private readonly Lazy<WeatherIcon> _islandWeatherIcon = new(() => new WeatherIcon(true));
-  private readonly Lazy<WeatherIcon> _valleyWeatherIcon = new(() => new WeatherIcon(false));
+  private readonly PerScreen<WeatherIcon> _islandWeatherIcon = new(() => new WeatherIcon(true));
+  private readonly PerScreen<WeatherIcon> _valleyWeatherIcon = new(() => new WeatherIcon(false));
 
   public DailyWeatherModule(
     IModEvents modEvents,
@@ -94,6 +94,13 @@ internal class DailyWeatherModule : HudIconModule
       tooltip: I18n.Gmcm_Modules_Icons_Weather_Island_Tooltip,
       getValue: () => Config.ShowIslandWeather,
       setValue: value => Config.ShowIslandWeather = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Icons_Tv_RequireWatched,
+      tooltip: I18n.Gmcm_Modules_Icons_Tv_RequireWatched_Tooltip,
+      getValue: () => Config.RequireTvForWeatherIcon,
+      setValue: value => Config.RequireTvForWeatherIcon = value
     );
   }
   #endregion

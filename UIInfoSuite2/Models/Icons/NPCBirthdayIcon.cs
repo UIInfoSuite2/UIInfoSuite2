@@ -10,7 +10,6 @@ internal class NpcBirthdayIcon(NPC character)
   : ClickableIcon(Game1.mouseCursors, new Rectangle(229, 410, 14, 14), 40)
 {
   private const float HeadshotScale = 2.3f;
-  private readonly PerScreen<bool> _canBeGiftedToday = new(() => true);
   private readonly Vector2 _headshotOffsetPosition = new(-10, -5);
   private readonly Rectangle _headshotRect = character.GetHeadShot();
 
@@ -23,11 +22,7 @@ internal class NpcBirthdayIcon(NPC character)
     }
   }
 
-  private bool CanBeGiftedToday
-  {
-    get => _canBeGiftedToday.Value;
-    set => _canBeGiftedToday.Value = value;
-  }
+  private bool CanBeGiftedToday { get; set; } = true;
 
   public override void Draw(SpriteBatch batch)
   {

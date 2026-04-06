@@ -161,16 +161,16 @@ internal static class IClickableMenu_Patches
     harmony.Patch(
       drawHoverTextMethod,
 #if DEBUG
-      new HarmonyMethod(
+      prefix: new HarmonyMethod(
         typeof(IClickableMenu_Patches),
         nameof(Prefix_IClickableMenu_DrawHoverText)
       ),
-      new HarmonyMethod(
+      postfix: new HarmonyMethod(
         typeof(IClickableMenu_Patches),
         nameof(Postfix_IClickableMenu_DrawHoverText)
       ),
 #endif
-      new HarmonyMethod(
+      transpiler: new HarmonyMethod(
         typeof(IClickableMenu_Patches),
         nameof(Transpile_IClickableMenu_DrawHoverText)
       )

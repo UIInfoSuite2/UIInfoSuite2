@@ -10,7 +10,7 @@ using UIInfoSuite2.Extensions;
 using UIInfoSuite2.Helpers;
 using UIInfoSuite2.Layout;
 using UIInfoSuite2.Layout.Measurement;
-using UIInfoSuite2.Models.Tooltip.Base;
+using UIInfoSuite2.Models.Tooltip;
 using SObject = StardewValley.Object;
 
 namespace UIInfoSuite2.Modules.Overlay.ObjectInfo.Components;
@@ -125,7 +125,7 @@ internal class MachineTooltipContainer : LayoutContainer
   {
     if (machine is Cask cask)
     {
-      return $"{(int)(cask.daysToMature.Value / cask.agingRate.Value)} {I18n.DaysToMature()}";
+      return $"{(int)Math.Ceiling(cask.daysToMature.Value / cask.agingRate.Value)} {I18n.DaysToMature()}";
     }
 
     if (machine.IsSolarPanel() && machine.IsWorking())
