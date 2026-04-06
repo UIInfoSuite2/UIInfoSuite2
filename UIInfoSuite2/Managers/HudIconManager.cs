@@ -50,6 +50,7 @@ internal class HudIconManager(
 
   public void AddIcon(string key, ClickableIcon icon)
   {
+    icon.ResetTextureComponent();
     _icons.Value.Add(key, icon);
     _iconRowsDirty = true;
   }

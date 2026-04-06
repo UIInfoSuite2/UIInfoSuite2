@@ -8,7 +8,7 @@ namespace UIInfoSuite2.Models.Icons;
 
 internal class ToolIcon : ClickableIcon
 {
-  private readonly PerScreen<Tool?> _tool = new(() => null);
+  private Tool? _tool;
 
   public ToolIcon()
     : base(Game1.mouseCursors, new Rectangle(322, 498, 12, 12), 40)
@@ -16,37 +16,35 @@ internal class ToolIcon : ClickableIcon
     UpdateTool();
   }
 
-  public Tool? Tool => _tool.Value;
-
   public void UpdateTool()
   {
-    if (_tool.Value == Game1.player.toolBeingUpgraded.Value)
+    if (_tool == Game1.player.toolBeingUpgraded.Value)
     {
       return;
     }
 
-    _tool.Value = Game1.player.toolBeingUpgraded.Value;
-    if (Tool is null)
+    _tool = Game1.player.toolBeingUpgraded.Value;
+    if (_tool is null)
     {
       return;
     }
 
-    ParsedItemData itemData = ItemRegistry.GetDataOrErrorItem(Tool.QualifiedItemId);
+    ParsedItemData itemData = ItemRegistry.GetDataOrErrorItem(_tool.QualifiedItemId);
     if (itemData.IsErrorItem)
     {
       Logger.LogOnce(
-        $"ToolIcon: Tool {Tool.QualifiedItemId} did not return valid item data for some reason, was the mod removed?",
+        $"ToolIcon: Tool {_tool.QualifiedItemId} did not return valid item data for some reason, was the mod removed?",
         LogLevel.Alert
       );
     }
-    BaseTexture.Value = itemData.GetTexture();
+    BaseTexture = itemData.GetTexture();
     SetSourceBounds(itemData.GetSourceRect());
     UpdateHoverText();
   }
 
   public void UpdateHoverText()
   {
-    if (Tool is null)
+    if (_tool is null)
     {
       return;
     }
@@ -56,17 +54,17 @@ internal class ToolIcon : ClickableIcon
       HoverText = string.Format(
         I18n.DaysUntilToolIsUpgraded(),
         Game1.player.daysLeftForToolUpgrade.Value,
-        Tool.DisplayName
+        _tool.DisplayName
       );
     }
     else
     {
-      HoverText = string.Format(I18n.ToolIsFinishedBeingUpgraded(), Tool.DisplayName);
+      HoverText = string.Format(I18n.ToolIsFinishedBeingUpgraded(), _tool.DisplayName);
     }
   }
 
   protected override bool _ShouldDraw()
   {
-    return Tool is not null;
+    return _tool is not null;
   }
 }

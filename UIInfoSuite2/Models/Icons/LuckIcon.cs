@@ -43,18 +43,18 @@ internal class LuckIcon : ClickableIcon
     "clover_group.png"
   );
 
-  private readonly PerScreen<LuckInfo> _luckInfo = new(GetLuckInfo);
+  private LuckInfo _luckInfo;
 
   public LuckIcon()
     : base(Game1.mouseCursors, DiceSourceBounds, 40)
   {
+    _luckInfo = GetLuckInfo();
     SetType(Config.LuckIconType);
   }
 
   public LuckIconType LuckIconType { get; private set; } = LuckIconType.Clover;
 
-  public LuckInfo CurLuckInfo => _luckInfo.Value;
-  public int LuckLevel => _luckInfo.Value.LuckLevel;
+  public int LuckLevel => _luckInfo.LuckLevel;
 
   private static LuckInfo GetLuckInfo()
   {
@@ -99,7 +99,7 @@ internal class LuckIcon : ClickableIcon
   {
     LuckInfo luckInfo = GetLuckInfo();
     int lastLuckLevel = LuckLevel;
-    _luckInfo.Value = luckInfo;
+    _luckInfo = luckInfo;
     if (lastLuckLevel == LuckLevel && !force)
     {
       return;
@@ -125,7 +125,7 @@ internal class LuckIcon : ClickableIcon
         newBounds = new Rectangle(LuckLevel * CloverFrameSize, 0, CloverFrameSize, CloverFrameSize);
         break;
       case LuckIconType.Tv:
-        newBounds = new Rectangle(CurLuckInfo.TvIndex * TvFrameSize, 0, TvFrameSize, TvFrameSize);
+        newBounds = new Rectangle(_luckInfo.TvIndex * TvFrameSize, 0, TvFrameSize, TvFrameSize);
         break;
       default:
         SetType(LuckIconType.Clover);
@@ -142,14 +142,14 @@ internal class LuckIcon : ClickableIcon
     switch (type)
     {
       case LuckIconType.Classic:
-        BaseTexture.Value = Game1.mouseCursors;
+        BaseTexture = Game1.mouseCursors;
         break;
       case LuckIconType.Tv:
-        BaseTexture.Value = tvTexture.Value;
+        BaseTexture = tvTexture.Value;
         break;
       default:
       case LuckIconType.Clover:
-        BaseTexture.Value = cloverTexture.Value;
+        BaseTexture = cloverTexture.Value;
         break;
     }
 

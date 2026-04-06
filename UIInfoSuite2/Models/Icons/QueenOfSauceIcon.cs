@@ -11,7 +11,6 @@ internal class QueenOfSauceIcon()
 {
   private static readonly Rectangle _tvSourceRect = new(609, 361, 28, 28);
 
-  private readonly PerScreen<bool> _knowsRecipe = new(() => true);
   private CraftingRecipe? _recipe;
 
   public CraftingRecipe? Recipe
@@ -30,11 +29,7 @@ internal class QueenOfSauceIcon()
     }
   }
 
-  private bool KnowsRecipe
-  {
-    get => _knowsRecipe.Value;
-    set => _knowsRecipe.Value = value;
-  }
+  private bool KnowsRecipe { get; set; } = true;
 
   public void UpdateKnowsRecipeCheck()
   {

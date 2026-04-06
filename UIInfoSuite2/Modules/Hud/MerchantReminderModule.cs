@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Extensions;
 using StardewValley.Internal;
@@ -30,14 +31,13 @@ internal class MerchantReminderModule(
   private const string _rsvMerchantLocation = "Custom_Ridgeside_RSVTheHike";
   private const string _iconPrefix = "MerchantIcon";
 
-  // Lazy init because the icon init uses textures that aren't loaded yet
-  private readonly Lazy<MerchantIcon> _booksellerIcon = new(() =>
+  private readonly PerScreen<MerchantIcon> _booksellerIcon = new(() =>
     new MerchantIcon(MerchantIcon.Type.Bookseller)
   );
-  private readonly Lazy<MerchantIcon> _travelerIcon = new(() =>
+  private readonly PerScreen<MerchantIcon> _travelerIcon = new(() =>
     new MerchantIcon(MerchantIcon.Type.Traveler)
   );
-  private readonly Lazy<MerchantIcon> _rsvTravelerIcon = new(() =>
+  private readonly PerScreen<MerchantIcon> _rsvTravelerIcon = new(() =>
     new MerchantIcon(MerchantIcon.Type.RsvTraveler)
   );
 
