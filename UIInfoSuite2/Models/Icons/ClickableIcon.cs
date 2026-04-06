@@ -133,6 +133,9 @@ internal class ClickableIcon
 
   public bool HasRenderingChanged(bool markClean = true)
   {
+    // Have the icon refresh if it's supposed to be drawn
+    ShouldDraw();
+
     bool dirty = _hasRenderingChanged;
     if (markClean)
     {
