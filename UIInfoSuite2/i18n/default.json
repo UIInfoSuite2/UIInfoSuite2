@@ -267,9 +267,6 @@
   // Crops
   "gmcm.modules.tooltips.crops.enable": "Show tooltip for crops",
   "gmcm.modules.tooltips.crops.enable.tooltip": "Toggle whether a tooltip is shown when hovering over crops",
-  // Trees
-  "gmcm.modules.tooltips.trees.enable": "Show tooltip for trees",
-  "gmcm.modules.tooltips.trees.enable.tooltip": "Toggle whether a tooltip is shown when hovering over fruit trees, wild trees, and bushes",
   // Machines
   "gmcm.modules.tooltips.machines.enable": "Show tooltip for machines",
   "gmcm.modules.tooltips.machines.enable.tooltip": "Toggle whether a tooltip is shown when hovering over machines",

@@ -21,7 +21,7 @@ internal class BushContext
   private static readonly Lazy<string> TeaBushName = new(() =>
     ItemRegistry.GetData("(O)251").DisplayName
   );
-  public static readonly Lazy<ParsedItemData> TeaLeafData = new(() =>
+  private static readonly Lazy<ParsedItemData> TeaLeafData = new(() =>
     ItemRegistry.GetData("(O)815")
   );
 
@@ -108,6 +108,7 @@ internal class BushContext
     DroppedItems.Clear();
     AgeToMature = _customBushData.AgeToProduce;
     WillProduceThisSeason = _customBushData.Seasons.Contains(Game1.season) || Bush.IsSheltered();
+    BushName = $"{TokenParser.ParseText(_customBushData.DisplayName)} Bush"; // TODO: Needs translation
     InProductionPeriod = Game1.dayOfMonth >= _customBushData.DayToBeginProducing;
 
     if (_customBushData.GetShakeOffItemIfReady(Bush, out Item? shakeOffItem))
@@ -126,30 +127,6 @@ internal class BushContext
     {
       DroppedItems.AddRange(_customBushApi.GetCustomBushDropItems(_customBushData, _customBushId));
     }
-
-    BushName = ResolveCustomBushName();
-  }
-
-  private string ResolveCustomBushName()
-  {
-    if (!IsCustomBush)
-    {
-      return TeaBushName.Value;
-    }
-
-    if (DroppedItems.Count == 1)
-    {
-      string suffix = IsMature ? "Bush" : "Sapling";
-      return $"{DroppedItems[0].Item.DisplayName} {suffix}";
-    }
-
-    string displayName = _customBushData.DisplayName;
-    if (displayName.Contains("LocalizedText"))
-    {
-      displayName = TokenParser.ParseText(displayName);
-    }
-
-    return displayName;
   }
 }
 
@@ -223,30 +200,6 @@ internal class BushTooltipContainer : LayoutContainer
     ModEntry.DebugLog("BushTooltipContainer forced update");
   }
 
-  private void UpdateBushIcon()
-  {
-    if (_bushContext is null)
-    {
-      return;
-    }
-
-    ParsedItemData? iconData = null;
-
-    if (_bushContext.IsCustomBush && _bushContext.DroppedItems.Count > 0)
-    {
-      iconData = _bushContext.DroppedItems[0].Item;
-    }
-    else if (!_bushContext.IsCustomBush)
-    {
-      iconData = BushContext.TeaLeafData.Value;
-    }
-
-    if (iconData != null)
-    {
-      _bushIcon.SetIcon(iconData.GetTexture(), iconData.GetSourceRect(), 40);
-    }
-  }
-
   private void SetTextElement(TooltipText element, string newName)
   {
     element.Text = newName;
@@ -274,7 +227,6 @@ internal class BushTooltipContainer : LayoutContainer
 
     IsHidden = false;
     SetTextElement(_bushNameElement, _bushContext.BushName);
-    UpdateBushIcon();
 
     if (!_bushContext.IsMature || !_bushContext.WillProduceThisSeason)
     {
@@ -304,15 +256,36 @@ internal class BushTooltipContainer : LayoutContainer
       return;
     }
 
-    if (_bushContext.IsReadyToday)
-    {
-      var grouped = _bushContext.DroppedItems.Select(item => item.Item.DisplayName).Distinct();
+    SetTextElement(
+      _dropsText,
+      string.Join(
+        ", ",
+        _bushContext.DroppedItems.Select(item =>
+          GetInfoStringForDrop(item, _bushContext.IsReadyToday)
+        )
+      )
+    );
+  }
 
-      SetTextElement(_dropsText, $"{I18n.ReadyToHarvest()}\n{string.Join("\n", grouped)}");
-    }
-    else
+  private static string GetInfoStringForDrop(PossibleDroppedItem item, bool isReadyToday)
+  {
+    (
+      ConditionFutureResult futureHarvestDates,
+      ParsedItemData? parsedItemData,
+      float chance,
+      string? _
+    ) = item;
+
+    WorldDate? nextDayToProduce = futureHarvestDates.GetNextDate(isReadyToday);
+    if (nextDayToProduce == null)
     {
-      _dropsText.IsHidden = true;
+      return $"Unknown {I18n.Days()}";
     }
+
+    string chanceStr = 1.0f.Equals(chance) ? "" : $" ({chance * 100:2F}%)";
+    int daysUntilReady = nextDayToProduce.DayOfMonth - Game1.dayOfMonth;
+    return daysUntilReady <= 0 || isReadyToday
+      ? $"{parsedItemData.DisplayName}: {I18n.ReadyToHarvest()}"
+      : $"{parsedItemData.DisplayName}: {daysUntilReady} {I18n.Days()}{chanceStr}";
   }
 }

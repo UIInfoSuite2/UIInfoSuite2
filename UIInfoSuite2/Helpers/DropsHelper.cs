@@ -6,7 +6,6 @@ using StardewValley;
 using StardewValley.GameData.FruitTrees;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.TerrainFeatures;
-using StardewValley.TokenizableStrings;
 using UIInfoSuite2.Extensions;
 using UIInfoSuite2.Helpers.GameStateHelpers;
 using UIInfoSuite2.Utilities;
@@ -125,50 +124,14 @@ internal class DropsHelper
 
   public FruitTreeInfo GetFruitTreeInfo(FruitTree tree)
   {
-    var treeData = tree.GetData();
-    string? displayName = null;
-
-    if (treeData?.DisplayName != null)
-    {
-      displayName = TokenParser.ParseText(treeData.DisplayName);
-
-      if (displayName.Contains("(no translation:"))
-      {
-        displayName = null;
-      }
-    }
-
-    if (string.IsNullOrEmpty(displayName))
-    {
-      var itemData = ItemRegistry.GetData(tree.treeId.Value);
-      if (itemData != null)
-      {
-        displayName = itemData.DisplayName;
-      }
-    }
-
+    var name = "Fruit Tree";
     List<PossibleDroppedItem> drops = GetFruitTreeDropItems(tree);
-
-    if (string.IsNullOrEmpty(displayName) && drops.Count > 0)
+    if (drops.Count == 1)
     {
-      displayName = drops[0].Item.DisplayName;
+      name = $"{drops[0].Item.DisplayName}{I18n.Tree()}";
     }
 
-    if (string.IsNullOrEmpty(displayName))
-    {
-      displayName = tree.treeId.Value;
-    }
-
-    string cleanName = displayName.Replace(" Sapling", "");
-    string treeSuffix = I18n.Tree();
-
-    string finalName =
-      cleanName.EndsWith(treeSuffix.Trim(), StringComparison.OrdinalIgnoreCase)
-      || cleanName.EndsWith("Tree", StringComparison.OrdinalIgnoreCase)
-        ? cleanName
-        : $"{cleanName}{treeSuffix}";
-
-    return new FruitTreeInfo(finalName, drops);
+    return new FruitTreeInfo(name, drops);
   }
 
   public List<PossibleDroppedItem> GetGenericDropItems<T>(
