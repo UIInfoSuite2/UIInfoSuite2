@@ -116,12 +116,14 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
     var currentTree = GetTerrainObjectAtTile<Tree>(tile);
 
     _mouseTooltipDom.Building = Game1.currentLocation.getBuildingAt(tile);
-    _mouseTooltipDom.Machine = GetMachineAtTile(tile);
-    _mouseTooltipDom.Crop = GetCropFromTerrain(currentDirtTile);
-    _mouseTooltipDom.WildTree = currentTree;
-    _mouseTooltipDom.HoeDirt = currentDirtTile;
-    _mouseTooltipDom.FruitTree = GetTerrainObjectAtTile<FruitTree>(tile);
-    _mouseTooltipDom.Bush = GetBushFromTile(tile);
+    _mouseTooltipDom.Machine = Config.ShowMachineTooltip ? GetMachineAtTile(tile) : null;
+    _mouseTooltipDom.Crop = Config.ShowCropTooltip ? GetCropFromTerrain(currentDirtTile) : null;
+    _mouseTooltipDom.WildTree = Config.ShowTreeTooltip ? currentTree : null;
+    _mouseTooltipDom.HoeDirt = Config.ShowCropTooltip ? currentDirtTile : null;
+    _mouseTooltipDom.FruitTree = Config.ShowTreeTooltip
+      ? GetTerrainObjectAtTile<FruitTree>(tile)
+      : null;
+    _mouseTooltipDom.Bush = Config.ShowTreeTooltip ? GetBushFromTile(tile) : null;
   }
 
   private void OnBushShake(object? sender, BushShakeItemArgs evt)
@@ -224,6 +226,13 @@ internal class ObjectInfoModule : BaseModule, IConfigurable
       tooltip: I18n.Gmcm_Modules_Tooltips_Crops_Enable_Tooltip,
       getValue: () => Config.ShowCropTooltip,
       setValue: value => Config.ShowCropTooltip = value
+    );
+    modConfigMenuApi.AddBoolOption(
+      manifest,
+      name: I18n.Gmcm_Modules_Tooltips_Trees_Enable,
+      tooltip: I18n.Gmcm_Modules_Tooltips_Trees_Enable_Tooltip,
+      getValue: () => Config.ShowTreeTooltip,
+      setValue: value => Config.ShowTreeTooltip = value
     );
     modConfigMenuApi.AddBoolOption(
       manifest,
