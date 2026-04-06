@@ -140,7 +140,7 @@ internal class WeatherIcon(bool isIslandWeather)
       }
     }
 
-    BaseTexture.Value = GenerateCustomWeatherTexture(
+    BaseTexture = GenerateCustomWeatherTexture(
       ModEntry.Instance.Helper,
       tex,
       new Rectangle(pos, new Point(13, 13)),

@@ -71,15 +71,15 @@ internal class MerchantIcon : ClickableIcon
     switch (_merchantType)
     {
       case Type.Traveler:
-        BaseTexture.Value = _merchantIconTexture.Value.BaseTexture;
+        BaseTexture = _merchantIconTexture.Value.BaseTexture;
         SetSourceBounds(new Rectangle(0, 0, 20, 20));
         break;
       case Type.RsvTraveler:
-        BaseTexture.Value = _merchantIconTexture.Value.GetTexture(Type.RsvTraveler);
+        BaseTexture = _merchantIconTexture.Value.GetTexture(Type.RsvTraveler);
         SetSourceBounds(new Rectangle(0, 0, 20, 20));
         break;
       case Type.Bookseller:
-        BaseTexture.Value = Game1.mouseCursors_1_6;
+        BaseTexture = Game1.mouseCursors_1_6;
         SetSourceBounds(new Rectangle(5, 471, 23, 22));
         break;
       default:

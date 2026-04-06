@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
@@ -15,22 +14,17 @@ namespace UIInfoSuite2.Models.Icons;
 
 internal class ClickableIcon
 {
-  protected readonly PerScreen<Color> _color = new(() => Color.White);
-
   /// <summary>
   ///   If the icon has decided it shouldn't be rendered, or some other event that might
   ///   invalidate caching
   /// </summary>
-  private readonly PerScreen<bool> _hasRenderingChanged = new(() => false);
+  private bool _hasRenderingChanged;
 
-  private readonly PerScreen<string> _hoverText = new(() => string.Empty);
-  private readonly PerScreen<ClickableTextureComponent> _icon;
-  private readonly PerScreen<bool> _lastShouldDraw = new(() => false);
-  protected readonly PerScreen<Texture2D> BaseTexture;
+  private string _hoverText = "";
+  private bool _lastShouldDraw;
 
   protected readonly ConfigManager ConfigManager = ModEntry.GetSingleton<ConfigManager>();
   protected readonly IMonitor Logger;
-  protected readonly PerScreen<AspectLockedDimensions> ScalingDimensions;
 
   public ClickableIcon(
     ParsedItemData itemData,
@@ -57,12 +51,10 @@ internal class ClickableIcon
     SpriteFont? hoverFont = null
   )
   {
-    BaseTexture = new PerScreen<Texture2D>(() => baseTexture);
-    ScalingDimensions = new PerScreen<AspectLockedDimensions>(() =>
-      new AspectLockedDimensions(sourceBounds, finalSize, primaryDimension)
-    );
+    BaseTexture = baseTexture;
+    Dimensions = new AspectLockedDimensions(sourceBounds, finalSize, primaryDimension);
 
-    _icon = new PerScreen<ClickableTextureComponent>(GenerateTextureComponent);
+    Icon = GenerateTextureComponent();
 
     ResetTextureComponent();
     ClickHandlerAction = clickHandlerAction;
@@ -77,35 +69,31 @@ internal class ClickableIcon
 
   public virtual string HoverText
   {
-    get => _hoverText.Value;
-    set => _hoverText.Value = FormatHoverText(value);
+    get => _hoverText;
+    set => _hoverText = FormatHoverText(value);
   }
 
-  public AspectLockedDimensions Dimensions => ScalingDimensions.Value;
+  protected Texture2D BaseTexture { get; set; }
+  protected ClickableTextureComponent Icon { get; set; }
+  public AspectLockedDimensions Dimensions { get; protected set; }
 
   public SpriteFont HoverFont { get; }
 
   public Rectangle SourceBounds
   {
-    get => ScalingDimensions.Value.SourceDimensions;
+    get => Dimensions.SourceDimensions;
     set
     {
-      _hasRenderingChanged.Value = true;
-      ScalingDimensions.Value.SourceDimensions = value;
+      _hasRenderingChanged = true;
+      Dimensions.SourceDimensions = value;
     }
   }
 
-  public Color Color
-  {
-    get => _color.Value;
-    set => _color.Value = value;
-  }
+  public Color Color { get; set; } = Color.White;
 
   public Action<SpriteBatch> AutoDrawDelegate { get; set; }
 
   public Action<object?, ButtonPressedEventArgs, Vector2>? ClickHandlerAction { private get; set; }
-
-  protected ClickableTextureComponent Icon => _icon.Value;
 
   public Vector2 IconPosition => new(Icon.bounds.X, Icon.bounds.Y);
 
@@ -127,28 +115,28 @@ internal class ClickableIcon
   {
     return new ClickableTextureComponent(
       new Rectangle(0, 0, Dimensions.Width, Dimensions.Height),
-      BaseTexture.Value,
+      BaseTexture,
       SourceBounds,
       Dimensions.ScaleFactor
     );
   }
 
-  protected void ResetTextureComponent()
+  public void ResetTextureComponent()
   {
-    _icon.Value = GenerateTextureComponent();
+    Icon = GenerateTextureComponent();
   }
 
   public void MarkDirty()
   {
-    _hasRenderingChanged.Value = true;
+    _hasRenderingChanged = true;
   }
 
   public bool HasRenderingChanged(bool markClean = true)
   {
-    bool dirty = _hasRenderingChanged.Value;
+    bool dirty = _hasRenderingChanged;
     if (markClean)
     {
-      _hasRenderingChanged.Value = false;
+      _hasRenderingChanged = false;
     }
 
     return dirty;
@@ -162,13 +150,13 @@ internal class ClickableIcon
   public bool ShouldDraw()
   {
     bool res = _ShouldDraw();
-    if (res == _lastShouldDraw.Value)
+    if (res == _lastShouldDraw)
     {
       return res;
     }
 
-    _hasRenderingChanged.Value = true;
-    _lastShouldDraw.Value = res;
+    _hasRenderingChanged = true;
+    _lastShouldDraw = res;
     return res;
   }
 
