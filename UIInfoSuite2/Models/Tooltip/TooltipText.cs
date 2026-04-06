@@ -7,7 +7,7 @@ using UIInfoSuite2.Extensions;
 using UIInfoSuite2.Layout;
 using UIInfoSuite2.Layout.Measurement;
 
-namespace UIInfoSuite2.Models.Tooltip.Base;
+namespace UIInfoSuite2.Models.Tooltip;
 
 internal enum TooltipShadowType
 {
